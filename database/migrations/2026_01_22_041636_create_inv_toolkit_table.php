@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('id',20)->primary();
             $table->string('toolkit_name',200);
             $table->string('category_id',20);
+            $table->string('image',255)->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('inv_category')->cascadeOnUpdate();

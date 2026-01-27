@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('id',20)->primary();
             $table->string('toolkit_id',20);
             $table->string('serial_number',50);
+            $table->string('image',255)->nullable();
             $table->string('is_available',25);
         });
 

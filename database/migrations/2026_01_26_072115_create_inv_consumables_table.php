@@ -16,6 +16,7 @@ return new class extends Migration
     $table->string('name', 200);
     $table->string('category_id', 20);
     $table->integer('stock')->default(0);
+    $table->string('image',255)->nullable();
     $table->integer('minimum_stock')->default(0);
     $table->string('unit', 50);
     $table->timestamps();
