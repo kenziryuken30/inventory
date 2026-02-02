@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_toolkit', function (Blueprint $table) {
+            
             $table->string('id',20)->primary();
             $table->string('toolkit_name',200);
             $table->string('category_id',20);
