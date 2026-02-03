@@ -12,19 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_consumables', function (Blueprint $table) {
-    $table->string('id', 20)->primary();
-    $table->string('name', 200);
-    $table->string('category_id', 20);
-    $table->integer('stock')->default(0);
-    $table->string('image',255)->nullable();
-    $table->integer('minimum_stock')->default(0);
-    $table->string('unit', 50);
-    $table->timestamps();
+            $table->engine = 'InnoDB';
 
-    $table->foreign('category_id')
-            ->references('id')->on('inv_category')
-            ->onUpdate('cascade');
+            $table->id();
+            $table->string('category_id', 20);
+            $table->string('name');
+            $table->integer('stock');
+            $table->timestamps();
 });
+
 
 
     }

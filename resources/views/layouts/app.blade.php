@@ -31,7 +31,7 @@
 
             <ul x-show="openBarang" x-transition class="ml-4 mt-1 space-y-1">
                 <li>
-                    <a href="/tools"
+                    <a href="{{ route('tools.index') }}"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
                        Data Tools
                     </a>

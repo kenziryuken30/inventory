@@ -11,19 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_consumable_transaction_items', function (Blueprint $table) {
+     Schema::create('inv_consumable_transaction_items', function (Blueprint $table) {
+    $table->engine = 'InnoDB';
+
     $table->id();
-    $table->string('transaction_id', 20);
-    $table->string('consumable_id', 20);
+    $table->unsignedBigInteger('consumable_id');
     $table->integer('qty');
-
-    $table->foreign('transaction_id')
-          ->references('id')->on('inv_consumable_transactions')
-          ->onDelete('cascade');
-
-    $table->foreign('consumable_id')
-          ->references('id')->on('inv_consumables')
-          ->onUpdate('cascade');
+    $table->timestamps();
 });
 
     }

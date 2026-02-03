@@ -16,8 +16,9 @@ class InvSerialNumber extends Model
         'id',
         'toolkit_id',
         'serial_number',
-        'image',
-        'is_available'
+        'status',     
+        'condition',  
+        'image'
     ];
 
     public function toolkit()

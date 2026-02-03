@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ToolController;
 
 
 Route::get('/', function () {
@@ -14,5 +15,14 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');;
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/data-tools', [ToolController::class, 'index'])
+        ->name('tools.index');
+
+    Route::post('/data-tools/{id}/finish-maintenance', 
+        [ToolController::class, 'finishMaintenance']
+    )->name('tools.finishMaintenance');
 });

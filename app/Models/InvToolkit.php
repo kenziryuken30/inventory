@@ -24,3 +24,4 @@ class InvToolkit extends Model
         return $this->hasMany(InvSerialNumber::class, 'toolkit_id');
     }
 }
+
