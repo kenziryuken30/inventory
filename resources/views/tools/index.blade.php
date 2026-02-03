@@ -3,27 +3,63 @@
 @section('content')
 <h2 class="text-xl font-semibold mb-4">Data Tools</h2>
 
+{{-- ALERT --}}
+@if (session('success'))
+    <div class="mb-4 px-4 py-3 rounded bg-green-100 text-green-700 border">
+        {{ session('success') }}
+    </div>
+@endif
+@if (session('error'))
+    <div class="mb-4 px-4 py-3 rounded bg-red-100 text-red-700 border">
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="bg-white rounded shadow p-4">
 
-    {{-- SEARCH & FILTER --}}
-    <div class="flex justify-between mb-4">
-        <input type="text" placeholder="Cari barang..."
-            class="border rounded px-3 py-2 w-1/3">
+    {{-- SEARCH, FILTER & TAMBAH --}}
+<div class="flex justify-between items-center mb-4">
 
-        <select class="border rounded px-3 py-2">
+    {{-- SEARCH & FILTER --}}
+    <form method="GET"
+          action="{{ route('tools.index') }}"
+          class="flex gap-2 items-center">
+
+        <input type="text"
+               name="search"
+               value="{{ request('search') }}"
+               placeholder="Cari barang..."
+               class="border rounded px-3 py-2 w-64">
+
+        <select name="condition"
+                onchange="this.form.submit()"
+                class="border rounded px-3 py-2">
             <option value="">Semua Kondisi</option>
-            <option value="baik">Baik</option>
-            <option value="rusak">Rusak</option>
-            <option value="maintenance">Maintenance</option>
+            <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>
+                Baik
+            </option>
+            <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>
+                Rusak
+            </option>
+            <option value="maintenance" {{ request('condition') === 'maintenance' ? 'selected' : '' }}>
+                Maintenance
+            </option>
         </select>
-    </div>
+    </form>
+
+    {{-- TAMBAH BARANG --}}
+    <button onclick="openAddModal()"
+            class="px-4 py-2 bg-blue-600 text-white rounded">
+        + Tambah Barang
+    </button>
+</div>
 
     {{-- TABLE --}}
     <table class="w-full border-collapse">
         <thead>
-            <tr class="border-b text-left text-sm text-gray-600">
-                <th class="py-2">Foto</th>
-                <th>Nama Barang</th>
+            <tr class="border-b text-sm text-gray-600">
+                <th>Foto</th>
+                <th>Nama</th>
                 <th>Kategori</th>
                 <th>No Seri</th>
                 <th>Status</th>
@@ -33,74 +69,175 @@
         </thead>
 
         <tbody>
-            @foreach ($tools as $tool)
-            <tr class="border-b text-sm">
-                {{-- FOTO --}}
-                <td class="py-2">
-                    <img src="{{ asset('storage/' . $tool->image) }}"
-                        class="w-12 h-12 rounded object-cover">
-                </td>
+@foreach ($tools as $tool)
+    @php
+        $condition = $tool->latestCondition->condition ?? 'baik';
+    @endphp
 
-                {{-- NAMA --}}
-                <td>{{ $tool->toolkit->toolkit_name }}</td>
+    <tr class="border-b text-sm align-middle">
 
-                {{-- KATEGORI --}}
-                <td>
-                    <span class="px-2 py-1 border rounded text-xs">
-                        {{ $tool->toolkit->category->name ?? '-' }}
-                    </span>
-                </td>
+    {{-- FOTO --}}
+    <td class="py-2">
+        <img
+            src="{{ $tool->image
+                ? asset('storage/'.$tool->image)
+                : asset('images/no-image.png') }}"
+            class="w-10 h-10 object-cover rounded">
+    </td>
 
-                {{-- NO SERI --}}
-                <td>{{ $tool->serial_number }}</td>
+    {{-- NAMA --}}
+    <td>
+        {{ $tool->toolkit->toolkit_name }}
+    </td>
 
-                {{-- STATUS --}}
-                <td>
-                    @if ($tool->status === 'tersedia')
-                        <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-                            Tersedia
-                        </span>
-                    @else
-                        <span class="px-2 py-1 text-xs rounded bg-gray-200 text-gray-700">
-                            Dipinjam
-                        </span>
-                    @endif
-                </td>
+    {{-- KATEGORI --}}
+    <td>
+        {{ $tool->toolkit->category->category_name ?? '-' }}
+    </td>
 
-                {{-- KONDISI --}}
-                <td>
-                    @if ($tool->condition === 'baik')
-                        <span class="px-2 py-1 text-xs rounded border">BAIK</span>
-                    @elseif ($tool->condition === 'rusak')
-                        <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-700">
-                            RUSAK
-                        </span>
-                    @else
-                        <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
-                            MAINTENANCE
-                        </span>
-                    @endif
-                </td>
+    {{-- NO SERI --}}
+    <td>
+        {{ $tool->serial_number }}
+    </td>
 
-                {{-- AKSI --}}
-                <td class="flex gap-2">
-                    @if ($tool->condition === 'maintenance')
-                        <form action="{{ route('tools.finishMaintenance', $tool->id) }}"
-                              method="POST">
-                            @csrf
-                            <button class="text-xs px-2 py-1 border rounded">
-                                Selesai maintenance
-                            </button>
-                        </form>
-                    @endif
+    {{-- STATUS --}}
+    <td>
+        {{ strtoupper($tool->status) }}
+    </td>
 
-                    <a href="#" class="text-blue-600 text-sm">✏️</a>
-                    <a href="#" class="text-red-600 text-sm">🗑️</a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
+    {{-- KONDISI --}}
+    <td>
+        {{ strtoupper($condition) }}
+    </td>
+
+    {{-- AKSI --}}
+    <td class="text-right w-28">
+        <div class="inline-flex gap-2 justify-end">
+
+            {{-- EDIT --}}
+            <button class="text-blue-600">✏️</button>
+
+            {{-- DELETE --}}
+            @if ($tool->status === 'dipinjam')
+                <button
+                    type="button"
+                    onclick="alert('Barang sedang dipinjam, tidak bisa dihapus')"
+                    class="text-gray-400 cursor-not-allowed">
+                    🗑️
+                </button>
+            @else
+                <form
+                    action="{{ route('tools.destroy', $tool->id) }}"
+                    method="POST"
+                    class="inline"
+                    onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
+                    @csrf
+                    @method('DELETE')
+
+                    <button class="text-red-600 hover:text-red-800">
+                        🗑️
+                    </button>
+                </form>
+            @endif
+
+        </div>
+    </td>
+</tr>
+@endforeach
+</tbody>
+
+
     </table>
-
 </div>
+
+{{-- ================= MODAL TAMBAH ================= --}}
+<div id="addModal" class="modal hidden">
+    <div class="modal-box">
+        <h3 class="modal-title">Tambah Barang</h3>
+
+        <form method="POST" action="{{ route('tools.store') }}" enctype="multipart/form-data">
+            @csrf
+
+            <input name="toolkit_name" placeholder="Nama Barang" class="input" required>
+            <select name="category_id" class="input">
+                @foreach ($categories as $cat)
+                    <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
+                @endforeach
+            </select>
+            <input name="serial_number" placeholder="No Seri" class="input" required>
+            <input type="file" name="image" class="input">
+
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeAddModal()">Batal</button>
+                <button class="btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ================= MODAL EDIT ================= --}}
+<div id="editModal" class="modal hidden">
+    <div class="modal-box">
+        <h3 class="modal-title">Edit Barang</h3>
+
+        <form id="editForm" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+
+            <input id="edit_name" name="toolkit_name" class="input" required>
+            <select id="edit_category" name="category_id" class="input">
+                @foreach ($categories as $cat)
+                    <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
+                @endforeach
+            </select>
+            <input id="edit_serial" name="serial_number" class="input" required>
+            <input type="file" name="image" class="input">
+
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeEditModal()">Batal</button>
+                <button class="btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ================= STYLE & SCRIPT ================= --}}
+<style>
+.modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50;
+}
+.modal-box {
+    background: #fff;
+    padding: 1.5rem;
+    width: 100%; max-width: 500px;
+    border-radius: .5rem;
+}
+.modal-title { font-weight: 600; margin-bottom: 1rem; }
+.input { width: 100%; margin-bottom: .75rem; padding: .5rem; border: 1px solid #ccc; border-radius: .25rem; }
+.btn-primary { background: #2563eb; color: white; padding: .5rem 1rem; border-radius: .25rem; }
+.hidden { display: none; }
+</style>
+
+<script>
+function openAddModal() {
+    document.getElementById('addModal').classList.remove('hidden');
+}
+function closeAddModal() {
+    document.getElementById('addModal').classList.add('hidden');
+}
+
+function openEditModal(id, name, category, serial) {
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_category').value = category;
+    document.getElementById('edit_serial').value = serial;
+    document.getElementById('editForm').action = '/data-tools/' + id;
+    document.getElementById('editModal').classList.remove('hidden');
+}
+function closeEditModal() {
+    document.getElementById('editModal').classList.add('hidden');
+}
+</script>
 @endsection

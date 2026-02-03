@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CategorySeeder::class,   
-        ToolSeeder::class,
+        InvToolkitSeeder::class,
+        InvSerialNumber::class,
         UserSeeder::class,
     ]);
 

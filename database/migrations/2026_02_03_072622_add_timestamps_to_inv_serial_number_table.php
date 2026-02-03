@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_serial_number', function (Blueprint $table) {
-            $table->string('id',20)->primary();
-            $table->string('toolkit_id',20);
-            $table->string('serial_number',50);
-            $table->string('image',255)->nullable();
-            
-            
+        Schema::table('inv_serial_number', function (Blueprint $table) {
+            $table->timestamps();
         });
-
     }
 
     /**
@@ -27,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_serial_number');
+        Schema::table('inv_serial_number', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
     }
 };

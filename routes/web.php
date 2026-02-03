@@ -22,6 +22,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/data-tools', [ToolController::class, 'index'])
         ->name('tools.index');
 
+        Route::post('/data-tools', [ToolController::class, 'store'])
+        ->name('tools.store');
+
+        Route::get('/data-tools/create', [ToolController::class, 'create'])
+        ->name('tools.create');
+
+            Route::put('/data-tools/{id}', 
+        [ToolController::class, 'update']
+    )->name('tools.update');
+
+
+            Route::delete('/data-tools/{id}', 
+        [ToolController::class, 'destroy']
+    )->name('tools.destroy');
+
+
     Route::post('/data-tools/{id}/finish-maintenance', 
         [ToolController::class, 'finishMaintenance']
     )->name('tools.finishMaintenance');

@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('category_id',20);
             $table->string('image',255)->nullable();
 
-            $table->enum('status', ['tersedia','dipinjam','rusak','maintenance'])
-      ->default('tersedia');
             $table->timestamps();
             $table->softDeletes();
     

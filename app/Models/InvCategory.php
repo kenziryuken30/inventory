@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InvConsumables extends Model
+class InvCategory extends Model
 {
-    protected $table = 'inv_consumables';
+    protected $table = 'inv_category';
     protected $primaryKey = 'id';
 
     public $incrementing = false;
@@ -14,11 +14,11 @@ class InvConsumables extends Model
 
     protected $fillable = [
         'id',
-        'name',
-        'category_id',
-        'stock',
-        'minimum_stock',
-        'unit',
-        'image'
+        'category_name',
     ];
+
+    public function toolkits()
+    {
+        return $this->hasMany(InvToolkit::class, 'category_id');
+    }
 }

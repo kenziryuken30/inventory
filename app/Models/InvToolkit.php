@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\InvCategory;
+use App\Models\InvSerialNumber;
 use Illuminate\Database\Eloquent\Model;
+
+
 
 class InvToolkit extends Model
 {
@@ -23,5 +27,11 @@ class InvToolkit extends Model
     {
         return $this->hasMany(InvSerialNumber::class, 'toolkit_id');
     }
+
+    public function category()
+    {
+        return $this->belongsTo(InvCategory::class, 'category_id');
+    }
 }
+
 
