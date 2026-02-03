@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvConsumableController;
 
 
 Route::get('/', function () {
@@ -16,3 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
+Route::get('/consumable',[InvConsumableController::class,'index']);
+Route::post('/consumable',[InvConsumableController::class,'store']);
+Route::put('/consumable/{id}',[InvConsumableController::class,'update']);
+Route::delete('/consumable/{id}',[InvConsumableController::class,'destroy']);
