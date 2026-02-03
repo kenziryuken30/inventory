@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Inventory</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>[x-cloak]{display:none}</style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100">
@@ -37,7 +39,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/consumables"
+                    <a href="/consumable"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
                        Data Consumable
                     </a>

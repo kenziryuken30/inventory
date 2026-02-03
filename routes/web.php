@@ -5,6 +5,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ToolController;
 
+use App\Http\Controllers\InvConsumableController;
+
+
 
 Route::get('/', function () {
     return redirect('/login');
@@ -42,3 +45,8 @@ Route::middleware('auth')->group(function () {
         [ToolController::class, 'finishMaintenance']
     )->name('tools.finishMaintenance');
 });
+
+Route::get('/consumable',[InvConsumableController::class,'index']);
+Route::post('/consumable',[InvConsumableController::class,'store']);
+Route::put('/consumable/{id}',[InvConsumableController::class,'update']);
+Route::delete('/consumable/{id}',[InvConsumableController::class,'destroy']);

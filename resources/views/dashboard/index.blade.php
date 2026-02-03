@@ -3,7 +3,6 @@
 @section('content')
 <h2 class="text-xl font-semibold mb-6">Dashboard</h2>
 
-{{-- KARTU --}}
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
     <div class="bg-white p-4 rounded shadow">
         <p class="text-sm text-gray-500">Total Barang</p>
@@ -26,9 +25,8 @@
     </div>
 </div>
 
-{{-- LIST --}}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {{-- PEMINJAMAN --}}
+    
     <div class="bg-white rounded shadow p-4">
         <h3 class="font-semibold mb-3">Peminjaman Terbaru</h3>
         @foreach($peminjamanTerbaru as $trx)
@@ -43,7 +41,6 @@
         @endforeach
     </div>
 
-    {{-- CONSUMABLE --}}
     <div class="bg-white rounded shadow p-4">
         <h3 class="font-semibold mb-3">Pengeluaran Consumable</h3>
         @foreach($consumableTerbaru as $item)

@@ -9,6 +9,7 @@ class InvCategory extends Model
     protected $table = 'inv_category';
     protected $primaryKey = 'id';
 
+
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -21,4 +22,8 @@ class InvCategory extends Model
     {
         return $this->hasMany(InvToolkit::class, 'category_id');
     }
+    
 }
+
+
+
