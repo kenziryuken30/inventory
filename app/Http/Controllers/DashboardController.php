@@ -14,13 +14,9 @@ class DashboardController extends Controller
     public function index()
     {
         $totalBarang = InvToolkit::count();
-
-        $alatTersedia = InvSerialNumber::where('is_available', 'Tersedia')->count();
-
+        $alatTersedia = InvSerialNumber::where('status', 'tersedia')->count();
         $alatDipinjam = InvTransactionItem::where('status', 'Dipinjam')->count();
-
         $consumableMenipis = InvConsumables::whereColumn('stock', '<=', 'minimum_stock')->count();
-
         $peminjamanTerbaru = InvTransaction::with(['employee', 'items.toolkit'])
             ->latest('date')
             ->take(5)
