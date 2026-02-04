@@ -17,7 +17,6 @@
 
 <div class="bg-white rounded shadow p-4">
 
-    {{-- SEARCH, FILTER & TAMBAH --}}
 <div class="flex justify-between items-center mb-4">
 
     {{-- SEARCH & FILTER --}}
@@ -47,14 +46,12 @@
         </select>
     </form>
 
-    {{-- TAMBAH BARANG --}}
     <button onclick="openAddModal()"
             class="px-4 py-2 bg-blue-600 text-white rounded">
         + Tambah Barang
     </button>
 </div>
 
-    {{-- TABLE --}}
     <table class="w-full border-collapse">
         <thead>
             <tr class="border-b text-sm text-gray-600">
@@ -76,36 +73,30 @@
 
     <tr class="border-b text-sm align-middle">
 
-    {{-- FOTO --}}
     <td class="py-2">
         <img
-            src="{{ $tool->image
-                ? asset('storage/'.$tool->image)
+            src="{{ $tool->toolkit->image
+                ? asset('storage/'.$tool->toolkit->image)
                 : asset('images/no-image.png') }}"
-            class="w-10 h-10 object-cover rounded">
+            style="width: 40px; height: 40px; object-fit: cover; border-radius: 0.25rem;">
     </td>
 
-    {{-- NAMA --}}
     <td>
         {{ $tool->toolkit->toolkit_name }}
     </td>
 
-    {{-- KATEGORI --}}
     <td>
         {{ $tool->toolkit->category->category_name ?? '-' }}
     </td>
 
-    {{-- NO SERI --}}
     <td>
         {{ $tool->serial_number }}
     </td>
 
-    {{-- STATUS --}}
     <td>
         {{ strtoupper($tool->status) }}
     </td>
 
-    {{-- KONDISI --}}
     <td>
         {{ strtoupper($condition) }}
     </td>
@@ -114,10 +105,18 @@
     <td class="text-right w-28">
         <div class="inline-flex gap-2 justify-end">
 
-            {{-- EDIT --}}
-            <button class="text-blue-600">✏️</button>
+                <button
+                    onclick="openEditModal(
+                        '{{ $tool->id }}',
+                        '{{ $tool->toolkit->toolkit_name }}',
+                        '{{ $tool->toolkit->category_id }}',
+                        '{{ $tool->serial_number }}'
+                    )"
+                    class="text-blue-600"
+                >
+                    ✏️
+                </button>
 
-            {{-- DELETE --}}
             @if ($tool->status === 'dipinjam')
                 <button
                     type="button"
@@ -229,11 +228,15 @@ function openEditModal(id, name, category, serial) {
     document.getElementById('edit_name').value = name;
     document.getElementById('edit_category').value = category;
     document.getElementById('edit_serial').value = serial;
+
     document.getElementById('editForm').action = '/data-tools/' + id;
+
     document.getElementById('editModal').classList.remove('hidden');
 }
+
 function closeEditModal() {
     document.getElementById('editModal').classList.add('hidden');
 }
 </script>
+
 @endsection
