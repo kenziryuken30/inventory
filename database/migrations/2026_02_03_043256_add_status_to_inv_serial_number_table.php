@@ -12,10 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('inv_serial_number', function (Blueprint $table) {
-            $table->enum('status', ['tersedia','dipinjam'])
-                ->default('tersedia')
-                ->after('image');
-        });
+        if (!Schema::hasColumn('inv_serial_number', 'status')) {
+            $table->enum('status', [
+                'tersedia',
+                'dipinjam',
+                'tidak_tersedia'
+            ])->default('tersedia')
+              ->after('image');
+        }
+    });
 
     }
 
@@ -25,7 +30,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('inv_serial_number', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('inv_serial_number', 'status')) {
+            $table->dropColumn('status');
+        }
+    });
     }
 };

@@ -202,13 +202,9 @@
 </div>
 
 {{-- ================= STYLE & SCRIPT ================= --}}
+
 <style>
-.modal {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.5);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 50;
-}
+
 .modal-box {
     background: #fff;
     padding: 1.5rem;
@@ -217,9 +213,9 @@
 }
 .modal-title { font-weight: 600; margin-bottom: 1rem; }
 .input { width: 100%; margin-bottom: .75rem; padding: .5rem; border: 1px solid #ccc; border-radius: .25rem; }
-.btn-primary { background: #2563eb; color: white; padding: .5rem 1rem; border-radius: .25rem; }
 .hidden { display: none; }
 </style>
+
 
 <script>
 function openAddModal() {

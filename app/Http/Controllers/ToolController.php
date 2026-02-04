@@ -22,6 +22,15 @@ class ToolController extends Controller
         'latestCondition'
     ]);
 
+    if($request->search){
+        $query->where(function($q) use ($request) {
+            $q->where('serial_number', 'like', '%' . $request->search . '%')
+              ->orWhereHas('toolkit', function($qt) use ($request) {
+                  $qt->where('toolkit_name', 'like', '%' . $request->search . '%');
+              });
+        });
+    }
+
     if ($request->condition) {
         $query->whereHas('latestCondition', function ($q) use ($request) {
             $q->where('condition', $request->condition);
@@ -37,40 +46,47 @@ class ToolController extends Controller
     /**
      * SIMPAN DATA BARU (DARI MODAL)
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'toolkit_name'  => 'required|string|max:255',
-            'category_id'   => 'required',
-            'serial_number' => 'required|unique:inv_serial_number,serial_number',
-            'image'         => 'nullable|image|max:2048',
-        ]);
+        public function store(Request $request)
+{
+    $request->validate([
+        'toolkit_name'  => 'required|string|max:255',
+        'category_id'   => 'required',
+        'serial_number' => 'required|unique:inv_serial_number,serial_number',
+        'image'         => 'nullable|image|max:2048',
+    ]);
 
-        // 1️⃣ Upload foto (jika ada)
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('tools', 'public');
-        }
-
-        // 2️⃣ Buat Toolkit
-        $toolkit = InvToolkit::create([
-            'id'           => 'TL-' . strtoupper(Str::random(6)),
-            'toolkit_name' => $request->toolkit_name,
-            'category_id'  => $request->category_id,
-            'image'        => $imagePath,
-            'status'       => 'tersedia',
-        ]);
-
-        // 3️⃣ Buat Serial Number
-        InvSerialNumber::create([
-            'id'            => 'SN-' . strtoupper(Str::random(8)),
-            'toolkit_id'    => $toolkit->id,
-            'serial_number' => $request->serial_number,
-            'status'        => 'tersedia',
-        ]);
-
-        return redirect()->back()->with('success', 'Barang berhasil ditambahkan');
+    // 1️⃣ Upload foto
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('tools', 'public');
     }
+
+    // 2️⃣ Buat Toolkit
+    $toolkit = InvToolkit::create([
+        'id'           => 'TL-' . strtoupper(Str::random(6)),
+        'toolkit_name' => $request->toolkit_name,
+        'category_id'  => $request->category_id,
+        'image'        => $imagePath,
+        'status'       => 'tersedia',
+    ]);
+
+    // 3️⃣ Buat Serial Number (SIMPAN KE VARIABEL)
+    $serial = InvSerialNumber::create([
+        'id'            => 'SN-' . strtoupper(Str::random(8)),
+        'toolkit_id'    => $toolkit->id,
+        'serial_number' => $request->serial_number,
+        'status'        => 'tersedia',
+    ]);
+
+    // 4️⃣ Catat kondisi awal
+    InvToolConditionLog::create([
+        'serial_id' => $serial->id,
+        'condition' => 'baik',
+        'note'      => 'Kondisi awal alat saat ditambahkan',
+    ]);
+
+    return redirect()->back()->with('success', 'Barang berhasil ditambahkan');
+}
 
     /**
      * UPDATE DATA (EDIT MODAL)
