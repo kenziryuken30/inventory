@@ -36,11 +36,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/consumable/{id}', [InvConsumableController::class, 'update']);
     Route::delete('/consumable/{id}', [InvConsumableController::class, 'destroy']);
 
-    Route::prefix('peminjaman')->group(function () {
-        Route::get('/', [InvTransactionController::class, 'index'])->name('peminjaman.index');
-        Route::post('/store', [InvTransactionController::class, 'store'])->name('peminjaman.store');
-        Route::get('/create', [InvTransactionController::class, 'create'])->name('peminjaman.create');
-        Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('peminjaman.confirm');
-        Route::post('/{id}/return', [InvTransactionController::class, 'return'])->name('peminjaman.return');
-    });
+    Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+    Route::get('/', [InvTransactionController::class, 'index'])->name('index');
+    Route::get('/create', [InvTransactionController::class, 'create'])->name('create');
+    Route::post('/', [InvTransactionController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [InvTransactionController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [InvTransactionController::class, 'update'])->name('update');
+    Route::delete('/{id}', [InvTransactionController::class, 'destroy'])->name('destroy');
+
+    Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('confirm');
+    Route::post('/{id}/return', [InvTransactionController::class, 'return'])->name('return');
+});
 });

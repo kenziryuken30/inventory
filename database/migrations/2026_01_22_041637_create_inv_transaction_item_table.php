@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('toolkit_id',20);
             $table->string('serial_id',20);
             $table->enum('status',['Dipinjam','Tersedia']);
+            $table->timestamps();
         });
 
     }

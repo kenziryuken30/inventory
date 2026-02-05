@@ -14,7 +14,6 @@ class InvTransaction extends Model
 
     protected $fillable = [
         'id',
-        'employee_id',
         'borrower_name',
         'client_name',
         'project',
@@ -28,11 +27,6 @@ class InvTransaction extends Model
         'is_confirm' => 'boolean',
     ];
 
-    // 🔗 relasi ke peminjam
-    public function employee()
-    {
-        return $this->belongsTo(InvEmployee::class, 'employee_id');
-    }
 
     // 🔗 relasi ke detail tools
     public function items()
