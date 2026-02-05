@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -27,5 +28,10 @@ class InvTransactionItem extends Model
     public function toolkit()
     {
         return $this->belongsTo(InvToolkit::class, 'toolkit_id');
+    }
+
+    public function serial()
+    {
+        return $this->belongsTo(InvSerialNumber::class, 'serial_id');
     }
 }

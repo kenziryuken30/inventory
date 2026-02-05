@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\InvConsumableController;
+use App\Http\Controllers\InvTransactionController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -34,4 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/consumable', [InvConsumableController::class, 'store']);
     Route::put('/consumable/{id}', [InvConsumableController::class, 'update']);
     Route::delete('/consumable/{id}', [InvConsumableController::class, 'destroy']);
+
+    Route::prefix('peminjaman')->group(function () {
+        Route::get('/', [InvTransactionController::class, 'index'])->name('peminjaman.index');
+        Route::post('/store', [InvTransactionController::class, 'store'])->name('peminjaman.store');
+        Route::get('/create', [InvTransactionController::class, 'create'])->name('peminjaman.create');
+        Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('peminjaman.confirm');
+        Route::post('/{id}/return', [InvTransactionController::class, 'return'])->name('peminjaman.return');
+    });
 });

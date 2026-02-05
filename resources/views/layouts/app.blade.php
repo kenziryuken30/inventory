@@ -56,9 +56,9 @@
 
             <ul x-show="openTransaksi" x-transition class="ml-4 mt-1 space-y-1">
                 <li>
-                    <a href="/transaksi-tools"
+                    <a href="{{ route('peminjaman.index') }}"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
-                       Permintaan Tools
+                       Peminjaman Tools
                     </a>
                 </li>
                 <li>

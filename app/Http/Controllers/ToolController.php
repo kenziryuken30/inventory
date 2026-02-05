@@ -121,7 +121,6 @@ class ToolController extends Controller
             'serial_number' => $request->serial_number,
         ]);
 
-        // upload image baru
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('tools', 'public');
             $serial->toolkit->update(['image' => $path]);
