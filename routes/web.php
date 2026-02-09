@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/consumable/{id}', [InvConsumableController::class, 'destroy']);
 
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+
     Route::get('/', [InvTransactionController::class, 'index'])->name('index');
     Route::get('/create', [InvTransactionController::class, 'create'])->name('create');
     Route::post('/', [InvTransactionController::class, 'store'])->name('store');
@@ -47,5 +48,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('confirm');
     Route::post('/{id}/return', [InvTransactionController::class, 'return'])->name('return');
+
+    Route::delete(
+        '/item/{id}',
+        [InvTransactionController::class, 'destroyItem']
+    )->name('item.destroy');
+
 });
+
 });
