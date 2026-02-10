@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
         $consumableMenipis = InvConsumable::whereColumn('stock', '<=', 'minimum_stock')->count();
 
-        $peminjamanTerbaru = InvTransaction::with(['employee', 'items.toolkit'])
+        $peminjamanTerbaru = InvTransaction::with(['items.toolkit'])
             ->latest('date')
             ->take(5)
             ->get();

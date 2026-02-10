@@ -53,21 +53,21 @@ class InvTransactionController extends Controller
 
         foreach ($request->serial_ids as $serialId) {
 
-            $serial = InvSerialNumber::findOrFail($serialId);
+            $serial = InvSerialNumber::where('status', 'TERSEDIA')
+                ->findOrFail($serialId);
 
-            // ❌ TIDAK ADA CEK STATUS DI SINI
             InvTransactionItem::create([
                 'id'             => 'ITEM-' . Str::random(6),
                 'transaction_id' => $transaction->id,
                 'toolkit_id'     => $serial->toolkit_id,
                 'serial_id'      => $serial->id,
-                'status'         => 'DIPINJAM'
+                'status'         => 'Tersedia'
             ]);
-        }
+        }   
     });
 
     return redirect()->route('peminjaman.index')
-        ->with('success', 'Transaksi berhasil dibuat (draft)');
+        ->with('success', 'Transaksi berhasil dibuat');
 }
 
 public function edit($id)
@@ -81,7 +81,11 @@ public function edit($id)
             ->with('error', 'Transaksi sudah dikonfirmasi, tidak bisa diedit');
     }
 
-    return view('peminjaman.edit', compact('transaction'));
+    $serials = InvSerialNumber::with('toolkit')
+        ->where('status', 'TERSEDIA')
+        ->get();
+
+    return view('peminjaman.edit', compact('transaction', 'serials'));
 }
 
 public function update(Request $request, $id)
@@ -112,21 +116,100 @@ public function update(Request $request, $id)
         ->with('success', 'Transaksi berhasil diperbarui');
 }
 
+
+public function addItem(Request $request, $id)
+{
+    $request->validate([
+        'serial_ids' => 'required|array|min:1'
+    ]);
+
+    $transaction = InvTransaction::findOrFail($id);
+
+    if ($transaction->is_confirm) {
+        return back()->with('error', 'Transaksi sudah dikonfirmasi');
+    }
+
+    DB::transaction(function () use ($request, $transaction) {
+
+        foreach ($request->serial_ids as $serialId) {
+
+            $serial = InvSerialNumber::with('toolkit')
+                ->where('status', 'TERSEDIA')
+                ->findOrFail($serialId);
+
+            // cegah duplikat
+            $exists = InvTransactionItem::where('transaction_id', $transaction->id)
+                ->where('serial_id', $serialId)
+                ->exists();
+
+            if ($exists) continue;
+
+            InvTransactionItem::create([
+                'id'             => 'ITEM-' . Str::random(6),
+                'transaction_id' => $transaction->id,
+                'toolkit_id'     => $serial->toolkit_id,
+                'serial_id'      => $serial->id,
+                'status'         => 'DIPINJAM',
+            ]);
+        }
+    });
+
+    return redirect()
+        ->route('peminjaman.edit', $transaction->id)
+        ->with('success', 'Barang berhasil ditambahkan');
+}
+
+
 public function destroy($id)
 {
-    $transaction = InvTransaction::with('items')->findOrFail($id);
+    $transaction = InvTransaction::with('items.serial')->findOrFail($id);
 
     if ($transaction->is_confirm) {
         return back()->with('error', 'Transaksi sudah dikonfirmasi, tidak bisa dihapus');
     }
 
-    $transaction->items()->delete();
-    $transaction->delete();
+    DB::transaction(function () use ($transaction) {
+
+        // kembalikan status serial
+        foreach ($transaction->items as $item) {
+            $item->serial->update([
+                'status' => 'TERSEDIA'
+            ]);
+        }
+
+        // hapus item
+        $transaction->items()->delete();
+
+        // hapus transaksi
+        $transaction->delete();
+    });
 
     return back()->with('success', 'Transaksi berhasil dihapus');
 }
 
-    public function confirm($id)
+public function destroyItem($id)
+{
+    $item = InvTransactionItem::with(['serial', 'transaction'])
+        ->findOrFail($id);
+
+    if ($item->transaction->is_confirm) {
+        return back()->with('error', 'Transaksi sudah dikonfirmasi');
+    }
+
+    DB::transaction(function () use ($item) {
+        $item->serial->update([
+            'status' => 'TERSEDIA'
+        ]);
+
+        $item->delete();
+    });
+
+    return redirect()
+        ->route('peminjaman.edit', $item->transaction->id)
+        ->with('success', 'Barang berhasil dihapus!');
+}
+
+public function confirm($id)
 {
     $transaction = InvTransaction::with('items.serial')
         ->findOrFail($id);
@@ -137,37 +220,52 @@ public function destroy($id)
 
     DB::transaction(function () use ($transaction) {
 
+        $transaction->update([
+            'is_confirm' => true
+        ]);
+
         foreach ($transaction->items as $item) {
-
-            // ✅ CEK STATUS DI SINI
-            if ($item->serial->status !== 'TERSEDIA') {
-                throw new \Exception('Serial sudah dipinjam');
-            }
-
-            // kunci serial
-            $item->serial->update(['status' => 'DIPINJAM']);
+            $item->update(['status' => 'DIPINJAM' ]);
+            $item->serial->update(['status' => 'DIPINJAM' ]);
         }
-
-        $transaction->update(['is_confirm' => true]);
     });
 
     return back()->with('success', 'Transaksi berhasil dikonfirmasi');
 }
 
+public function return(Request $request, $id)
+{
+    $transaction = InvTransaction::with('items.serial')->findOrFail($id);
 
-    public function return($id)
-    {
-        $transaction = InvTransaction::with('items.serial')
-            ->findOrFail($id);
-
-        DB::transaction(function () use ($transaction) {
-
-            foreach ($transaction->items as $item) {
-                $item->serial->update(['status' => 'TERSEDIA']);
-                $item->update(['status' => 'DIKEMBALIKAN']);
-            }
-        });
-
-        return back()->with('success', 'Tools berhasil dikembalikan');
+    if (! $request->has('items')) {
+        return back()->with('error', 'Pilih alat yang dikembalikan');
     }
+
+    DB::transaction(function () use ($request, $transaction) {
+
+        foreach ($request->items as $itemId => $data) {
+
+            $item = InvTransactionItem::where('id', $itemId)
+                ->where('transaction_id', $transaction->id)
+                ->first();
+
+            if (! $item) continue;
+
+            $item->update([
+                'status'    => 'Tersedia',
+                'condition' => $data['condition'] ?? 'BAIK',
+                'note'      => $data['note'] ?? null,
+            ]);
+
+            $item->serial->update([
+                'status' => 'Tersedia'
+            ]);
+        }
+    });
+
+    return back()->with('success', 'Pengembalian berhasil');
+}
+
+
+
 }

@@ -54,6 +54,26 @@ Route::middleware('auth')->group(function () {
         [InvTransactionController::class, 'destroyItem']
     )->name('item.destroy');
 
+    Route::post(
+    '/{id}/add-item',
+    [InvTransactionController::class, 'addItem']
+)->name('item.add');
+
+Route::post(
+    '/peminjaman/{id}/return',
+    [InvTransactionController::class, 'return']
+)->name('peminjaman.return');
+
+Route::get('/peminjaman/{id}/return',
+    [InvTransactionController::class, 'returnForm']
+)->name('peminjaman.return.form');
+
+Route::post('/peminjaman/{id}/return',
+    [InvTransactionController::class, 'returnProcess']
+)->name('peminjaman.return.process');
+
+
+
 });
 
 });
