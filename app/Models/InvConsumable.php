@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,6 +9,7 @@ class InvConsumable extends Model
 {
     protected $table = 'inv_consumables';
     protected $primaryKey = 'id';
+
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -24,5 +26,13 @@ class InvConsumable extends Model
     public function category()
     {
         return $this->belongsTo(InvCategory::class, 'category_id', 'id');
+    }
+
+    public function transactionItems()
+    {
+        return $this->hasMany(
+            InvConsumableTransactionItem::class,
+            'consumable_id'
+        );
     }
 }

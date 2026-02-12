@@ -39,7 +39,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/consumable"
+                    <a href="{{ route('consumable.index') }}"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
                        Data Consumable
                     </a>
@@ -62,7 +62,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/transaksi-consumable"
+                    <a href="{{ route('transaksi.index') }}"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
                        Permintaan Consumable
                     </a>
