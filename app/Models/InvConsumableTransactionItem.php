@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;  
 
 class InvConsumableTransactionItem extends Model
 {
-    protected $table = 'inv_consumable_transaction_items';
+    protected $table = 'inv_consumable_transaction_item';
     protected $primaryKey = 'id';
 
     public $incrementing = false;

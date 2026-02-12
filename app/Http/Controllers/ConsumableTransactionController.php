@@ -165,7 +165,6 @@ public function store(Request $request)
 
             $return = InvConsumableReturn::create([
                 'transaction_id' => $request->transaction_id,
-                'employee_id' => $request->employee_id,
                 'date' => $request->date,
                 'note' => $request->note,
             ]);

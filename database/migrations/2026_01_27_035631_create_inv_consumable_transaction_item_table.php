@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_consumable_transaction_items', function (Blueprint $table) {
+        Schema::create('inv_consumable_transaction_item', function (Blueprint $table) {
     $table->id();
     $table->string('transaction_id', 20);
     $table->string('consumable_id', 20);
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_consumable_transaction_items');
+        Schema::dropIfExists('inv_consumable_transaction_item');
     }
 };

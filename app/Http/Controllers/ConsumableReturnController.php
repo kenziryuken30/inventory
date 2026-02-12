@@ -19,7 +19,7 @@ class ConsumableReturnController extends Controller
         $transaction = InvConsumableTransaction::with('items.consumable')
             ->findOrFail($transaction_id);
 
-        return view('dataconsumable.consumable.return', compact('transaction'));
+        return view('consumable.return', compact('transaction'));
     }
 
     public function store(Request $request)

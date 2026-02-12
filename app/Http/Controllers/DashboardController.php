@@ -7,7 +7,7 @@ use App\Models\InvSerialNumber;
 use App\Models\InvTransactionItem;
 use App\Models\InvConsumable;
 use App\Models\InvTransaction;
-use App\Models\InvConsumableTransactionItems;
+use App\Models\InvConsumableTransactionItem;
 
 class DashboardController extends Controller
 {
@@ -24,7 +24,7 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        $consumableTerbaru = InvConsumableTransactionItems::with('consumable')
+        $consumableTerbaru = InvConsumableTransactionItem::with('consumable')
         ->orderBy('id', 'desc')
         ->take(5)
         ->get();
