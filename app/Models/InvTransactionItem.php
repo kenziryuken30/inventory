@@ -17,7 +17,11 @@ class InvTransactionItem extends Model
         'transaction_id',
         'toolkit_id',
         'serial_id',
-        'status'
+        'status',
+        'condition',
+        'note',
+        'return_date',
+
     ];
 
     public function transaction()

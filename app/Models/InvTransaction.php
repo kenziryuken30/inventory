@@ -31,6 +31,6 @@ class InvTransaction extends Model
     // 🔗 relasi ke detail tools
     public function items()
     {
-        return $this->hasMany(InvTransactionItem::class, 'transaction_id');
+        return $this->hasMany(InvTransactionItem::class, 'transaction_id', 'id');
     }
 }

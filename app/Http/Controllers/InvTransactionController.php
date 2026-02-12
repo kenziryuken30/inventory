@@ -11,17 +11,20 @@ use Illuminate\Support\Str;
 
 class InvTransactionController extends Controller
 {
-    public function index()
-    {
-        $transactions = InvTransaction::with([
-                'items.toolkit',
-                'items.serial'
-            ])
-            ->orderBy('date', 'desc')
-            ->get();
 
-        return view('peminjaman.index', compact('transactions'));
-    }
+public function index()
+{
+    $transactions = InvTransaction::with([
+        'items' => function ($query) {
+            $query->whereNull('return_date');
+        },
+        'items.toolkit',
+        'items.serial'
+    ])->get();
+
+    return view('peminjaman.index', compact('transactions'));
+}
+
 
     public function create()
     {
@@ -32,7 +35,7 @@ class InvTransactionController extends Controller
         return view('peminjaman.create', compact('serials'));
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
 {
     $request->validate([
         'borrower_name' => 'required|string',
@@ -48,27 +51,33 @@ class InvTransactionController extends Controller
             'project'       => $request->project,
             'purpose'       => $request->purpose,
             'date'          => $request->date ?? now(),
-            'is_confirm'    => false
+            'is_confirm'    => false // langsung aktif
         ]);
 
         foreach ($request->serial_ids as $serialId) {
 
             $serial = InvSerialNumber::where('status', 'TERSEDIA')
-                ->findOrFail($serialId);
+                ->where('id', $serialId)
+                ->firstOrFail();
 
             InvTransactionItem::create([
                 'id'             => 'ITEM-' . Str::random(6),
                 'transaction_id' => $transaction->id,
                 'toolkit_id'     => $serial->toolkit_id,
                 'serial_id'      => $serial->id,
-                'status'         => 'Tersedia'
+                'status'         => 'DIPINJAM'
             ]);
-        }   
+
+            $serial->update([
+                'status' => 'DIPINJAM'
+            ]);
+        }
     });
 
     return redirect()->route('peminjaman.index')
         ->with('success', 'Transaksi berhasil dibuat');
 }
+
 
 public function edit($id)
 {
@@ -211,12 +220,7 @@ public function destroyItem($id)
 
 public function confirm($id)
 {
-    $transaction = InvTransaction::with('items.serial')
-        ->findOrFail($id);
-
-    if ($transaction->is_confirm) {
-        return back()->with('error', 'Transaksi sudah dikonfirmasi');
-    }
+    $transaction = InvTransaction::with('items.serial')->findOrFail($id);
 
     DB::transaction(function () use ($transaction) {
 
@@ -225,19 +229,23 @@ public function confirm($id)
         ]);
 
         foreach ($transaction->items as $item) {
-            $item->update(['status' => 'DIPINJAM' ]);
-            $item->serial->update(['status' => 'DIPINJAM' ]);
+            $item->update([
+                'status' => 'DIPINJAM'
+            ]);
+
+            $item->serial->update([
+                'status' => 'DIPINJAM'
+            ]);
         }
     });
 
     return back()->with('success', 'Transaksi berhasil dikonfirmasi');
 }
-
-public function return(Request $request, $id)
+public function returnProcess(Request $request, $id)
 {
     $transaction = InvTransaction::with('items.serial')->findOrFail($id);
 
-    if (! $request->has('items')) {
+    if (empty($request->items)) {
         return back()->with('error', 'Pilih alat yang dikembalikan');
     }
 
@@ -251,14 +259,28 @@ public function return(Request $request, $id)
 
             if (! $item) continue;
 
+            // 1️⃣ Update item (TANPA condition)
             $item->update([
-                'status'    => 'Tersedia',
-                'condition' => $data['condition'] ?? 'BAIK',
-                'note'      => $data['note'] ?? null,
+                'return_date' => now(),
+                'status'      => 'TERSEDIA',
             ]);
 
+            // 2️⃣ Simpan ke tabel log kondisi
+            DB::table('inv_tool_condition_logs')->insert([
+                'serial_id'  => $item->serial_id,
+                'condition'  => strtolower($data['condition'] ?? 'baik'),
+                'note'       => $data['note'] ?? null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // 3️⃣ Update status serial
+            $statusSerial = strtolower($data['condition']) === 'rusak'
+                ? 'MAINTENANCE'
+                : 'TERSEDIA';
+
             $item->serial->update([
-                'status' => 'Tersedia'
+                'status' => $statusSerial
             ]);
         }
     });

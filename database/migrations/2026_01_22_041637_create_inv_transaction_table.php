@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('inv_transaction', function (Blueprint $table) {
             $table->string('id',20)->primary();
-            $table->string('employee_id',20);
+            $table->string('employee_id',20)->nullable();
             $table->date('date');
             $table->boolean('is_confirm')->default(0);
             $table->timestamps();
 
-            $table->foreign('employee_id')->references('id')->on('inv_employee')->cascadeOnUpdate();
+            $table->foreign('employee_id')->references('id')->on('inv_employee')->nullOnDelete()->cascadeOnUpdate();
         });
 
     }

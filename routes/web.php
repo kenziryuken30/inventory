@@ -47,7 +47,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/{id}', [InvTransactionController::class, 'destroy'])->name('destroy');
 
     Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('confirm');
-    Route::post('/{id}/return', [InvTransactionController::class, 'return'])->name('return');
+
+    Route::get('/{id}/return', [InvTransactionController::class, 'returnForm'])->name('return.form');
+    Route::post('/{id}/return', [InvTransactionController::class, 'returnProcess'])->name('return.process');
+
+    Route::delete('/item/{id}', [InvTransactionController::class, 'destroyItem'])->name('item.destroy');
+    Route::post('/{id}/add-item', [InvTransactionController::class, 'addItem'])->name('item.add');
 
     Route::delete(
         '/item/{id}',
