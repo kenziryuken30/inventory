@@ -6,9 +6,6 @@ use App\Models\InvCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use App\Models\InvConsumableTransaction;
-use App\Models\InvConsumableTransactionItem;
 
 class InvConsumableController extends Controller
 {
@@ -27,51 +24,28 @@ class InvConsumableController extends Controller
     }
 
    public function store(Request $request)
-{
-    $request->validate([
-        'borrower_name' => 'required',
-        'date' => 'required|date',
-    ]);
-
-    $items = session('selected_consumables', []);
-
-    if (count($items) === 0) {
-        return back()->with('error', 'Consumable belum dipilih');
-    }
-
-    DB::transaction(function () use ($request, $items) {
-
-        $trx = InvConsumableTransaction::create([
-            'id' => Str::uuid(),
-            'borrower_name' => $request->borrower_name,
-            'client' => $request->client,
-            'project' => $request->project,
-            'purpose' => $request->purpose,
-            'date' => $request->date,
-            'is_confirm' => false,
+    {
+        $data = $request->validate([
+            'name' => 'required',
+            'category_id' => 'required',
+            'stock' => 'required|integer',
+            'minimum_stock' => 'nullable|integer',
+            'unit' => 'required',
+            'image' => 'nullable|image',
         ]);
 
-        foreach ($items as $item) {
+        $data['id'] = Str::uuid();
 
-            InvConsumableTransactionItem::create([
-                'id' => Str::uuid(),
-                'transaction_id' => $trx->id,
-                'consumable_id' => $item['id'],
-                'qty' => $item['qty'],
-            ]);
-
-            InvConsumable::where('id', $item['id'])
-                ->decrement('stock', $item['qty']);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')
+                ->store('consumables', 'public');
         }
-    });
 
-    // 🔥 PENTING
-    session()->forget('selected_consumables');
+        InvConsumable::create($data);
 
-    return redirect()
-        ->route('transaksi.index')
-        ->with('success', 'Transaksi consumable berhasil');
-}
+        return back()->with('success', 'Consumable berhasil ditambahkan');
+    }
+
 
 
     public function update(Request $request, $id)
