@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_consumables', function (Blueprint $table) {
-    $table->string('id')->primary();
+    $table->id();
     $table->string('name', 200);
     $table->string('category_id', 20);
     $table->integer('stock')->default(0);

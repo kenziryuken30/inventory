@@ -39,21 +39,15 @@ Route::middleware('auth')->group(function () {
 
     
    Route::prefix('transaksi')->name('transaksi.')->group(function () {
-
-        Route::get('/', [ConsumableTransactionController::class, 'index'])->name('index');
-        Route::get('/create', [ConsumableTransactionController::class, 'create'])->name('create');
-        Route::post('/', [ConsumableTransactionController::class, 'store'])->name('store');
-
-        Route::get('/{id}/edit', [ConsumableTransactionController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [ConsumableTransactionController::class, 'update'])->name('update');
-
-        Route::put('/item/{itemId}', [ConsumableTransactionController::class, 'updateItem'])
-            ->name('item.update');
-
-        Route::delete('/item/{itemId}', [ConsumableTransactionController::class, 'destroyItem'])
-            ->name('item.destroy');
+    Route::get('/', [ConsumableTransactionController::class, 'index'])->name('index');
+    Route::get('/create', [ConsumableTransactionController::class, 'create'])->name('create');
+    Route::post('/', [ConsumableTransactionController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [ConsumableTransactionController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [ConsumableTransactionController::class, 'update'])->name('update');
+    Route::delete('/{id}', [ConsumableTransactionController::class, 'destroy'])->name('destroy');
+    Route::post('/{id}/return', [ConsumableTransactionController::class, 'returnFull'])
+        ->name('return');
     });
-
 
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
         
@@ -64,13 +58,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [InvTransactionController::class, 'index'])->name('index');
     Route::get('/create', [InvTransactionController::class, 'create'])->name('create');
     Route::post('/', [InvTransactionController::class, 'store'])->name('store');
-
     Route::get('/{id}/edit', [InvTransactionController::class, 'edit'])->name('edit');
     Route::put('/{id}', [InvTransactionController::class, 'update'])->name('update');
     Route::delete('/{id}', [InvTransactionController::class, 'destroy'])->name('destroy');
-
     Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('confirm');
-
     Route::get('/{id}/return', [InvTransactionController::class, 'returnForm'])->name('return.form');
     Route::post('/{id}/return', [InvTransactionController::class, 'returnProcess'])->name('return.process');
 
@@ -107,10 +98,37 @@ Route::post('/peminjaman/{id}/return',
         Route::post('/{id}/confirm', [InvTransactionController::class, 'confirm'])->name('confirm');
         Route::post('/{id}/return', [InvTransactionController::class, 'return'])->name('return');
 
-        Route::delete(
-            '/item/{id}',
-            [InvTransactionController::class, 'destroyItem']
-        )->name('item.destroy');
+        Route::delete('/item/{id}',[InvTransactionController::class, 'destroyItem'])->name('item.destroy');
     });
 
+Route::delete('/transaksi/{id}', [ConsumableTransactionController::class, 'destroy'])
+    ->name('transaksi.destroy');
+
+  Route::post('/{id}/confirm', [ConsumableTransactionController::class, 'confirm'])
+        ->name('transaksi.confirm');
+
+    Route::get('/{id}/return', [ConsumableTransactionController::class, 'returnForm'])
+    ->name('return.form');
+
+    Route::post('/{id}/return', [ConsumableTransactionController::class, 'returnProcess'])
+        ->name('return.process');
+
+    Route::post('/return/store', [ConsumableTransactionController::class, 'returnStore'])
+        ->name('transaksi.returnStore');
+
+    Route::post('/transaksi/{id}/kembali', [ConsumableTransactionController::class, 'kembali'])
+    ->name('transaksi.return');
 });
+
+Route::put('/transaksi/item/{id}', 
+    [ConsumableTransactionController::class, 'updateItem']
+)->name('transaksi.item.update');
+
+
+Route::delete('/transaksi/item/{id}', 
+    [ConsumableTransactionController::class, 'destroyItem']
+)->name('transaksi.item.destroy');
+
+Route::post('transaksi/{id}/item',
+    [ConsumableTransactionController::class, 'storeItem'])
+    ->name('transaksi.item.store');

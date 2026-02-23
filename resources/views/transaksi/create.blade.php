@@ -15,19 +15,13 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Nama Karyawan</label>
-                        <input type="text"
-                               name="employee_name"
-                               class="form-control"
-                               required>
+                        <input type="text" name="borrower_name" class="form-control" required>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Tanggal</label>
-                        <input type="date"
-                               name="date"
-                               class="form-control"
-                               value="{{ date('Y-m-d') }}"
-                               required>
+                        <input type="date" name="date" class="form-control"
+                               value="{{ date('Y-m-d') }}" required>
                     </div>
                 </div>
 
@@ -55,11 +49,8 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>Daftar Consumable</strong>
-
-                <button type="button"
-                        class="btn btn-outline-primary btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalConsumable">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                        data-bs-toggle="modal" data-bs-target="#modalConsumable">
                     + Pilih Consumable
                 </button>
             </div>
@@ -81,7 +72,9 @@
         </div>
 
         <div class="text-end mt-3">
-            <button type="submit" class="btn btn-primary">Save Transaksi</button>
+            <button type="submit" class="btn btn-primary">
+                Save Transaksi
+            </button>
         </div>
 
     </form>
@@ -104,7 +97,7 @@
                             <th></th>
                             <th>Nama</th>
                             <th>Stok</th>
-                            <th>Qty</th>
+                            <th width="120">Qty</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,7 +113,7 @@
                             </td>
                             <td>{{ $c->name }}</td>
                             <td>{{ $c->stock }} {{ $c->unit }}</td>
-                            <td width="120">
+                            <td>
                                 <input type="number"
                                        class="form-control qty-input"
                                        min="1"
@@ -134,16 +127,10 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                    Batal
-                </button>
-                <button type="button"
-                        class="btn btn-primary"
-                        id="btnAddConsumable">
-                    + Tambahkan
-                </button>
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary"
+                        id="btnAddConsumable">+ Tambahkan</button>
             </div>
 
         </div>
@@ -152,45 +139,60 @@
 
 {{-- SCRIPT --}}
 <script>
-let counter = 1;
-
+let index = 0;
 document.getElementById('btnAddConsumable').addEventListener('click', function () {
+
     document.querySelectorAll('.pick-consumable:checked').forEach((checkbox) => {
 
-        const row = checkbox.closest('tr');
-        const id = checkbox.dataset.id;
-        const name = checkbox.dataset.name;
-        const unit = checkbox.dataset.unit;
-        const qty = row.querySelector('.qty-input').value;
+        const row   = checkbox.closest('tr');
+        const id    = checkbox.dataset.id;
+        const name  = checkbox.dataset.name;
+        const unit  = checkbox.dataset.unit;
+        const stock = parseInt(checkbox.dataset.stock);
+        const qty   = parseInt(row.querySelector('.qty-input').value);
 
-        if (document.getElementById('row-' + id)) return;
+        // 🔥 VALIDASI STOCK
+        if (qty > stock) {
+            alert(`Stock ${name} hanya tersedia ${stock} ${unit}`);
+            return;
+        }
+
+        if (qty <= 0) {
+            alert("Qty tidak valid");
+            return;
+        }
+
+        // cegah double
+        if (document.querySelector(`tr[data-id="${id}"]`)) return;
 
         const html = `
-            <tr id="row-${id}">
-                <td>${counter++}</td>
+            <tr data-id="${id}">
+                <td>${index + 1}</td>
                 <td>${name}</td>
                 <td>${qty}</td>
                 <td>${unit}</td>
                 <td>
-                    <button type="button"
-                            class="btn btn-sm btn-outline-danger"
-                            onclick="document.getElementById('row-${id}').remove()">
+                    <button type="button" class="btn btn-sm btn-outline-danger"
+                            onclick="this.closest('tr').remove()">
                         Hapus
                     </button>
 
-                    <input type="hidden" name="items[][consumable_id]" value="${id}">
-                    <input type="hidden" name="items[][qty]" value="${qty}">
+                    <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                    <input type="hidden" name="items[${index}][qty]" value="${qty}">
                 </td>
             </tr>
         `;
 
         document.querySelector('#tableConsumables tbody')
             .insertAdjacentHTML('beforeend', html);
+
+        index++;
     });
 
     bootstrap.Modal.getInstance(
         document.getElementById('modalConsumable')
     ).hide();
 });
+
 </script>
 @endsection

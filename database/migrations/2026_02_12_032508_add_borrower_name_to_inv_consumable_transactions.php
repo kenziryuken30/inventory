@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_consumable_return_item', function (Blueprint $table) {
-            $table->id();
-            $table->string('return_id',20);
-            $table->string('consumable_id',20);
-            $table->integer('qty');
+        Schema::table('inv_consumable_transactions', function (Blueprint $table) {
+            $table->string('borrower_name')->after('id');
         });
-
     }
 
     /**
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_consumable_return_item');
+        Schema::table('inv_consumable_transactions', function (Blueprint $table) {
+            $table->dropColumn('borrower_name');
+        });
     }
 };

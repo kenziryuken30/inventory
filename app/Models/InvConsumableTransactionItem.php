@@ -9,14 +9,13 @@ class InvConsumableTransactionItem extends Model
     protected $table = 'inv_consumable_transaction_item';
     protected $primaryKey = 'id';
 
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $timestamp = false;
 
     protected $fillable = [
-        'id',
         'transaction_id',
         'consumable_id',
-        'qty'
+        'qty',
+        'qty_return'
     ];
 
     public function transaction()
@@ -34,4 +33,10 @@ class InvConsumableTransactionItem extends Model
             'consumable_id'
         );
     }
+
+    public function getSisaAttribute()
+    {
+        return $this->qty - $this->qty_return;
+    }
+
 }

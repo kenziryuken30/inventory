@@ -1,22 +1,41 @@
-@extends('layouts.app')
+<div class="modal fade" id="modalReturn{{ $transaction->id }}">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
 
-@section('content')
-<form method="POST" action="/consumable-return" class="p-4 space-y-4">
+<form method="POST" action="{{ route('transaksi.returnStore') }}">
 @csrf
 
-<h1 class="text-xl font-bold">Return Consumable</h1>
+<input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
 
-<input name="employee_id" placeholder="ID Pegawai"
-    class="border p-2 w-full">
+<div class="modal-header">
+    <h5 class="modal-title">Return Consumable</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
 
-<input type="date" name="date"
-    class="border p-2 w-full">
+<div class="modal-body">
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label>Karyawan</label>
+        <input class="form-control"
+               value="{{ $transaction->borrower_name }}"
+               readonly>
+    </div>
+
+    <div class="col-md-6">
+        <label>Tanggal</label>
+        <input type="date"
+               name="date"
+               class="form-control"
+               value="{{ date('Y-m-d') }}">
+    </div>
+</div>
 
 <textarea name="note"
-    placeholder="Catatan"
-    class="border p-2 w-full"></textarea>
+    class="form-control mb-3"
+    placeholder="Catatan"></textarea>
 
-<table class="w-full border">
+<table class="table table-bordered">
 <thead>
 <tr>
     <th>Consumable</th>
@@ -24,25 +43,39 @@
 </tr>
 </thead>
 <tbody>
-@foreach($consumables as $c)
+
+@foreach($transaction->items as $item)
 <tr>
-    <td class="border p-2">
-        {{ $c->name }} (stok: {{ $c->stock }})
-        <input type="hidden" name="items[{{ $loop->index }}][id]" value="{{ $c->id }}">
+    <td>
+        {{ $item->consumable->name }}
+        ({{ $item->qty }} {{ $item->consumable->unit }})
+
+        <input type="hidden"
+               name="items[{{ $loop->index }}][id]"
+               value="{{ $item->consumable_id }}">
     </td>
-    <td class="border p-2">
+
+    <td>
         <input type="number"
-            name="items[{{ $loop->index }}][qty]"
-            class="border p-1 w-20">
+               name="items[{{ $loop->index }}][qty]"
+               class="form-control">
     </td>
 </tr>
 @endforeach
+
 </tbody>
 </table>
 
-<button class="px-4 py-2 bg-blue-600 text-white rounded">
-    Simpan Return
-</button>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary">
+        Kembalikan
+    </button>
+</div>
 
 </form>
-@endsection
+
+</div>
+</div>
+</div>

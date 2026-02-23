@@ -50,9 +50,18 @@ class="bg-white rounded shadow p-4">
         </thead>
 
         <tbody>
-        @forelse($consumables as $c)
+            @forelse($consumables as $c)
             <tr class="border-b text-sm align-middle">
-    
+
+                {{-- FOTO (PINDAH KE ATAS) --}}
+                <td class="py-2">
+                    <img
+                    src="{{ $c->image
+                        ? asset('storage/'.$c->image)
+                        : asset('images/no-image.png') }}"
+                    style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
+                </td>
+
                 {{-- NAMA --}}
                 <td>{{ $c->name }}</td>
 
@@ -61,21 +70,23 @@ class="bg-white rounded shadow p-4">
 
                 {{-- STOK --}}
                 <td>
-                    {{ $c->stock }} {{ $c->unit }}
+                    <div
+                        class="
+                        {{ $c->stock < $c->minimum_stock
+                            ? 'text-red-600 font-semibold'
+                            : 'text-gray-800' }}
+                        ">
+                        {{ $c->stock }} {{ $c->unit }}
+                    </div>
+
                     @if($c->stock < $c->minimum_stock)
-                        <div class="text-xs text-red-500">
+                        <div class="text-xs text-red-500 font-medium">
+                            ⚠️ Stok menipis
+                        </div>
+                        <div class="text-xs text-gray-500">
                             Min: {{ $c->minimum_stock }}
                         </div>
                     @endif
-                </td>
-
-                {{-- FOTO --}}
-                <td class="py-2">
-                    <img
-                        src="{{ $c->image
-                            ? asset('storage/'.$c->image)
-                            : asset('images/no-image.png') }}"
-                        class="w-10 h-10 object-cover rounded">
                 </td>
 
                 {{-- AKSI --}}
@@ -99,15 +110,17 @@ class="bg-white rounded shadow p-4">
                         </form>
                     </div>
                 </td>
+
             </tr>
-        @empty
+            @empty
             <tr>
                 <td colspan="5" class="text-center py-6 text-gray-500">
                     Data kosong
                 </td>
             </tr>
-        @endforelse
-        </tbody>
+            @endforelse
+            </tbody>
+
     </table>
 
 {{-- ================= MODAL TAMBAH ================= --}}

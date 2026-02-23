@@ -9,8 +9,6 @@ class InvConsumableTransaction extends Model
     protected $table = 'inv_consumable_transactions';
     protected $primaryKey = 'id';
 
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = [
         'id',
