@@ -8,13 +8,8 @@ use App\Models\InvCategory;
 class InvConsumable extends Model
 {
     protected $table = 'inv_consumables';
-    protected $primaryKey = 'id';
-
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = [
-        'id',
         'name',
         'category_id',
         'stock',
@@ -36,3 +31,4 @@ class InvConsumable extends Model
         );
     }
 }
+

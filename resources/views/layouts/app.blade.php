@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Inventory</title>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>[x-cloak]{display:none}</style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

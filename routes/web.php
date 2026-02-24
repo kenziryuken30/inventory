@@ -45,19 +45,14 @@ Route::middleware('auth')->group(function () {
 
     
    Route::prefix('transaksi')->name('transaksi.')->group(function () {
-
-        Route::get('/', [ConsumableTransactionController::class, 'index'])->name('index');
-        Route::get('/create', [ConsumableTransactionController::class, 'create'])->name('create');
-        Route::post('/', [ConsumableTransactionController::class, 'store'])->name('store');
-
-        Route::get('/{id}/edit', [ConsumableTransactionController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [ConsumableTransactionController::class, 'update'])->name('update');
-
-        Route::put('/item/{itemId}', [ConsumableTransactionController::class, 'updateItem'])
-            ->name('item.update');
-
-        Route::delete('/item/{itemId}', [ConsumableTransactionController::class, 'destroyItem'])
-            ->name('item.destroy');
+    Route::get('/', [ConsumableTransactionController::class, 'index'])->name('index');
+    Route::get('/create', [ConsumableTransactionController::class, 'create'])->name('create');
+    Route::post('/', [ConsumableTransactionController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [ConsumableTransactionController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [ConsumableTransactionController::class, 'update'])->name('update');
+    Route::delete('/{id}', [ConsumableTransactionController::class, 'destroy'])->name('destroy');
+    Route::post('/{id}/return', [ConsumableTransactionController::class, 'returnFull'])
+        ->name('return');
     });
 
     Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
@@ -67,15 +62,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/create', [ToolTransactionController::class, 'create'])->name('create');
     Route::post('/', [ToolTransactionController::class, 'store'])->name('store');
 
-    // EDIT & DELETE
+
     Route::get('/{id}/edit', [ToolTransactionController::class, 'edit'])->name('edit');
     Route::put('/{id}', [ToolTransactionController::class, 'update'])->name('update');
     Route::delete('/{id}', [ToolTransactionController::class, 'destroy'])->name('destroy');
 
-    // CONFIRM PINJAM
     Route::post('/{id}/confirm', [ToolTransactionController::class, 'confirm'])->name('confirm');
 
-    // RETURN
     Route::get('/{id}/return', [ToolTransactionController::class, 'returnForm'])->name('return.form');
     Route::post('/{id}/return', [ToolTransactionController::class, 'returnProcess'])->name('return.process');
 
@@ -83,15 +76,35 @@ Route::middleware('auth')->group(function () {
     Route::post('/{id}/add-item', [ToolTransactionController::class, 'addItem'])->name('item.add');
     Route::delete('/item/{id}', [ToolTransactionController::class, 'destroyItem'])->name('item.destroy');
 
-    
+    Route::post(
+    '/{id}/add-item',
+    [ToolTransactionController::class, 'addItem']
+)->name('item.add');
 
-});
+Route::post(
+    '/peminjaman/{id}/return',
+    [ToolTransactionController::class, 'return']
+)->name('peminjaman.return');
 
-    Route::get('/laporan/peminjaman', [ReportToolController::class, 'peminjaman'])
-    ->name('laporan.peminjaman');
+Route::get('/peminjaman/{id}/return',
+    [ToolTransactionController::class, 'returnForm']
+)->name('peminjaman.return.form');
 
-Route::get('/laporan/pengembalian', [ReportToolController::class, 'pengembalian'])
-    ->name('laporan.pengembalian');
+Route::post('/peminjaman/{id}/return',
+    [ToolTransactionController::class, 'returnProcess']
+)->name('peminjaman.return.process');
+        Route::get('/{id}/edit', [ToolTransactionController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [ToolTransactionController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ToolTransactionController::class, 'destroy'])->name('destroy');
 
+
+        Route::post('/{id}/confirm', [ToolTransactionController::class, 'confirm'])->name('confirm');
+        Route::post('/{id}/return', [ToolTransactionController::class, 'return'])->name('return');
+
+        Route::delete(
+            '/item/{id}',
+            [ToolTransactionController::class, 'destroyItem']
+        )->name('item.destroy');
+    });
 
 });

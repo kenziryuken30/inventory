@@ -12,19 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_consumable_transaction_item', function (Blueprint $table) {
-    $table->id();
-    $table->string('transaction_id', 20);
-    $table->string('consumable_id', 20);
-    $table->integer('qty');
+            $table->id();
 
-    $table->foreign('transaction_id')
-          ->references('id')->on('inv_consumable_transactions')
-          ->onDelete('cascade');
+            $table->foreignId('transaction_id')
+                ->constrained('inv_consumable_transactions')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-    $table->foreign('consumable_id')
-          ->references('id')->on('inv_consumables')
-          ->onUpdate('cascade');
-});
+            $table->foreignId('consumable_id')
+                ->constrained('inv_consumables')
+                ->cascadeOnUpdate();
+
+            $table->integer('qty');
+
+            $table->timestamps();
+        });
 
     }
 
