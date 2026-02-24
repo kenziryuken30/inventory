@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\InvToolkit;
 use App\Models\InvSerialNumber;
-use App\Models\InvTransactionItem;
+use App\Models\ToolTransactionItem;
 use App\Models\InvConsumable;
-use App\Models\InvTransaction;
+use App\Models\ToolTransaction;
 use App\Models\InvConsumableTransactionItem;
 
 class DashboardController extends Controller
@@ -15,11 +15,11 @@ class DashboardController extends Controller
     {
         $totalBarang = InvToolkit::count();
         $alatTersedia = InvSerialNumber::where('status', 'tersedia')->count();
-        $alatDipinjam = InvTransactionItem::where('status', 'Dipinjam')->count();
+        $alatDipinjam = ToolTransactionItem::where('status', 'Dipinjam')->count();
 
         $consumableMenipis = InvConsumable::whereColumn('stock', '<=', 'minimum_stock')->count();
 
-        $peminjamanTerbaru = InvTransaction::with(['items.toolkit'])
+        $peminjamanTerbaru = ToolTransaction::with(['items.toolkit'])
             ->latest('date')
             ->take(5)
             ->get();

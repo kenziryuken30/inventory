@@ -1,0 +1,24 @@
+.modal-overlay {
+    @apply fixed inset-0 bg-black/50 hidden items-center justify-center z-50;
+}
+
+.modal-overlay.show {
+    @apply flex;
+}
+
+.modal-content {
+    @apply bg-white w-[750px] max-h-[90vh] overflow-auto rounded-lg shadow-xl p-6;
+}
+/* PREVIEW IMAGE MODAL */
+.image-preview-overlay {
+    @apply fixed inset-0 bg-black/70 hidden items-center justify-center;
+    z-index: 9999; /* lebih tinggi dari modal tools */
+}
+
+.image-preview-overlay.show {
+    @apply flex;
+}
+
+.image-preview-img {
+    @apply max-h-[90vh] max-w-[90vw] rounded-lg shadow-2xl;
+}

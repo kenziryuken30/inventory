@@ -171,7 +171,8 @@
                                     <td>
                                         @if ($serial->toolkit->image)
                                             <img src="{{ asset('storage/'.$serial->toolkit->image) }}"
-                                                 width="60">
+                                                class="preview-image"
+                                                style="width: 60px;height:60px;object-fit:contain;cursor:pointer;">
                                         @else
                                             -
                                         @endif
@@ -207,4 +208,56 @@
         </div>
     </div>
 </div>
+
+<div id="imagePreviewModal"
+     class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center">
+
+    <div class="relative">
+        <button id="closePreview"
+                class="absolute -top-8 right-0 text-white text-2xl">
+            ✕
+        </button>
+
+        <img id="previewImage"
+             src=""
+             class="max-h-[90vh] max-w-[90vw] rounded shadow-lg">
+    </div>
+
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const modalPreview = document.getElementById('imagePreviewModal');
+    const previewImage = document.getElementById('previewImage');
+    const closeBtn = document.getElementById('closePreview');
+
+    // Buka preview
+    document.querySelectorAll('.preview-image').forEach(function (img) {
+        img.addEventListener('click', function () {
+            previewImage.src = this.src;
+            modalPreview.classList.remove('hidden');
+        });
+    });
+
+    // Tutup preview
+    closeBtn.addEventListener('click', closeModal);
+
+    modalPreview.addEventListener('click', function (e) {
+        if (e.target === modalPreview) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "Escape") {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        modalPreview.classList.add('hidden');
+        previewImage.src = "";
+    }
+});
+</script>
 @endsection

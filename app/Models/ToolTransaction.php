@@ -4,16 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InvTransaction extends Model
+class ToolTransaction extends Model
 {
     protected $table = 'inv_transaction';
-    protected $primaryKey = 'id';
-
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = [
-        'id',
+        'transaction_code',
         'borrower_name',
         'client_name',
         'project',
@@ -31,6 +27,6 @@ class InvTransaction extends Model
     // 🔗 relasi ke detail tools
     public function items()
     {
-        return $this->hasMany(InvTransactionItem::class, 'transaction_id', 'id');
+        return $this->hasMany(ToolTransactionItem::class, 'transaction_id', );
     }
 }

@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_transaction', function (Blueprint $table) {
-            $table->string('id',20)->primary();
-            $table->string('employee_id',20)->nullable();
+            $table->id();
+            $table->string('transaction_code', 20)->unique();
+
             $table->date('date');
-            $table->boolean('is_confirm')->default(0);
+            $table->boolean('is_confirm')->default(false);
             $table->timestamps();
 
-            $table->foreign('employee_id')->references('id')->on('inv_employee')->nullOnDelete()->cascadeOnUpdate();
         });
 
     }

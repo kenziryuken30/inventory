@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_transaction_item', function (Blueprint $table) {
-            $table->string('id',20)->primary();
-            $table->string('transaction_id',20);
+            $table->id();
+            $table->unsignedBigInteger('transaction_id'); 
             $table->string('toolkit_id',20);
             $table->string('serial_id',20);
             $table->enum('status',['Dipinjam','Tersedia']);

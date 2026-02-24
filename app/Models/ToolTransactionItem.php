@@ -4,16 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InvTransactionItem extends Model
+class ToolTransactionItem extends Model
 {
     protected $table = 'inv_transaction_item';
-    protected $primaryKey = 'id';
-
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = [
-        'id',
         'transaction_id',
         'toolkit_id',
         'serial_id',
@@ -21,12 +16,15 @@ class InvTransactionItem extends Model
         'condition',
         'note',
         'return_date',
+    ];
 
+    protected $casts = [
+        'return_date' => 'datetime',
     ];
 
     public function transaction()
     {
-        return $this->belongsTo(InvTransaction::class, 'transaction_id');
+        return $this->belongsTo(ToolTransaction::class, 'transaction_id');
     }
 
     public function toolkit()

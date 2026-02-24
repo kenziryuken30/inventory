@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inv_consumable_transactions', function (Blueprint $table) {
     $table->string('id', 20)->primary();
-    $table->string('employee_id', 15);
+    $table->string('employee_id', 15)->nullable();
     $table->date('date');
     $table->text('note')->nullable();
     $table->timestamps();

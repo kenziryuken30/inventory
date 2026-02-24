@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::table('inv_serial_number', function (Blueprint $table) {
         if (!Schema::hasColumn('inv_serial_number', 'status')) {
-            $table->enum('status', [
-                'tersedia',
-                'dipinjam',
-                'tidak_tersedia'
-            ])->default('tersedia')
-              ->after('image');
+           $table->enum('status', [
+                'TERSEDIA',
+                'DIPINJAM',
+                'MAINTENANCE',
+                'TIDAK_TERSEDIA'
+            ])->default('TERSEDIA')
+            ->after('image');
         }
     });
 

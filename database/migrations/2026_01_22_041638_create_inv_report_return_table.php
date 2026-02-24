@@ -10,16 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('inv_report_return', function (Blueprint $table) {
-            $table->string('id',20)->primary();
-            $table->string('transaction_id',20);
-            $table->date('date');
+{
+    Schema::create('inv_report_return', function (Blueprint $table) {
+        $table->id(); 
 
-            $table->foreign('transaction_id')->references('id')->on('inv_transaction')->cascadeOnUpdate();
-        });
+        $table->foreignId('transaction_id')
+              ->constrained('inv_transaction')
+              ->cascadeOnUpdate()
+              ->cascadeOnDelete();
 
-    }
+        $table->date('date');
+
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

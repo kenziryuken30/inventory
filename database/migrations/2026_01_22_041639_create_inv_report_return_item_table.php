@@ -10,16 +10,22 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('inv_report_return_item', function (Blueprint $table) {
-            $table->string('id',20)->primary();
-            $table->string('report_return_id',20);
-            $table->string('toolkit_id',20);
-            $table->string('condition',200);
-            $table->string('note',1000);
-});
+{
+    Schema::create('inv_report_return_item', function (Blueprint $table) {
+        $table->id();
 
-    }
+        $table->foreignId('report_return_id')
+              ->constrained('inv_report_return')
+              ->cascadeOnUpdate()
+              ->cascadeOnDelete();
+
+        $table->string('toolkit_id',20);
+        $table->string('condition',200);
+        $table->string('note',1000)->nullable();
+
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

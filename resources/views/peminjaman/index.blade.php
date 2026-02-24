@@ -26,114 +26,154 @@
             {{ session('error') }}
         </div>
     @endif
+
+    {{-- ================= FILTER ================= --}}
+<form method="GET"
+      action="{{ route('peminjaman.index') }}"
+      class="mb-6 bg-gradient-to-r from-cyan-500 to-teal-500 p-4 rounded-xl shadow flex flex-wrap gap-4 items-center">
+
+    {{-- Search Nama --}}
+    <input type="text"
+           name="search"
+           value="{{ request('search') }}"
+           placeholder="Masukan nama peminjam"
+           class="px-4 py-2 rounded-lg shadow w-64">
+
+    {{-- Tanggal Dari --}}
+    <label class="text-white font-semibold">Tanggal</label>
+    <input type="date"
+           name="start_date"
+           value="{{ request('start_date') }}"
+           class="px-3 py-2 rounded-lg shadow">
+
+    <span class="text-white font-semibold">S/D</span>
+
+    {{-- Tanggal Sampai --}}
+    <input type="date"
+           name="end_date"
+           value="{{ request('end_date') }}"
+           class="px-3 py-2 rounded-lg shadow">
+
+    <button type="submit"
+            class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow font-semibold">
+        Filter
+    </button>
+
+    <a href="{{ route('peminjaman.index') }}"
+       class="text-white underline">
+        Reset
+    </a>
+</form>
     
 
-    {{-- ================= TABLE RIWAYAT ================= --}}
-    <div class="bg-white shadow rounded-lg overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 border">No</th>
-                    <th class="p-3 border">Tanggal</th>
-                    <th class="p-3 border">Peminjam</th>
-                    <th class="p-3 border">Tools</th>
-                    <th class="p-3 border">No Seri</th>
-                    <th class="p-3 border w-64">Aksi</th>
-                </tr>
-            </thead>
+{{-- ================= TABLE RIWAYAT ================= --}}
+<div class="bg-white shadow-lg rounded-xl overflow-hidden">
+    <table class="min-w-full text-sm text-gray-700">
+        
+        <thead class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
+            <tr>
+                <th class="px-4 py-3 text-center w-12">No</th>
+                <th class="px-4 py-3 text-left">Kode Transaksi</th>
+                <th class="px-4 py-3 text-left">Tanggal</th>
+                <th class="px-4 py-3 text-left">Peminjam</th>
+                <th class="px-4 py-3 text-left">Tools</th>
+                <th class="px-4 py-3 text-left">No Seri</th>
+                <th class="px-4 py-3 text-center w-64">Aksi</th>
+            </tr>
+        </thead>
 
-            <tbody>
-            @php $no = 1; @endphp
+        <tbody class="divide-y divide-gray-200">
 
-            @forelse ($transactions as $transaction)
-                @foreach ($transaction->items as $item)
+        @forelse ($transactions as $transaction)
 
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 border text-center">{{ $no++ }}</td>
+            <tr class="hover:bg-gray-50 transition">
 
-                    <td class="p-3 border">
-                        {{ \Carbon\Carbon::parse($transaction->date)->format('d-m-Y') }}
-                    </td>
+                <td class="px-4 py-3 text-center font-medium">
+                    {{ $loop->iteration }}
+                </td>
 
-                    <td class="p-3 border">
-                        {{ $transaction->borrower_name }}
-                    </td>
+                <td class="px-4 py-3 font-semibold text-blue-600">
+                    {{ $transaction->kode_transaksi ?? $transaction->transaction_code }}
+                </td>
 
-                    <td class="p-3 border">
-                        {{ $item->toolkit->toolkit_name ?? '-' }}
-                    </td>
+                <td class="px-4 py-3">
+                    {{ \Carbon\Carbon::parse($transaction->date)->format('d-m-Y') }}
+                </td>
 
-                    <td class="p-3 border">
-                        {{ $item->serial->serial_number ?? '-' }}
-                    </td>
+                <td class="px-4 py-3">
+                    {{ $transaction->borrower_name }}
+                </td>
 
-                    <td class="p-3 border text-center space-x-2">
+                <td class="px-4 py-3">
+                    @foreach ($transaction->items as $item)
+                        <div>{{ $item->toolkit->toolkit_name ?? '-' }}</div>
+                    @endforeach
+                </td>
 
-                        {{-- ================= BELUM CONFIRM ================= --}}
-                        @if (! $transaction->is_confirm)
+                <td class="px-4 py-3">
+                    @foreach ($transaction->items as $item)
+                        <div>{{ $item->serial->serial_number ?? '-' }}</div>
+                    @endforeach
+                </td>
 
-                            <a href="{{ route('peminjaman.edit', $transaction->id) }}"
-                               class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
-                                Edit
-                            </a>
+                <td class="px-4 py-3 text-center space-x-2">
 
-                            <form action="{{ route('peminjaman.destroy', $transaction->id) }}"
-                                  method="POST"
-                                  class="inline"
-                                  onsubmit="return confirm('Hapus transaksi ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="bg-red-500 text-white px-3 py-1 rounded text-xs">
-                                    Hapus
-                                </button>
-                            </form>
+                    @if (! $transaction->is_confirm)
 
-                            <form action="{{ route('peminjaman.confirm', $transaction->id) }}"
-                                  method="POST"
-                                  class="inline">
-                                @csrf
-                                <button class="bg-green-600 text-white px-3 py-1 rounded text-xs">
-                                    Confirm
-                                </button>
-                            </form>
+                        <a href="{{ route('peminjaman.edit', $transaction->id) }}"
+                           class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition">
+                            Edit
+                        </a>
 
-                        {{-- ================= SUDAH CONFIRM ================= --}}
-                        @else
+                        <form action="{{ route('peminjaman.destroy', $transaction->id) }}"
+                              method="POST"
+                              class="inline"
+                              onsubmit="return confirm('Hapus transaksi ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition">
+                                Hapus
+                            </button>
+                        </form>
 
-                            {{-- Kalau masih ada item yang belum kembali --}}
-                            @if ($transaction->items->whereNull('return_date')->count() > 0)
+                        <form action="{{ route('peminjaman.confirm', $transaction->id) }}"
+                              method="POST"
+                              class="inline">
+                            @csrf
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-xs transition">
+                                Confirm
+                            </button>
+                        </form>
 
-                                <button
-                                    @click="openReturn = '{{ $transaction->id }}'"
-                                    class="bg-yellow-500 text-white px-3 py-1 rounded text-xs">
-                                    Pengembalian
-                                </button>
+                    @else
 
-                            @endif
-
-                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">
-                                Confirmed
-                            </span>
-
+                        @if ($transaction->items->whereNull('return_date')->count() > 0)
+                            <button
+                                @click="openReturn = '{{ $transaction->id }}'"
+                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-xs transition">
+                                Pengembalian
+                            </button>
                         @endif
-                    </td>
-                </tr>
 
-                @endforeach
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-xs font-medium">
+                            Confirmed
+                        </span>
 
-            @empty
-                <tr>
-                    <td colspan="6" class="p-6 text-center text-gray-500">
-                        Tidak ada data peminjaman
-                    </td>
-                </tr>
-            @endforelse
+                    @endif
+                </td>
+            </tr>
 
-            </tbody>
-        </table>
-    </div>
+        @empty
+            <tr>
+                <td colspan="7" class="p-6 text-center text-gray-400">
+                    Tidak ada data peminjaman
+                </td>
+            </tr>
+        @endforelse
 
-
+        </tbody>
+    </table>
+</div>
 
     {{-- ================= POPUP PENGEMBALIAN ================= --}}
     @foreach ($transactions as $transaction)
@@ -178,9 +218,10 @@
                     <div>
                         <label class="text-sm text-gray-600">Tanggal Pengembalian</label>
                         <input type="date"
+                               name="return_date"
                                value="{{ date('Y-m-d') }}"
-                               class="w-full border rounded px-3 py-2 bg-gray-100"
-                               readonly>
+                               class="w-full border rounded px-3 py-2 "
+                               required>
                     </div>
                 </div>
 

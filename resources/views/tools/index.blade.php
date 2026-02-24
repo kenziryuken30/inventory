@@ -40,7 +40,7 @@
             <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>
                 Rusak
             </option>
-            <option value="maintenance" {{ request('condition') === 'maintenance' ? 'selected' : '' }}>
+            <option value="maintenance" {{ request('condition') === 'butuh_perbaikan' ? 'selected' : '' }}>
                 Maintenance
             </option>
         </select>
@@ -105,36 +105,49 @@
     <td class="text-right w-28">
         <div class="inline-flex gap-2 justify-end">
 
-                <button
-                    onclick="openEditModal(
-                        '{{ $tool->id }}',
-                        '{{ $tool->toolkit->toolkit_name }}',
-                        '{{ $tool->toolkit->category_id }}',
-                        '{{ $tool->serial_number }}'
-                    )"
-                    class="text-blue-600"
-                >
-                    ✏️
-                </button>
+            {{-- -EDIT --}}
+            <button
+                onclick="openEditModal(
+                    '{{ $tool->id }}',
+                    '{{ $tool->toolkit->toolkit_name }}',
+                    '{{ $tool->toolkit->category_id }}',
+                    '{{ $tool->serial_number }}'
+                )"
+                class="text-blue-600">
+                edit
+            </button>
 
-            @if ($tool->status === 'dipinjam')
-                <button
-                    type="button"
+            {{-- -DELETE --}}
+            @if ($tool->status === 'DIPINJAM')
+                <button type="button"
                     onclick="alert('Barang sedang dipinjam, tidak bisa dihapus')"
                     class="text-gray-400 cursor-not-allowed">
-                    🗑️
+                    delete
                 </button>
             @else
-                <form
-                    action="{{ route('tools.destroy', $tool->id) }}"
+                <form action="{{ route('tools.destroy', $tool->id) }}"
                     method="POST"
                     class="inline"
-                    onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
+                    onsubmit="return confirm('Yakin ingin menghapus barang ini ?')">
                     @csrf
                     @method('DELETE')
-
                     <button class="text-red-600 hover:text-red-800">
-                        🗑️
+                        delete
+                    </button>
+                </form>
+            @endif
+
+           @php
+                $condition = strtoupper($tool->latestCondition->condition ?? 'BAIK');
+            @endphp
+
+            @if($tool->status === 'TIDAK_TERSEDIA' && $condition === 'MAINTENANCE')
+                <form action="{{ route('tools.finishMaintenance', $tool->id) }}"
+                    method="POST"
+                    class="inline">
+                    @csrf
+                    <button class="text-green-600 hover:text-green-800">
+                        Selesai Maintenance
                     </button>
                 </form>
             @endif

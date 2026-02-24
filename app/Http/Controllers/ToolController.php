@@ -9,14 +9,11 @@ use App\Models\InvToolConditionLog;
 use App\Models\InvCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ToolController extends Controller
 {
-    /**
-     * =========================
-     * LIST DATA TOOLS
-     * =========================
-     */
+   
     public function index(Request $request)
     {
         $query = InvSerialNumber::with([
@@ -24,7 +21,6 @@ class ToolController extends Controller
             'latestCondition'
         ]);
 
-        // 🔍 SEARCH
         if ($request->search) {
             $query->where(function ($q) use ($request) {
                 $q->where('serial_number', 'like', '%' . $request->search . '%')
@@ -34,7 +30,6 @@ class ToolController extends Controller
             });
         }
 
-        // 🎯 FILTER KONDISI
         if ($request->condition) {
             $query->whereHas('latestCondition', function ($q) use ($request) {
                 $q->where('condition', $request->condition);
@@ -42,16 +37,11 @@ class ToolController extends Controller
         }
 
         return view('tools.index', [
-            'tools'      => $query->get(),
+            'tools'      => $query->latest()->get(),
             'categories' => InvCategory::orderBy('category_name')->get(),
         ]);
     }
 
-    /**
-     * =========================
-     * SIMPAN TOOL BARU
-     * =========================
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -61,13 +51,11 @@ class ToolController extends Controller
             'image'         => 'nullable|image|max:2048',
         ]);
 
-        // 📸 upload image
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('tools', 'public');
         }
 
-        // 🔧 buat toolkit
         $toolkit = InvToolkit::create([
             'id'           => 'TL-' . strtoupper(Str::random(6)),
             'toolkit_name' => $request->toolkit_name,
@@ -75,7 +63,6 @@ class ToolController extends Controller
             'image'        => $imagePath,
         ]);
 
-        // 🔢 buat serial number
         $serial = InvSerialNumber::create([
             'id'            => 'SN-' . strtoupper(Str::random(8)),
             'toolkit_id'    => $toolkit->id,
@@ -83,7 +70,6 @@ class ToolController extends Controller
             'status'        => 'tersedia', // default
         ]);
 
-        // 📝 catat kondisi awal
         InvToolConditionLog::create([
             'serial_id' => $serial->id,
             'condition' => 'baik',
@@ -94,11 +80,6 @@ class ToolController extends Controller
             ->with('success', 'Barang berhasil ditambahkan');
     }
 
-    /**
-     * =========================
-     * UPDATE DATA TOOL
-     * =========================
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -110,13 +91,11 @@ class ToolController extends Controller
 
         $serial = InvSerialNumber::findOrFail($id);
 
-        // update toolkit
         $serial->toolkit->update([
             'toolkit_name' => $request->toolkit_name,
             'category_id'  => $request->category_id,
         ]);
 
-        // update serial
         $serial->update([
             'serial_number' => $request->serial_number,
         ]);
@@ -153,4 +132,28 @@ class ToolController extends Controller
         return redirect()->back()
             ->with('success', 'Barang berhasil dihapus');
     }
+
+   public function finishMaintenance($id)
+{
+    $serial = InvSerialNumber::findOrFail($id);
+
+    DB::transaction(function () use ($serial) {
+
+        $serial->update([
+            'status' => 'TERSEDIA'
+        ]);
+
+        DB::table('inv_tool_condition_logs')->insert([
+            'serial_id'  => $serial->id,
+            'condition'  => 'baik',
+            'note'       => 'Maintenance selesai',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    });
+
+    return back()->with('success', 'Maintenance selesai');
+}
+
+
 }
