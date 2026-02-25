@@ -75,28 +75,26 @@ class ConsumableTransactionController extends Controller
     }
 
     public function returnFull($id)
-    {
-        DB::transaction(function () use ($id) {
+{
+    $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
-            $trx = InvConsumableTransaction::with('items')
-                ->findOrFail($id);
-
-            if ($trx->is_confirm) {
-                throw new \Exception('Sudah dikembalikan');
-            }
-
-            foreach ($trx->items as $item) {
-                InvConsumable::where('id', $item->consumable_id)
-                    ->increment('stock', $item->qty);
-            }
-
-            $trx->update([
-                'is_confirm' => true
-            ]);
-        });
-
-        return back()->with('success', 'Return berhasil');
+    if ($trx->is_confirm) {
+        return back()->with('error', 'Barang sudah dikembalikan sebelumnya');
     }
+
+    DB::transaction(function () use ($trx) {
+        foreach ($trx->items as $item) {
+            InvConsumable::where('id', $item->consumable_id)
+                ->increment('stock', $item->qty);
+        }
+
+        $trx->update([
+            'is_confirm' => true
+        ]);
+    });
+
+    return back()->with('success', 'Return berhasil');
+}
 
     public function edit($id)
     {
@@ -314,16 +312,13 @@ class ConsumableTransactionController extends Controller
                     throw new \Exception("Qty melebihi sisa");
                 }
 
-                // ✅ update jumlah kembali
                 $item->increment('qty_return', $data['qty']);
 
-                // ✅ update stok
                 $consumable = $item->consumable;
                 $consumable->increment('stock', $data['qty']);
             }
         }
 
-        // cek semua sudah kembali
         $allReturned = $trx->items->every(function ($i) {
             return $i->qty == $i->qty_return;
         });
