@@ -11,38 +11,41 @@ use Illuminate\Support\Facades\DB;
 
 class ReportToolController extends Controller
 {
-    public function peminjaman(Request $request)
+public function index(Request $request)
 {
-    $query = ToolTransaction::with(['items.toolkit', 'items.serial']);
+    $type = $request->get('type', 'peminjaman');
 
-    if ($request->filled('start_date')) {
-        $query->whereDate('date', '>=', $request->start_date);
+    if ($type === 'pengembalian') {
+
+        $query = ToolTransactionItem::with(['transaction', 'toolkit', 'serial'])
+            ->whereNotNull('return_date');
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('return_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('return_date', '<=', $request->end_date);
+        }
+
+        $data = $query->latest()->get();
+
+    } else {
+
+        $query = ToolTransaction::with(['items.toolkit', 'items.serial']);
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('date', '<=', $request->end_date);
+        }
+
+        $data = $query->latest()->get();
     }
 
-    if ($request->filled('end_date')) {
-        $query->whereDate('date', '<=', $request->end_date);
-    }
-
-    $transactions = $query->latest()->get();
-
-    return view('laporan.peminjaman', compact('transactions'));
+    return view('laporan.transaksi-tools', compact('data', 'type'));
 }
 
-public function pengembalian(Request $request)
-{
-    $query = ToolTransactionItem::with(['transaction', 'toolkit', 'serial'])
-        ->whereNotNull('return_date');
-
-    if ($request->filled('start_date')) {
-        $query->whereDate('return_date', '>=', $request->start_date);
-    }
-
-    if ($request->filled('end_date')) {
-        $query->whereDate('return_date', '<=', $request->end_date);
-    }
-
-    $returns = $query->latest()->get();
-
-    return view('laporan.pengembalian', compact('returns'));
-}
 }

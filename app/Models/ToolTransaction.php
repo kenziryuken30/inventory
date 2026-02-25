@@ -27,6 +27,6 @@ class ToolTransaction extends Model
     // 🔗 relasi ke detail tools
     public function items()
     {
-        return $this->hasMany(ToolTransactionItem::class, 'transaction_id', );
+        return $this->hasMany(ToolTransactionItem::class, 'transaction_id', 'id');
     }
 }

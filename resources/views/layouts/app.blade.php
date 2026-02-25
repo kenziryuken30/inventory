@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Inventory</title>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <style>[x-cloak]{display:none}</style>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Alpine versi stabil -->
+    <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
+
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
 
-   <aside class="w-64 bg-white shadow-md p-4"
-       x-data="{ openBarang: false, openTransaksi: false }">
+<aside class="w-64 bg-white shadow-md p-4"
+    x-data="{
+        openBarang: false,
+        openTransaksi: false,
+        openLaporan: false
+    }">
 
     <h1 class="text-lg font-bold mb-6">Inventory</h1>
 
     <ul class="space-y-2 text-sm">
 
+        <!-- Dashboard -->
         <li>
             <a href="{{ route('dashboard') }}"
                class="block px-3 py-2 rounded hover:bg-gray-100">
@@ -25,6 +36,7 @@
             </a>
         </li>
 
+        <!-- Data Barang -->
         <li>
             <button @click="openBarang = !openBarang"
                 class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-gray-100">
@@ -32,7 +44,7 @@
                 <span x-text="openBarang ? '▾' : '▸'"></span>
             </button>
 
-            <ul x-show="openBarang" x-transition class="ml-4 mt-1 space-y-1">
+            <ul x-show="openBarang" x-transition x-cloak class="ml-4 mt-1 space-y-1">
                 <li>
                     <a href="{{ route('tools.index') }}"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
@@ -48,6 +60,7 @@
             </ul>
         </li>
 
+        <!-- Transaksi -->
         <li>
             <button @click="openTransaksi = !openTransaksi"
                 class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-gray-100">
@@ -55,7 +68,7 @@
                 <span x-text="openTransaksi ? '▾' : '▸'"></span>
             </button>
 
-            <ul x-show="openTransaksi" x-transition class="ml-4 mt-1 space-y-1">
+            <ul x-show="openTransaksi" x-transition x-cloak class="ml-4 mt-1 space-y-1">
                 <li>
                     <a href="{{ route('peminjaman.index') }}"
                        class="block px-3 py-1 rounded hover:bg-gray-100">
@@ -71,24 +84,46 @@
             </ul>
         </li>
 
+        <!-- Laporan -->
+<li>
+    <button @click="openLaporan = !openLaporan"
+        class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-gray-100">
+        <span>Laporan</span>
+        <span x-text="openLaporan ? '▾' : '▸'"></span>
+    </button>
+
+    <ul x-show="openLaporan" x-transition x-cloak class="ml-4 mt-1 space-y-1">
+
+        <!-- Transaksi Tools (Satu Halaman Toggle) -->
         <li>
-            <a href="/laporan"
-               class="block px-3 py-2 rounded hover:bg-gray-100">
-               Laporan
+            <a href="{{ route('laporan.transaksi-tools') }}"
+               class="block px-3 py-1 rounded hover:bg-gray-100
+               {{ request()->routeIs('laporan.transaksi-tools') ? 'bg-gray-200 font-semibold' : '' }}">
+               Transaksi Tools
+            </a>
+        </li>
+
+        <!-- Permintaan Consumable -->
+        <li>
+            <a href="{{ route('transaksi.index') }}"
+               class="block px-3 py-1 rounded hover:bg-gray-100">
+               Permintaan Consumable
             </a>
         </li>
 
     </ul>
+</li>
 
     <form method="POST" action="{{ route('logout') }}" class="mt-8">
         @csrf
         <button class="text-red-500 text-sm">Logout</button>
     </form>
+
 </aside>
 
-    <main class="flex-1 p-6">
-        @yield('content')
-    </main>
+<main class="flex-1 p-6">
+    @yield('content')
+</main>
 
 </div>
 </body>

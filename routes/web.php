@@ -32,12 +32,6 @@ Route::middleware('auth')->group(function () {
 )->name('tools.finishMaintenance');
 
 
-    Route::post(
-        '/data-tools/{id}/finish-maintenance',
-        [ToolController::class, 'finishMaintenance']
-    )->name('tools.finishMaintenance');
-
-
     Route::get('/consumable', [InvConsumableController::class, 'index'])->name('consumable.index');
     Route::post('/consumable', [InvConsumableController::class, 'store']);
     Route::put('/consumable/{id}', [InvConsumableController::class, 'update']);
@@ -51,17 +45,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/{id}/edit', [ConsumableTransactionController::class, 'edit'])->name('edit');
     Route::put('/{id}', [ConsumableTransactionController::class, 'update'])->name('update');
     Route::delete('/{id}', [ConsumableTransactionController::class, 'destroy'])->name('destroy');
+    
     Route::post('/{id}/return', [ConsumableTransactionController::class, 'returnFull'])
         ->name('return');
     });
 
-    Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
+   Route::prefix('peminjaman')->name('peminjaman.')->group(function () {
 
-    // LIST & CREATE
     Route::get('/', [ToolTransactionController::class, 'index'])->name('index');
     Route::get('/create', [ToolTransactionController::class, 'create'])->name('create');
     Route::post('/', [ToolTransactionController::class, 'store'])->name('store');
-
 
     Route::get('/{id}/edit', [ToolTransactionController::class, 'edit'])->name('edit');
     Route::put('/{id}', [ToolTransactionController::class, 'update'])->name('update');
@@ -69,42 +62,16 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/{id}/confirm', [ToolTransactionController::class, 'confirm'])->name('confirm');
 
-    Route::get('/{id}/return', [ToolTransactionController::class, 'returnForm'])->name('return.form');
-    Route::post('/{id}/return', [ToolTransactionController::class, 'returnProcess'])->name('return.process');
+    Route::post('/{id}/return', [ToolTransactionController::class, 'returnProcess'])
+        ->name('return.process');
 
-    // ITEM MANAGEMENT
-    Route::post('/{id}/add-item', [ToolTransactionController::class, 'addItem'])->name('item.add');
-    Route::delete('/item/{id}', [ToolTransactionController::class, 'destroyItem'])->name('item.destroy');
+    Route::post('/{id}/add-item', [ToolTransactionController::class, 'addItem'])
+        ->name('item.add');
 
-    Route::post(
-    '/{id}/add-item',
-    [ToolTransactionController::class, 'addItem']
-)->name('item.add');
-
-Route::post(
-    '/peminjaman/{id}/return',
-    [ToolTransactionController::class, 'return']
-)->name('peminjaman.return');
-
-Route::get('/peminjaman/{id}/return',
-    [ToolTransactionController::class, 'returnForm']
-)->name('peminjaman.return.form');
-
-Route::post('/peminjaman/{id}/return',
-    [ToolTransactionController::class, 'returnProcess']
-)->name('peminjaman.return.process');
-        Route::get('/{id}/edit', [ToolTransactionController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [ToolTransactionController::class, 'update'])->name('update');
-        Route::delete('/{id}', [ToolTransactionController::class, 'destroy'])->name('destroy');
-
-
-        Route::post('/{id}/confirm', [ToolTransactionController::class, 'confirm'])->name('confirm');
-        Route::post('/{id}/return', [ToolTransactionController::class, 'return'])->name('return');
-
-        Route::delete(
-            '/item/{id}',
-            [ToolTransactionController::class, 'destroyItem']
-        )->name('item.destroy');
-    });
-
+    Route::delete('/item/{id}', [ToolTransactionController::class, 'destroyItem'])
+        ->name('item.destroy');
+});
+Route::get('/laporan/transaksi-tools', 
+    [ReportToolController::class, 'index']
+)->name('laporan.transaksi-tools');
 });
