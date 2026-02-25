@@ -42,11 +42,7 @@ class InvSerialNumber extends Model
     // semua riwayat kondisi
     public function conditionLogs()
     {
-        return $this->hasMany(
-            InvToolConditionLog::class,
-            'serial_id',
-            'id'
-        );
+        return $this->hasMany(InvToolConditionLog::class, 'serial_id');
     }
 
     // kondisi TERAKHIR (yang dipakai di UI)

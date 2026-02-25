@@ -17,8 +17,11 @@ public function index(Request $request)
 
     if ($type === 'pengembalian') {
 
-        $query = ToolTransactionItem::with(['transaction', 'toolkit', 'serial'])
-            ->whereNotNull('return_date');
+        $query = ToolTransactionItem::with([
+            'transaction',
+            'toolkit',
+            'serial.conditionLogs'
+        ])->whereNotNull('return_date');
 
         if ($request->filled('start_date')) {
             $query->whereDate('return_date', '>=', $request->start_date);
@@ -32,7 +35,10 @@ public function index(Request $request)
 
     } else {
 
-        $query = ToolTransaction::with(['items.toolkit', 'items.serial']);
+        $query = ToolTransaction::with([
+            'items.toolkit',
+            'items.serial'
+        ]);
 
         if ($request->filled('start_date')) {
             $query->whereDate('date', '>=', $request->start_date);
@@ -45,7 +51,7 @@ public function index(Request $request)
         $data = $query->latest()->get();
     }
 
-    return view('laporan.transaksi-tools', compact('data', 'type'));
+    return view('laporan.tools.transaksi', compact('data', 'type'));
 }
 
 }

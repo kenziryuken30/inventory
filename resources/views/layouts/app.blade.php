@@ -96,9 +96,9 @@
 
         <!-- Transaksi Tools (Satu Halaman Toggle) -->
         <li>
-            <a href="{{ route('laporan.transaksi-tools') }}"
+            <a href="{{ route('laporan.tools.transaksi') }}"
                class="block px-3 py-1 rounded hover:bg-gray-100
-               {{ request()->routeIs('laporan.transaksi-tools') ? 'bg-gray-200 font-semibold' : '' }}">
+               {{ request()->routeIs('laporan.tools.transaksi') ? 'bg-gray-200 font-semibold' : '' }}">
                Transaksi Tools
             </a>
         </li>

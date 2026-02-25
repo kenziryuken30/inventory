@@ -76,5 +76,5 @@ Route::middleware('auth')->group(function () {
     
 Route::get('/laporan/transaksi-tools', 
     [ReportToolController::class, 'index']
-)->name('laporan.transaksi-tools');
+)->name('laporan.tools.transaksi');
 });

@@ -4,7 +4,7 @@
 
 <h2 class="text-xl font-bold mb-4">Laporan Transaksi Tools</h2>
 
-<form method="GET" action="{{ route('laporan.transaksi-tools') }}"
+<form method="GET" action="{{ route('laporan.tools.transaksi') }}"
       class="bg-gradient-to-r from-cyan-600 to-teal-500 p-4 rounded-xl shadow mb-6">
 
     <input type="hidden" name="type" value="{{ $type }}">
@@ -34,7 +34,7 @@
         </div>
 
         <div>
-            <a href="{{ route('laporan.transaksi-tools', ['type' => $type]) }}"
+            <a href="{{ route('laporan.tools.transaksi', ['type' => $type]) }}"
                class="bg-gray-200 px-4 py-2 rounded-lg text-sm">
                Reset
             </a>
@@ -48,7 +48,7 @@
 
     <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
 
-        <a href="{{ route('laporan.transaksi-tools', ['type' => 'peminjaman']) }}"
+        <a href="{{ route('laporan.tools.transaksi', ['type' => 'peminjaman']) }}"
            class="px-4 py-2 rounded-xl text-sm transition
            {{ $type == 'peminjaman'
                 ? 'bg-white shadow text-black font-semibold'
@@ -56,7 +56,7 @@
             ↩ Peminjaman Tools
         </a>
 
-        <a href="{{ route('laporan.transaksi-tools', ['type' => 'pengembalian']) }}"
+        <a href="{{ route('laporan.tools.transaksi', ['type' => 'pengembalian']) }}"
            class="px-4 py-2 rounded-xl text-sm transition
            {{ $type == 'pengembalian'
                 ? 'bg-white shadow text-black font-semibold'
