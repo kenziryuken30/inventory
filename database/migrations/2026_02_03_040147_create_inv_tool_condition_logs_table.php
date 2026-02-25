@@ -12,7 +12,7 @@ return new class extends Migration {
 
             $table->id();
 
-            // FK harus STRING karena parent STRING
+            
             $table->string('serial_id', 20);
 
             $table->enum('condition', ['baik', 'rusak', 'maintenance'])
