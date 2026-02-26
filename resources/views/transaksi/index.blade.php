@@ -109,7 +109,9 @@
 
                             <td class="px-4 py-3 text-center">
                                 @foreach($trx->items as $item)
-                                    <div>{{ $item->qty_return ?? 0 }}</div>
+                                    <div>
+                                        {{ ($item->qty_return ?? 0) == 0 ? '-' : $item->qty_return }}
+                                    </div>
                                 @endforeach
                             </td>
 
@@ -234,7 +236,7 @@
                                                 </td>
 
                                                 <td class="p-3 border">
-                                                    <input type="number" name="items[{{ $item->id }}][qty]" min="0"
+                                                    <input type="number" name="items[{{ $item->id }}][qty]" min="0x`"
                                                         max="{{ $item->qty }}" class="border rounded px-2 py-1 w-full"
                                                         :disabled="!selected.includes('{{ $item->id }}')">
                                                 </td>

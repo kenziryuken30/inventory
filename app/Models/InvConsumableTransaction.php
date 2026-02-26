@@ -33,4 +33,13 @@ class InvConsumableTransaction extends Model
             'transaction_id'
         );
     }
+    public function transaction()
+    {
+        return $this->belongsTo(InvConsumableTransaction::class, 'transaction_id');
+    }
+
+    public function consumable()
+    {
+        return $this->belongsTo(InvConsumable::class, 'consumable_id');
+    }
 }

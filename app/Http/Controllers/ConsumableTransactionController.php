@@ -397,4 +397,5 @@ class ConsumableTransactionController extends Controller
 
         return back()->with('success', 'Consumable berhasil ditambahkan');
     }
+    
 }

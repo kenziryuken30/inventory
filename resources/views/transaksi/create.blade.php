@@ -6,7 +6,10 @@
      @close-modal.window="openConsumable = false">
 
     <h2 class="text-xl font-semibold mb-4">Permintaan Consumable</h2>
-
+    <a href="{{ route('transaksi.index') }}"
+        class="inline-block mb-6 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+        ← Kembali
+    </a>
     <form action="{{ route('transaksi.store') }}" method="POST">
         @csrf
 
