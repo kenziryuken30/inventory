@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Inventory</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Alpine versi stabil -->
     <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>

@@ -13,11 +13,23 @@ use App\Models\InvConsumableTransactionItem;
 
 class ConsumableTransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = InvConsumableTransaction::with('items.consumable')
-            ->latest()
-            ->get();
+        $query = InvConsumableTransaction::with('items.consumable');
+
+        if ($request->search) {
+            $query->where('borrower_name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->start_date && $request->end_date) {
+            $query->whereBetween('date', [
+                $request->start_date,
+                $request->end_date
+            ]);
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->get();
+        $transactions = $query->orderBy('date', 'desc')->get();
 
         return view('transaksi.index', compact('transactions'));
     }
@@ -41,7 +53,14 @@ class ConsumableTransactionController extends Controller
 
         DB::transaction(function () use ($request) {
 
+        do {
+        $letters = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3));
+        $numbers = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
+        $transactionCode = $letters . $numbers;
+            } while (InvConsumableTransaction::where('transaction_code', $transactionCode)->exists());
+    
             $trx = InvConsumableTransaction::create([
+                'transaction_code' => $transactionCode,
                 'borrower_name' => $request->borrower_name,
                 'client' => $request->client,
                 'project' => $request->project,
@@ -65,8 +84,6 @@ class ConsumableTransactionController extends Controller
                     'consumable_id' => $item['consumable_id'],
                     'qty' => $item['qty'],
                 ]);
-
-                $consumable->decrement('stock', $item['qty']);
             }
         });
 
@@ -285,11 +302,30 @@ class ConsumableTransactionController extends Controller
 
     public function confirm($id)
     {
-        $trx = InvConsumableTransaction::findOrFail($id);
+        DB::transaction(function () use ($id) {
 
-        // Update status confirm
-        $trx->is_confirm = true;
-        $trx->save();
+            $trx = InvConsumableTransaction::with('items.consumable')
+                ->findOrFail($id);
+
+            if ($trx->is_confirm) {
+                throw new \Exception("Transaksi sudah dikonfirmasi");
+            }
+
+            foreach ($trx->items as $item) {
+
+                if ($item->qty > $item->consumable->stock) {
+                    throw new \Exception(
+                        "Stock {$item->consumable->name} tidak cukup"
+                    );
+                }
+
+                $item->consumable->decrement('stock', $item->qty);
+            }
+
+            $trx->update([
+                'is_confirm' => true
+            ]);
+        });
 
         return redirect()
             ->route('transaksi.index')

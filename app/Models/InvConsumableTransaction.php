@@ -12,6 +12,7 @@ class InvConsumableTransaction extends Model
 
     protected $fillable = [
         'id',
+        'transaction_code',
         'borrower_name',
         'client',
         'project',

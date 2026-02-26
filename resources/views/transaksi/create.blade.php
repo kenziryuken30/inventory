@@ -1,157 +1,168 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="max-w-7xl mx-auto p-6"
+     x-data="{ openConsumable: false }"
+     @close-modal.window="openConsumable = false">
 
-    <h4 class="mb-3">Permintaan Consumable</h4>
+    <h2 class="text-xl font-semibold mb-4">Permintaan Consumable</h2>
 
     <form action="{{ route('transaksi.store') }}" method="POST">
         @csrf
 
-        {{-- HEADER FORM --}}
-        <div class="card mb-3">
-            <div class="card-body">
+        {{-- ================= HEADER ================= --}}
+        <div class="bg-white shadow rounded-xl p-6 mb-6">
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Nama Karyawan</label>
-                        <input type="text" name="borrower_name" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Tanggal</label>
-                        <input type="date" name="date" class="form-control"
-                               value="{{ date('Y-m-d') }}" required>
-                    </div>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Nama Karyawan</label>
+                    <input type="text" name="borrower_name" required
+                        class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-200">
                 </div>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="form-label">Client</label>
-                        <input type="text" name="client" class="form-control">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Proyek</label>
-                        <input type="text" name="project" class="form-control">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Keperluan</label>
-                        <input type="text" name="purpose" class="form-control">
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Tanggal</label>
+                    <input type="date" name="date" value="{{ date('Y-m-d') }}" required
+                        class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-200">
                 </div>
-
             </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <input type="text" name="client" class="border rounded-lg px-3 py-2" placeholder="Client">
+                <input type="text" name="project" class="border rounded-lg px-3 py-2" placeholder="Proyek">
+                <input type="text" name="purpose" class="border rounded-lg px-3 py-2" placeholder="Keperluan">
+            </div>
+
         </div>
 
-        {{-- DAFTAR CONSUMABLE --}}
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <strong>Daftar Consumable</strong>
-                <button type="button" class="btn btn-outline-primary btn-sm"
-                        data-bs-toggle="modal" data-bs-target="#modalConsumable">
+
+        {{-- ================= DAFTAR ================= --}}
+        <div class="bg-white shadow rounded-xl p-6">
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold">Daftar Consumable</h3>
+
+                <button type="button"
+                        @click="openConsumable = true"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
                     + Pilih Consumable
                 </button>
             </div>
 
-            <div class="card-body">
-                <table class="table table-bordered" id="tableConsumables">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="50">No</th>
-                            <th>Nama</th>
-                            <th width="120">Qty</th>
-                            <th width="100">Unit</th>
-                            <th width="100">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            <table class="w-full text-sm border rounded-lg overflow-hidden" id="tableConsumables">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="p-2">No</th>
+                        <th class="p-2">Nama</th>
+                        <th class="p-2">Qty</th>
+                        <th class="p-2">Unit</th>
+                        <th class="p-2">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
         </div>
 
-        <div class="text-end mt-3">
-            <button type="submit" class="btn btn-primary">
+        <div class="text-right mt-6">
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                 Save Transaksi
             </button>
         </div>
 
     </form>
-</div>
 
-{{-- MODAL PILIH CONSUMABLE --}}
-<div class="modal fade" id="modalConsumable" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Pilih Consumable</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    {{-- ================= MODAL ================= --}}
+    <div x-show="openConsumable"
+         x-transition
+         @click.self="openConsumable = false"
+         @keydown.escape.window="openConsumable = false"
+         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+        <div class="bg-white w-3/4 rounded-xl shadow-xl p-6 max-h-[80vh] overflow-y-auto">
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Pilih Consumable</h3>
+                <button @click="openConsumable = false"
+                        class="text-2xl text-gray-500">&times;</button>
             </div>
 
-            <div class="modal-body">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Nama</th>
-                            <th>Stok</th>
-                            <th width="120">Qty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($consumables as $c)
-                        <tr>
-                            <td>
-                                <input type="checkbox"
-                                       class="pick-consumable"
-                                       data-id="{{ $c->id }}"
-                                       data-name="{{ $c->name }}"
-                                       data-unit="{{ $c->unit }}"
-                                       data-stock="{{ $c->stock }}">
-                            </td>
-                            <td>{{ $c->name }}</td>
-                            <td>{{ $c->stock }} {{ $c->unit }}</td>
-                            <td>
-                                <input type="number"
-                                       class="form-control qty-input"
-                                       min="1"
-                                       max="{{ $c->stock }}"
-                                       value="1">
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            <table class="w-full text-sm">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th></th>
+                        <th>Nama</th>
+                        <th>Stok</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary"
-                        id="btnAddConsumable">+ Tambahkan</button>
+                <tbody>
+                    @foreach ($consumables as $c)
+                    <tr class="border-b">
+                        <td>
+                            <input type="checkbox"
+                                   class="pick-consumable"
+                                   data-id="{{ $c->id }}"
+                                   data-name="{{ $c->name }}"
+                                   data-unit="{{ $c->unit }}"
+                                   data-stock="{{ $c->stock }}">
+                        </td>
+
+                        <td>{{ $c->name }}</td>
+                        <td>{{ $c->stock }} {{ $c->unit }}</td>
+
+                        <td>
+                            <input type="number"
+                                   class="border rounded px-2 py-1 w-20 qty-input"
+                                   min="1"
+                                   max="{{ $c->stock }}"
+                                   value="1">
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <div class="flex justify-end gap-3 mt-4">
+                <button @click="openConsumable = false"
+                        class="px-4 py-2 border rounded-lg">
+                    Batal
+                </button>
+
+                <button type="button"
+                        id="btnAddConsumable"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                    + Tambahkan
+                </button>
             </div>
 
         </div>
     </div>
+
 </div>
 
-{{-- SCRIPT --}}
+
+{{-- ================= SCRIPT ================= --}}
 <script>
 let index = 0;
+
+document.addEventListener('DOMContentLoaded', function(){
+
 document.getElementById('btnAddConsumable').addEventListener('click', function () {
+
+    let added = false;
 
     document.querySelectorAll('.pick-consumable:checked').forEach((checkbox) => {
 
-        const row   = checkbox.closest('tr');
-        const id    = checkbox.dataset.id;
-        const name  = checkbox.dataset.name;
-        const unit  = checkbox.dataset.unit;
+        const row = checkbox.closest('tr');
+        const id = checkbox.dataset.id;
+        const name = checkbox.dataset.name;
+        const unit = checkbox.dataset.unit;
         const stock = parseInt(checkbox.dataset.stock);
-        const qty   = parseInt(row.querySelector('.qty-input').value);
+        const qty = parseInt(row.querySelector('.qty-input').value);
 
-        // 🔥 VALIDASI STOCK
         if (qty > stock) {
             alert(`Stock ${name} hanya tersedia ${stock} ${unit}`);
             return;
@@ -162,37 +173,41 @@ document.getElementById('btnAddConsumable').addEventListener('click', function (
             return;
         }
 
-        // cegah double
         if (document.querySelector(`tr[data-id="${id}"]`)) return;
 
         const html = `
-            <tr data-id="${id}">
-                <td>${index + 1}</td>
-                <td>${name}</td>
-                <td>${qty}</td>
-                <td>${unit}</td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-outline-danger"
-                            onclick="this.closest('tr').remove()">
-                        Hapus
-                    </button>
+        <tr data-id="${id}" class="border-b">
+            <td class="p-2">${index + 1}</td>
+            <td class="p-2">${name}</td>
+            <td class="p-2">${qty}</td>
+            <td class="p-2">${unit}</td>
+            <td class="p-2">
+                <button type="button"
+                        class="text-red-600"
+                        onclick="this.closest('tr').remove()">
+                    Hapus
+                </button>
 
-                    <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                    <input type="hidden" name="items[${index}][qty]" value="${qty}">
-                </td>
-            </tr>
+                <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                <input type="hidden" name="items[${index}][qty]" value="${qty}">
+            </td>
+        </tr>
         `;
 
         document.querySelector('#tableConsumables tbody')
             .insertAdjacentHTML('beforeend', html);
 
         index++;
+        added = true;
     });
 
-    bootstrap.Modal.getInstance(
-        document.getElementById('modalConsumable')
-    ).hide();
-});
+    document.querySelectorAll('.pick-consumable').forEach(c => c.checked = false);
 
+    if (added) {
+        window.dispatchEvent(new Event('close-modal'));
+    }
+});
+});
 </script>
+
 @endsection

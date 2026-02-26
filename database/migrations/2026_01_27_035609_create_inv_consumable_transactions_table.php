@@ -12,19 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inv_consumable_transactions', function (Blueprint $table) {
-
-    
-    $table->id();
-
-    $table->string('employee_id', 15)->nullable();
-    $table->date('date');
-    $table->text('note')->nullable();
-    $table->timestamps();
-
-    $table->foreign('employee_id')
-          ->references('id')->on('inv_employee')
-          ->onUpdate('cascade');
-});
+            
+            $table->id();
+            $table->string('transaction_code')->unique();
+            $table->date('date');
+            $table->text('note')->nullable();
+            $table->timestamps();
+    });
 
     }
 
