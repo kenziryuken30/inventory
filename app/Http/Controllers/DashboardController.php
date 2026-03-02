@@ -12,40 +12,41 @@ use App\Models\InvConsumableTransactionItem;
 class DashboardController extends Controller
 {
     public function index()
-{
-    // TOTAL ALAT (jumlah serial)
-    $totalBarang = InvSerialNumber::count();
+    {
+        // TOTAL ALAT (jumlah serial)
+        $totalBarang = InvSerialNumber::count();
 
-    // ALAT TERSEDIA
-    $alatTersedia = InvSerialNumber::where('status', 'TERSEDIA')->count();
+        // ALAT TERSEDIA
+        $alatTersedia = InvSerialNumber::where('status', 'TERSEDIA')->count();
 
-    // ALAT DIPINJAM
-    $alatDipinjam = InvSerialNumber::where('status', 'DIPINJAM')->count();
+        // ALAT DIPINJAM
+        $alatDipinjam = InvSerialNumber::where('status', 'DIPINJAM')->count();
 
-    // Consumable
-    $consumableMenipis = InvConsumable::whereColumn('stock', '<=', 'minimum_stock')->count();
+        // Consumable
+        $consumableMenipis = InvConsumable::whereColumn('stock', '<=', 'minimum_stock')->count();
 
-    $lowStock = InvConsumable::whereColumn('stock', '<', 'minimum_stock')->get();
+        $lowStock = InvConsumable::whereColumn('stock', '<', 'minimum_stock')->get();
 
-    // Peminjaman terbaru
-    $peminjamanTerbaru = ToolTransaction::with(['items.toolkit'])
-        ->latest('date')
-        ->take(5)
-        ->get();
+        // 🔥 PEMINJAMAN TERBARU (maks 4, terbaru di atas)
+        $peminjamanTerbaru = ToolTransaction::with(['items.toolkit'])
+            ->orderByDesc('date') // lebih jelas dari latest
+            ->limit(4)
+            ->get();
 
-    $consumableTerbaru = InvConsumableTransactionItem::with('consumable')
-        ->latest()
-        ->take(5)
-        ->get();
+        // 🔥 CONSUMABLE TERBARU (maks 4)
+        $consumableTerbaru = InvConsumableTransactionItem::with('consumable')
+            ->orderByDesc('created_at')
+            ->limit(4)
+            ->get();
 
-    return view('dashboard.index', compact(
-        'totalBarang',
-        'alatTersedia',
-        'alatDipinjam',
-        'consumableMenipis',
-        'lowStock',
-        'peminjamanTerbaru',
-        'consumableTerbaru'
-    ));
-}
+        return view('dashboard.index', compact(
+            'totalBarang',
+            'alatTersedia',
+            'alatDipinjam',
+            'consumableMenipis',
+            'lowStock',
+            'peminjamanTerbaru',
+            'consumableTerbaru'
+        ));
+    }
 }
