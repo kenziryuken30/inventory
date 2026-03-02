@@ -86,7 +86,7 @@
 
 
 {{-- ================= MODAL TOOLS ================= --}}
-<div x-show="openTools"
+<div x-show="openTools" x-cloak
      x-transition
      @click.self="openTools = false"
      @keydown.escape.window="openTools = false"

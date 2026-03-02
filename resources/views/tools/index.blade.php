@@ -111,7 +111,7 @@
                 class="editBtn bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                 data-id="{{ $tool->id }}"
                 data-name="{{ $tool->toolkit->toolkit_name }}"
-                data-category="{{ $tool->toolkit->category->category_name ?? '' }}"
+                data-category="{{ $tool->toolkit->category_id }}"
                 data-serial="{{ $tool->serial_number }}">
                 Edit
             </button>
@@ -170,6 +170,16 @@
         <form action="{{ route('tools.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
+            @if ($errors->any())
+    <div class="mb-4 bg-red-100 text-red-700 p-3 rounded">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
             <!-- Header -->
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-semibold">Tambah Barang</h2>
@@ -188,12 +198,19 @@
                        placeholder="Nama Barang"
                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
 
-                <select name="category"
-                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                    <option value="">Pilih Kategori</option>
-                    <option value="Alat Listrik">Alat Listrik</option>
-                    <option value="Alat Manual">Perkakas</option>
-                </select>
+                <select name="category_id"
+                    required
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+                <option value="">Pilih Kategori</option>
+
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">
+                        {{ $category->category_name }}
+                    </option>
+                @endforeach
+
+            </select>
 
                 <input type="text"
                        name="serial_number"
@@ -253,11 +270,16 @@
                        id="editName"
                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
 
-                <select name="category"
+                <select name="category_id"
                         id="editCategory"
-                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                    <option value="Alat Listrik">Alat Listrik</option>
-                    <option value="Perkakas">Perkakas</option>
+                        class="w-full border rounded-lg px-4 py-2">
+
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">
+                            {{ $category->category_name }}
+                        </option>
+                    @endforeach
+
                 </select>
 
                 <input type="text"
@@ -348,21 +370,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeEditBtn = document.getElementById('closeEditModal');
     const cancelEditBtn = document.getElementById('cancelEditModal');
 
-    document.querySelectorAll('.editBtn').forEach(button => {
+   
+document.addEventListener('click', function (e) {
 
-        button.addEventListener('click', function () {
+    if (e.target.classList.contains('editBtn')) {
 
-            editName.value = this.dataset.name;
-            editCategory.value = this.dataset.category;
-            editSerial.value = this.dataset.serial;
+        const button = e.target;
 
-            editForm.action = '/data-tools/' + this.dataset.id;
+        const editModal = document.getElementById('editBarangModal');
+        const editForm = document.getElementById('editBarangForm');
+        const editName = document.getElementById('editName');
+        const editCategory = document.getElementById('editCategory');
+        const editSerial = document.getElementById('editSerial');
 
-            editModal.classList.remove('hidden');
-            editModal.classList.add('flex');
-        });
+        editName.value = button.dataset.name;
+        editCategory.value = button.dataset.category;
+        editSerial.value = button.dataset.serial;
 
-    });
+        editForm.action = '/data-tools/' + button.dataset.id;
+
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+    }
+
+});
 
     function closeEdit() {
         editModal.classList.add('hidden');

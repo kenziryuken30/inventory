@@ -44,6 +44,7 @@ class ToolController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'toolkit_name'  => 'required|string|max:255',
             'category_id'   => 'required',
@@ -89,7 +90,7 @@ class ToolController extends Controller
             'image'         => 'nullable|image',
         ]);
 
-        $serial = InvSerialNumber::findOrFail($id);
+        $serial = InvSerialNumber::with('toolkit')->findOrFail($id);
 
         $serial->toolkit->update([
             'toolkit_name' => $request->toolkit_name,
