@@ -258,17 +258,19 @@
                     {{ $row->serial->serial_number ?? '-' }}
                 </td>
 
-                <td class="px-6 py-4">
-                    <span class="px-3 py-1 rounded-lg text-xs font-semibold
-                        {{ strtolower($row->condition) == 'baik'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-yellow-100 text-yellow-700' }}">
-                        {{ $row->condition }}
-                    </span>
+                @php
+                   $log = $row->serial->conditionLogs()
+                        ->where('created_at', '<=', $row->return_date)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+                @endphp
+
+                <td>
+                    {{ $row->return_condition ?? '-' }}
                 </td>
 
-                <td class="px-6 py-4">
-                    {{ $row->note ?? '-' }}
+                <td>
+                    {{ $row->return_note ?? '-' }}
                 </td>
 
             </tr>

@@ -6,11 +6,6 @@
 
     <h2 class="text-xl font-semibold mb-4">Peminjaman Tools</h2>
 
-    <a href="{{ route('peminjaman.index') }}"
-       class="inline-block mb-6 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-        ← Kembali
-    </a>
-
     <form action="{{ route('peminjaman.store') }}" method="POST">
         @csrf
 
@@ -51,6 +46,18 @@
                        placeholder="Keperluan">
             </div>
 
+            <div class="flex gap-3 mt-6">
+                <button type="submit"
+                    class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                    Save
+                </button>
+
+                <a href="{{ route('peminjaman.index') }}"
+                    class="bg-gray-500 text-white px-5 py-2 rounded-lg shadow hover:bg-gray-600 transition">
+                    Kembali
+                </a>
+            </div>
+
         </div>
 
         {{-- ================= DAFTAR ALAT ================= --}}
@@ -81,82 +88,101 @@
             </table>
         </div>
 
-        <div class="text-right mt-6">
-            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                Save
-            </button>
-        </div>
     </form>
 
     {{-- ================= MODAL TOOLS ================= --}}
-    <div x-show="openTools"
-         x-transition
-         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+<div x-show="openTools"
+     x-transition
+     class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
-        <div class="bg-white w-3/4 rounded-xl shadow-xl p-6 max-h-[80vh] overflow-y-auto">
+    <div class="bg-white w-11/12 max-w-6xl rounded-2xl shadow-2xl">
 
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Pilih Tools Tersedia</h3>
-                <button @click="openTools = false"
-                        class="text-2xl text-gray-500">&times;</button>
-            </div>
+        {{-- HEADER --}}
+        <div class="flex justify-between items-center px-8 py-5 border-b">
+            <h3 class="text-lg font-semibold text-gray-800">
+                Pilih Tools Tersedia
+            </h3>
+
+            <button @click="openTools = false"
+                    class="text-gray-400 hover:text-gray-700 text-xl">
+                ✕
+            </button>
+        </div>
+
+        {{-- BODY --}}
+        <div class="p-8">
 
             <input type="text"
                    id="searchTools"
-                   class="w-full border rounded-lg px-3 py-2 mb-4"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-6 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                    placeholder="Cari nama tools atau no seri...">
 
-            <table class="w-full text-sm">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th></th>
-                        <th>Image</th>
-                        <th>Nama</th>
-                        <th>No Seri</th>
-                    </tr>
-                </thead>
-                <tbody id="toolsTable">
-                    @foreach ($serials as $serial)
-                    <tr class="border-b">
-                        <td>
-                            <input type="checkbox"
-                                   class="tool-checkbox"
-                                   value="{{ $serial->id }}"
-                                   data-id="{{ $serial->id }}"
-                                   data-name="{{ $serial->toolkit->toolkit_name }}"
-                                   data-serial="{{ $serial->serial_number }}"
-                                   data-image="{{ $serial->toolkit->image }}">
-                        </td>
+            <div class="overflow-y-auto max-h-[400px] border rounded-xl">
 
-                        <td>
-                            <img src="{{ $serial->toolkit->image 
-                                ? asset('storage/'.$serial->toolkit->image)
-                                : asset('images/no-image.png') }}"
-                                 class="preview-image w-12 cursor-pointer">
-                        </td>
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100 text-gray-600 text-xs uppercase">
+                        <tr>
+                            <th class="px-6 py-3 w-10"></th>
+                            <th class="px-6 py-3 text-left">Image</th>
+                            <th class="px-6 py-3 text-left">Nama</th>
+                            <th class="px-6 py-3 text-left">No Seri</th>
+                        </tr>
+                    </thead>
 
-                        <td>{{ $serial->toolkit->toolkit_name }}</td>
-                        <td>{{ $serial->serial_number }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    <tbody id="toolsTable" class="divide-y divide-gray-200">
+                        @foreach ($serials as $serial)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <input type="checkbox"
+                                       class="tool-checkbox w-4 h-4 text-blue-600 rounded"
+                                       value="{{ $serial->id }}"
+                                       data-id="{{ $serial->id }}"
+                                       data-name="{{ $serial->toolkit->toolkit_name }}"
+                                       data-serial="{{ $serial->serial_number }}"
+                                       data-image="{{ $serial->toolkit->image }}">
+                            </td>
 
-            <div class="flex justify-end gap-3 mt-4">
-                <button @click="openTools = false"
-                        class="px-4 py-2 border rounded-lg">
-                    Batal
-                </button>
+                            <td class="px-6 py-4">
+                                <img src="{{ $serial->toolkit->image 
+                                    ? asset('storage/'.$serial->toolkit->image)
+                                    : asset('images/no-image.png') }}"
+                                     class="w-14 h-14 object-contain rounded-lg border cursor-pointer preview-image">
+                            </td>
 
-                <button type="button"
-                        id="btnAddTool"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg">
-                    + Tambahkan
-                </button>
+                            <td class="px-6 py-4">
+                                {{ $serial->toolkit->toolkit_name }}
+                            </td>
+
+                            <td class="px-6 py-4">
+                                {{ $serial->serial_number }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
             </div>
 
         </div>
+
+        {{-- FOOTER --}}
+        <div class="flex justify-end gap-4 px-8 py-5 border-t bg-gray-50 rounded-b-2xl">
+
+            <button @click="openTools = false"
+                    class="px-5 py-2 bg-gray-200 rounded-xl hover:bg-gray-300 transition">
+                Batal
+            </button>
+
+            <button type="button"
+                    id="btnAddTool"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition">
+                + Tambahkan
+            </button>
+
+        </div>
+
     </div>
+</div>
 
     {{-- ================= IMAGE PREVIEW ================= --}}
     <div id="imagePreviewModal"

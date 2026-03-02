@@ -20,7 +20,7 @@ public function index(Request $request)
         $query = ToolTransactionItem::with([
             'transaction',
             'toolkit',
-            'serial.conditionLogs'
+            'serial.latestCondition'
         ])->whereNotNull('return_date');
 
         if ($request->filled('start_date')) {

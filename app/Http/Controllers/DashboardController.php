@@ -12,35 +12,40 @@ use App\Models\InvConsumableTransactionItem;
 class DashboardController extends Controller
 {
     public function index()
-    {
-        $totalBarang = InvToolkit::count();
-        $alatTersedia = InvSerialNumber::where('status', 'tersedia')->count();
-        $alatDipinjam = ToolTransactionItem::where('status', 'Dipinjam')->count();
+{
+    // TOTAL ALAT (jumlah serial)
+    $totalBarang = InvSerialNumber::count();
 
-        $consumableMenipis = InvConsumable::whereColumn('stock', '<=', 'minimum_stock')->count();
+    // ALAT TERSEDIA
+    $alatTersedia = InvSerialNumber::where('status', 'TERSEDIA')->count();
 
+    // ALAT DIPINJAM
+    $alatDipinjam = InvSerialNumber::where('status', 'DIPINJAM')->count();
 
-        $lowStock = InvConsumable::whereColumn('stock', '<', 'minimum_stock')->get();
-        $peminjamanTerbaru = ToolTransaction::with(['items.toolkit'])
+    // Consumable
+    $consumableMenipis = InvConsumable::whereColumn('stock', '<=', 'minimum_stock')->count();
 
-            ->latest('date')
-            ->take(5)
-            ->get();
+    $lowStock = InvConsumable::whereColumn('stock', '<', 'minimum_stock')->get();
 
-        $consumableTerbaru = InvConsumableTransactionItem::with('consumable')
-        ->orderBy('id', 'desc')
+    // Peminjaman terbaru
+    $peminjamanTerbaru = ToolTransaction::with(['items.toolkit'])
+        ->latest('date')
         ->take(5)
         ->get();
 
+    $consumableTerbaru = InvConsumableTransactionItem::with('consumable')
+        ->latest()
+        ->take(5)
+        ->get();
 
-        return view('dashboard.index', compact(
-            'totalBarang',
-            'alatTersedia',
-            'alatDipinjam',
-            'consumableMenipis',
-            'lowStock',
-            'peminjamanTerbaru',
-            'consumableTerbaru'
-        ));
-    }
+    return view('dashboard.index', compact(
+        'totalBarang',
+        'alatTersedia',
+        'alatDipinjam',
+        'consumableMenipis',
+        'lowStock',
+        'peminjamanTerbaru',
+        'consumableTerbaru'
+    ));
+}
 }

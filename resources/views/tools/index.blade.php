@@ -46,10 +46,11 @@
         </select>
     </form>
 
-    <button onclick="openAddModal()"
-            class="px-4 py-2 bg-blue-600 text-white rounded">
-        + Tambah Barang
-    </button>
+    <button type="button"
+        id="openTambahBarang"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+    + Tambah Barang
+</button>
 </div>
 
     <table class="w-full border-collapse">
@@ -106,15 +107,13 @@
         <div class="inline-flex gap-2 justify-end">
 
             {{-- -EDIT --}}
-            <button
-                onclick="openEditModal(
-                    '{{ $tool->id }}',
-                    '{{ $tool->toolkit->toolkit_name }}',
-                    '{{ $tool->toolkit->category_id }}',
-                    '{{ $tool->serial_number }}'
-                )"
-                class="text-blue-600">
-                edit
+            <button type="button"
+                class="editBtn bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                data-id="{{ $tool->id }}"
+                data-name="{{ $tool->toolkit->toolkit_name }}"
+                data-category="{{ $tool->toolkit->category->category_name ?? '' }}"
+                data-serial="{{ $tool->serial_number }}">
+                Edit
             </button>
 
             {{-- -DELETE --}}
@@ -162,54 +161,128 @@
     </table>
 </div>
 
-{{-- ================= MODAL TAMBAH ================= --}}
-<div id="addModal" class="modal hidden">
-    <div class="modal-box">
-        <h3 class="modal-title">Tambah Barang</h3>
+{{-- ================= MODAL TAMBAH BARANG ================= --}}
+<div id="tambahBarangModal"
+     class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-        <form method="POST" action="{{ route('tools.store') }}" enctype="multipart/form-data">
+    <div class="bg-white w-11/12 max-w-xl rounded-xl shadow-xl p-6 relative">
+
+        <form action="{{ route('tools.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <input name="toolkit_name" placeholder="Nama Barang" class="input" required>
-            <select name="category_id" class="input">
-                @foreach ($categories as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
-                @endforeach
-            </select>
-            <input name="serial_number" placeholder="No Seri" class="input" required>
-            <input type="file" name="image" class="input">
-
-            <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeAddModal()">Batal</button>
-                <button class="btn-primary">Simpan</button>
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Tambah Barang</h2>
+                <button type="button"
+                        id="closeTambahBarang"
+                        class="text-gray-500 hover:text-gray-700 text-xl">
+                    ✕
+                </button>
             </div>
+
+            <!-- Form Content -->
+            <div class="space-y-4">
+
+                <input type="text"
+                       name="toolkit_name"
+                       placeholder="Nama Barang"
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+                <select name="category"
+                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                    <option value="">Pilih Kategori</option>
+                    <option value="Alat Listrik">Alat Listrik</option>
+                    <option value="Alat Manual">Perkakas</option>
+                </select>
+
+                <input type="text"
+                       name="serial_number"
+                       placeholder="No Seri"
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+                <input type="file"
+                       name="image"
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button"
+                        id="cancelTambahBarang"
+                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                    Batal
+                </button>
+
+                <button type="submit"
+                        class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                    Simpan
+                </button>
+            </div>
+
         </form>
+
     </div>
 </div>
 
-{{-- ================= MODAL EDIT ================= --}}
-<div id="editModal" class="modal hidden">
-    <div class="modal-box">
-        <h3 class="modal-title">Edit Barang</h3>
+{{-- ================= MODAL EDIT BARANG ================= --}}
+<div id="editBarangModal"
+     class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-        <form id="editForm" method="POST" enctype="multipart/form-data">
+    <div class="bg-white w-11/12 max-w-xl rounded-xl shadow-xl p-6 relative">
+
+        <form id="editBarangForm" method="POST">
             @csrf
             @method('PUT')
 
-            <input id="edit_name" name="toolkit_name" class="input" required>
-            <select id="edit_category" name="category_id" class="input">
-                @foreach ($categories as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
-                @endforeach
-            </select>
-            <input id="edit_serial" name="serial_number" class="input" required>
-            <input type="file" name="image" class="input">
-
-            <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeEditModal()">Batal</button>
-                <button class="btn-primary">Update</button>
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Edit Barang</h2>
+                <button type="button"
+                        id="closeEditModal"
+                        class="text-gray-500 hover:text-gray-700 text-xl">
+                    ✕
+                </button>
             </div>
+
+            <!-- Form -->
+            <div class="space-y-4">
+
+                <input type="text"
+                       name="toolkit_name"
+                       id="editName"
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+                <select name="category"
+                        id="editCategory"
+                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                    <option value="Alat Listrik">Alat Listrik</option>
+                    <option value="Perkakas">Perkakas</option>
+                </select>
+
+                <input type="text"
+                       name="serial_number"
+                       id="editSerial"
+                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button"
+                        id="cancelEditModal"
+                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                    Batal
+                </button>
+
+                <button type="submit"
+                        class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Update
+                </button>
+            </div>
+
         </form>
+
     </div>
 </div>
 
@@ -230,26 +303,94 @@
 
 
 <script>
-function openAddModal() {
-    document.getElementById('addModal').classList.remove('hidden');
-}
-function closeAddModal() {
-    document.getElementById('addModal').classList.add('hidden');
-}
+document.addEventListener('DOMContentLoaded', function () {
 
-function openEditModal(id, name, category, serial) {
-    document.getElementById('edit_name').value = name;
-    document.getElementById('edit_category').value = category;
-    document.getElementById('edit_serial').value = serial;
+    /* =========================
+       TAMBAH BARANG MODAL
+    ========================== */
 
-    document.getElementById('editForm').action = '/data-tools/' + id;
+    const tambahModal = document.getElementById('tambahBarangModal');
+    const openTambahBtn = document.getElementById('openTambahBarang');
+    const closeTambahBtn = document.getElementById('closeTambahBarang');
+    const cancelTambahBtn = document.getElementById('cancelTambahBarang');
 
-    document.getElementById('editModal').classList.remove('hidden');
-}
+    if (openTambahBtn) {
+        openTambahBtn.addEventListener('click', function () {
+            tambahModal.classList.remove('hidden');
+            tambahModal.classList.add('flex');
+        });
+    }
 
-function closeEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
-}
+    function closeTambah() {
+        tambahModal.classList.add('hidden');
+        tambahModal.classList.remove('flex');
+    }
+
+    closeTambahBtn?.addEventListener('click', closeTambah);
+    cancelTambahBtn?.addEventListener('click', closeTambah);
+
+    tambahModal?.addEventListener('click', function (e) {
+        if (e.target === tambahModal) {
+            closeTambah();
+        }
+    });
+
+
+    /* =========================
+       EDIT BARANG MODAL
+    ========================== */
+
+    const editModal = document.getElementById('editBarangModal');
+    const editForm = document.getElementById('editBarangForm');
+    const editName = document.getElementById('editName');
+    const editCategory = document.getElementById('editCategory');
+    const editSerial = document.getElementById('editSerial');
+    const closeEditBtn = document.getElementById('closeEditModal');
+    const cancelEditBtn = document.getElementById('cancelEditModal');
+
+    document.querySelectorAll('.editBtn').forEach(button => {
+
+        button.addEventListener('click', function () {
+
+            editName.value = this.dataset.name;
+            editCategory.value = this.dataset.category;
+            editSerial.value = this.dataset.serial;
+
+            editForm.action = '/data-tools/' + this.dataset.id;
+
+            editModal.classList.remove('hidden');
+            editModal.classList.add('flex');
+        });
+
+    });
+
+    function closeEdit() {
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+    }
+
+    closeEditBtn?.addEventListener('click', closeEdit);
+    cancelEditBtn?.addEventListener('click', closeEdit);
+
+    editModal?.addEventListener('click', function (e) {
+        if (e.target === editModal) {
+            closeEdit();
+        }
+    });
+
+
+    /* =========================
+       ESC CLOSE (GLOBAL)
+    ========================== */
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "Escape") {
+            closeTambah();
+            closeEdit();
+        }
+    });
+
+});
 </script>
 
 @endsection

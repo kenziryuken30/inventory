@@ -16,6 +16,8 @@ class ToolTransactionItem extends Model
         'condition',
         'note',
         'return_date',
+        'return_condition',
+        'return_note'
     ];
 
     protected $casts = [

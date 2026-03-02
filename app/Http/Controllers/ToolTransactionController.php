@@ -8,6 +8,7 @@ use App\Models\InvSerialNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\InvToolConditionLog;
 
 
 class ToolTransactionController extends Controller
@@ -271,6 +272,7 @@ public function confirm($id)
 
     return back()->with('success', 'Transaksi berhasil dikonfirmasi');
 }
+
 public function returnProcess(Request $request, $id)
 {
     $transaction = ToolTransaction::with('items.serial')->findOrFail($id);
@@ -293,44 +295,42 @@ public function returnProcess(Request $request, $id)
 
             if (! $item) continue;
 
+            // Normalisasi kondisi dulu (HARUS DI ATAS)
+            $condition = strtolower(trim($data['condition'] ?? 'baik'));
+
             // Update transaction item
             $item->update([
                 'return_date' => $request->return_date,
-                'status'      => 'TERSEDIA',
+                'status'      => 'Tersedia',
+                'return_condition' => $condition,
+                'return_note' => $data['note'] ?? null,
             ]);
 
-            $condition = strtolower(trim($data['condition'] ?? 'baik'));
-
-            // Simpan log kondisi
-            DB::table('inv_tool_condition_logs')->insert([
-                'serial_id'  => $item->serial_id,
-                'condition'  => $condition,
-                'note'       => $data['note'] ?? null,
-                'created_at' => now(),
-                'updated_at' => now(),
+            // Simpan log kondisi (cukup sekali saja)
+            InvToolConditionLog::create([
+                'serial_id' => $item->serial_id,
+                'condition' => $condition,
+                'note'      => $data['note'] ?? null,
             ]);
 
             // Mapping kondisi ke status serial
             if ($condition === 'baik') {
                 $statusSerial = 'TERSEDIA';
-            } elseif ($condition === 'maintenance') {
-                $statusSerial = 'TIDAK_TERSEDIA';
-            } elseif ($condition === 'rusak') {
+            } elseif (in_array($condition, ['maintenance', 'rusak'])) {
                 $statusSerial = 'TIDAK_TERSEDIA';
             } else {
                 $statusSerial = 'TERSEDIA';
             }
 
-
+            // Update status serial
             $item->serial->update([
                 'status' => $statusSerial
             ]);
         }
     });
 
-    return back()->with('success', 'Pengembalian berhasil');
+    return redirect()->route('peminjaman.index')
+    ->with('success', 'Pengembalian berhasil');
 }
-
-
 
 }
