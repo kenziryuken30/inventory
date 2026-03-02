@@ -5,7 +5,7 @@
 <h2 class="text-xl font-bold mb-4">Laporan Transaksi Tools</h2>
 
 <form method="GET" action="{{ route('laporan.tools.transaksi') }}"
-      class="bg-gradient-to-r from-cyan-600 to-teal-500 p-4 rounded-xl shadow mb-6">
+      class="bg-linear-to-r from-cyan-600 to-teal-500 p-4 rounded-xl shadow mb-6">
 
     <input type="hidden" name="type" value="{{ $type }}">
 
@@ -81,7 +81,7 @@
     <div class="bg-white rounded-xl shadow overflow-hidden">
         <table class="w-full text-sm">
 
-            <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+            <thead class="bg-linear-to-r from-cyan-600 to-teal-500 text-white">
                 <tr>
                     <th class="px-6 py-3">ID</th>
                     <th class="px-6 py-3">TGL PINJAM</th>
@@ -179,7 +179,7 @@
 
             <div class="bg-gray-50 rounded-lg overflow-hidden">
                 <table class="w-full text-sm">
-                    <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+                    <thead class="bg-linear-to-r from-cyan-600 to-teal-500 text-white">
                         <tr>
                             <th class="px-4 py-2 text-left">NO SERI</th>
                             <th class="px-4 py-2 text-left">NAMA ALAT</th>
@@ -221,7 +221,7 @@
 
     <table class="w-full text-sm">
 
-        <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+        <thead class="bg-linear-to-r from-cyan-600 to-teal-500 text-white">
             <tr class="text-left">
                 <th class="px-6 py-3">ID</th>
                 <th class="px-6 py-3">TGL KEMBALI</th>

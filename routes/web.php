@@ -8,6 +8,7 @@ use App\Http\Controllers\InvConsumableController;
 use App\Http\Controllers\ToolTransactionController;
 use App\Http\Controllers\ConsumableTransactionController;
 use App\Http\Controllers\ReportToolController;
+use App\Http\Controllers\ReportConsumableController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -78,3 +79,7 @@ Route::get('/laporan/transaksi-tools',
     [ReportToolController::class, 'index']
 )->name('laporan.tools.transaksi');
 });
+
+Route::get('/laporan/consumable/transaksi', 
+    [ReportConsumableController::class, 'transaksi']
+)->name('laporan.consumable.transaksi');

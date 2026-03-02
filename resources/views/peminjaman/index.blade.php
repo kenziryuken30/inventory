@@ -30,7 +30,7 @@
     {{-- ================= FILTER ================= --}}
 <form method="GET"
       action="{{ route('peminjaman.index') }}"
-      class="mb-6 bg-gradient-to-r from-cyan-500 to-teal-500 p-4 rounded-xl shadow flex flex-wrap gap-4 items-center">
+      class="mb-6 bg-linear-to-r from-cyan-500 to-teal-500 p-4 rounded-xl shadow flex flex-wrap gap-4 items-center">
 
     {{-- Search Nama --}}
     <input type="text"

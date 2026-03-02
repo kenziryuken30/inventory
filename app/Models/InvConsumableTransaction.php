@@ -12,6 +12,7 @@ class InvConsumableTransaction extends Model
 
     protected $fillable = [
         'id',
+        'transaction_code',
         'borrower_name',
         'client',
         'project',
@@ -31,5 +32,14 @@ class InvConsumableTransaction extends Model
             InvConsumableTransactionItem::class,
             'transaction_id'
         );
+    }
+    public function transaction()
+    {
+        return $this->belongsTo(InvConsumableTransaction::class, 'transaction_id');
+    }
+
+    public function consumable()
+    {
+        return $this->belongsTo(InvConsumable::class, 'consumable_id');
     }
 }

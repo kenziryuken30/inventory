@@ -173,7 +173,7 @@
             </div>
 
             <!-- Table -->
-            <div class="overflow-y-auto max-h-[400px] border rounded-lg">
+            <div class="overflow-y-auto max-h-100 border rounded-lg">
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr class="bg-gray-100 text-gray-600 uppercase text-xs">
