@@ -16,7 +16,15 @@
         </div>
 
         <a href="{{ route('peminjaman.create') }}"
-           class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
+           class="bg-gradient-to-r from-gray-200 to-gray-300
+       text-gray-800
+       px-6 py-2.5
+       rounded-xl
+       shadow-md
+       hover:shadow-lg
+       hover:from-gray-300 hover:to-gray-400
+       hover:-translate-y-0.5
+       transition duration-200">
             + Pinjam Tools
         </a>
     </div>
@@ -37,21 +45,27 @@
     {{-- ================= FILTER ================= --}}
 <form method="GET"
       action="{{ route('peminjaman.index') }}"
-      class="mb-6 bg-linear-to-r from-cyan-500 to-teal-500 p-4 rounded-xl shadow flex flex-wrap gap-4 items-center">
+      class="mb-6 bg-gradient-to-r from-cyan-500 to-teal-500 p-4 rounded-xl shadow flex flex-wrap gap-4 items-center">
 
     {{-- Search Nama --}}
     <input type="text"
            name="search"
            value="{{ request('search') }}"
            placeholder="Masukan nama peminjam"
-           class="px-4 py-2 rounded-lg shadow w-64">
+           class="bg-white border border-gray-300
+              rounded-xl px-4 py-2 text-sm
+              focus:ring-2 focus:ring-cyan-500
+              focus:outline-none shadow-sm">
 
     {{-- Tanggal Dari --}}
     <label class="text-white font-semibold">Tanggal</label>
     <input type="date"
            name="start_date"
            value="{{ request('start_date') }}"
-           class="px-3 py-2 rounded-lg shadow">
+           class="bg-white border border-gray-300
+              rounded-xl px-4 py-2 text-sm
+              focus:ring-2 focus:ring-cyan-500
+              focus:outline-none shadow-sm">
 
     <span class="text-white font-semibold">S/D</span>
 
@@ -59,7 +73,10 @@
     <input type="date"
            name="end_date"
            value="{{ request('end_date') }}"
-           class="px-3 py-2 rounded-lg shadow">
+           class="bg-white border border-gray-300
+              rounded-xl px-4 py-2 text-sm
+              focus:ring-2 focus:ring-cyan-500
+              focus:outline-none shadow-sm">
 
     <button type="submit"
             class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow font-semibold">

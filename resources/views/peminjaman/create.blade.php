@@ -98,7 +98,13 @@
 
             <button type="button"
                     id="openToolsBtn"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
+                    class="bg-gray-100 text-gray-700
+           px-6 py-2.5 rounded-xl
+           shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+           hover:bg-gray-200
+           hover:shadow-[0_6px_18px_rgba(0,0,0,0.2)]
+           hover:-translate-y-0.5
+           transition duration-200">
                 + Pilih Tools
             </button>
 
@@ -168,7 +174,13 @@
 
     <div class="flex justify-end">
         <button type="submit"
-            class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700">
+            class="bg-gray-100 text-gray-700
+           px-6 py-2.5 rounded-xl
+           shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+           hover:bg-gray-200
+           hover:shadow-[0_6px_18px_rgba(0,0,0,0.2)]
+           hover:-translate-y-0.5
+           transition duration-200">
             Save Transaksi
         </button>
     </div>

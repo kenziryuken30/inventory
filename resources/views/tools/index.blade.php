@@ -17,7 +17,8 @@
 
 <div class="bg-white rounded shadow p-4">
 
-<div class="bg-white rounded-2xl shadow-md p-5 mb-6
+<div class="bg-gradient-to-r from-cyan-600 to-teal-500
+            rounded-2xl shadow-lg p-5 mb-6
             flex justify-between items-center">
 
     {{-- SEARCH & FILTER --}}
@@ -29,15 +30,21 @@
            name="search"
            value="{{ request('search') }}"
            placeholder="Cari barang..."
-           class="w-72 px-4 py-2 rounded-xl border border-gray-300
-                  focus:ring-2 focus:ring-cyan-500 focus:outline-none
-                  shadow-sm">
+           class="w-72 bg-white text-gray-700
+              border border-gray-300
+              rounded-xl px-4 py-2
+              shadow-sm
+              focus:ring-2 focus:ring-white
+              focus:outline-none">
 
     <select name="condition"
             onchange="this.form.submit()"
-            class="px-4 py-2 rounded-xl border border-gray-300
-                   focus:ring-2 focus:ring-cyan-500 focus:outline-none
-                   shadow-sm">
+            class="bg-white text-gray-700
+               border border-gray-300
+               rounded-xl px-4 py-2
+               shadow-sm
+               focus:ring-2 focus:ring-white
+               focus:outline-none">
 
         <option value="">Semua Kondisi</option>
         <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>
@@ -55,10 +62,13 @@
 
     <button type="button"
     id="openTambahBarang"
-    class="bg-gradient-to-r from-cyan-600 to-teal-500
-           text-white px-6 py-2.5 rounded-xl
-           shadow-md hover:shadow-lg
-           hover:scale-105 transition duration-200">
+    class="bg-gray-100 text-gray-700
+           px-6 py-2.5 rounded-xl
+           shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+           hover:bg-gray-200
+           hover:shadow-[0_6px_18px_rgba(0,0,0,0.2)]
+           hover:-translate-y-0.5
+           transition duration-200">
     + Tambah Barang
 </button>
 </div>
