@@ -23,7 +23,7 @@ class ToolController extends Controller
 
         if ($request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('serial_number', 'like', '%' . $request->search . '%')
+                $q->     where('serial_number', 'like', '%' . $request->search . '%')
                   ->orWhereHas('toolkit', function ($qt) use ($request) {
                       $qt->where('toolkit_name', 'like', '%' . $request->search . '%');
                   });
@@ -82,33 +82,40 @@ class ToolController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'toolkit_name'  => 'required',
-            'category_id'   => 'required',
-            'serial_number' => 'required',
-            'image'         => 'nullable|image',
-        ]);
+{
+    $tool = InvSerialNumber::with('toolkit')->findOrFail($id);
 
-        $serial = InvSerialNumber::with('toolkit')->findOrFail($id);
+    // Update data toolkit
+    $tool->toolkit->update([
+        'toolkit_name' => $request->toolkit_name,
+        'category_id'  => $request->category_id,
+    ]);
 
-        $serial->toolkit->update([
-            'toolkit_name' => $request->toolkit_name,
-            'category_id'  => $request->category_id,
-        ]);
+    // Update serial
+    $tool->update([
+        'serial_number' => $request->serial_number,
+    ]);
 
-        $serial->update([
-            'serial_number' => $request->serial_number,
-        ]);
+    // Update image jika ada
+    if ($request->hasFile('image')) {
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('tools', 'public');
-            $serial->toolkit->update(['image' => $path]);
+        if ($tool->toolkit->image &&
+            Storage::disk('public')->exists($tool->toolkit->image)) {
+
+            Storage::disk('public')->delete($tool->toolkit->image);
         }
 
-        return redirect()->route('tools.index')
-            ->with('success', 'Barang berhasil diperbarui');
+        $path = $request->file('image')
+                        ->store('tools', 'public');
+
+        $tool->toolkit->update([
+            'image' => $path
+        ]);
     }
+
+    return redirect()->route('tools.index')
+        ->with('success', 'Barang berhasil diupdate');
+}
 
 
     public function destroy($id)

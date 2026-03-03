@@ -112,7 +112,8 @@
                 data-id="{{ $tool->id }}"
                 data-name="{{ $tool->toolkit->toolkit_name }}"
                 data-category="{{ $tool->toolkit->category_id }}"
-                data-serial="{{ $tool->serial_number }}">
+                data-serial="{{ $tool->serial_number }}"
+                data-image="{{ $tool->toolkit->image }}">
                 Edit
             </button>
 
@@ -248,7 +249,7 @@
 
     <div class="bg-white w-11/12 max-w-xl rounded-xl shadow-xl p-6 relative">
 
-        <form id="editBarangForm" method="POST">
+        <form id="editBarangForm" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -287,7 +288,16 @@
                        id="editSerial"
                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
 
+                <div>
+                        <input type="file"
+                            name="image"
+                            class="w-full border rounded-lg px-4 py-2">
+
+                    
+                </div>
             </div>
+
+            
 
             <!-- Footer -->
             <div class="flex justify-end gap-3 mt-6">
@@ -386,6 +396,16 @@ document.addEventListener('click', function (e) {
         editName.value = button.dataset.name;
         editCategory.value = button.dataset.category;
         editSerial.value = button.dataset.serial;
+
+        const editPreviewImage = document.getElementById('editPreviewImage');
+
+        const image = button.dataset.image;
+
+        if (image) {
+            editPreviewImage.src = '/storage/' + image;
+        } else {
+            editPreviewImage.src = '/images/no-image.png';
+        }
 
         editForm.action = '/data-tools/' + button.dataset.id;
 

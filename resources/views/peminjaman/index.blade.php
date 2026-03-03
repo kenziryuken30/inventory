@@ -6,7 +6,14 @@
 
     {{-- ================= HEADER ================= --}}
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-semibold">Peminjaman Tools</h2>
+        <div>
+            <h2 class="text-2xl font-bold text-[#268397]">
+                Peminjaman Tools
+            </h2>
+            <p class="text-gray-500 text-sm">
+                Kelola data peminjaman tools
+            </p>
+        </div>
 
         <a href="{{ route('peminjaman.create') }}"
            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
@@ -67,61 +74,63 @@
     
 
 {{-- ================= TABLE RIWAYAT ================= --}}
-<div class="bg-white shadow-lg rounded-xl overflow-hidden">
-    <table class="min-w-full text-sm text-gray-700">
-        
-        <thead class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
-            <tr>
-                <th class="px-4 py-3 text-center w-12">No</th>
-                <th class="px-4 py-3 text-left">Kode Transaksi</th>
-                <th class="px-4 py-3 text-left">Tanggal</th>
-                <th class="px-4 py-3 text-left">Peminjam</th>
-                <th class="px-4 py-3 text-left">Tools</th>
-                <th class="px-4 py-3 text-left">No Seri</th>
-                <th class="px-4 py-3 text-center w-64">Aksi</th>
+<div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+
+    <table class="min-w-full text-sm">
+
+        {{-- HEADER --}}
+        <thead>
+            <tr class="text-white bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
+                <th class="py-4 text-center">NO</th>
+                <th class="py-4 text-left">KODE</th>
+                <th class="py-4 text-left">TGL PINJAM</th>
+                <th class="py-4 text-left">KARYAWAN</th>
+                <th class="py-4 text-left">NAMA TOOLS</th>
+                <th class="py-4 text-left">NO SERI</th>
+                <th class="py-4 text-center">AKSI</th>
             </tr>
         </thead>
 
-        <tbody class="divide-y divide-gray-200">
-
+        {{-- BODY --}}
+        <tbody>
         @forelse ($transactions as $transaction)
 
-            <tr class="hover:bg-gray-50 transition">
+            <tr class="border-b hover:bg-gray-50 transition">
 
-                <td class="px-4 py-3 text-center font-medium">
+                <td class="py-4 text-center font-medium">
                     {{ $loop->iteration }}
                 </td>
 
-                <td class="px-4 py-3 font-semibold text-blue-600">
+                <td class="py-4 font-semibold text-blue-600">
                     {{ $transaction->kode_transaksi ?? $transaction->transaction_code }}
                 </td>
 
-                <td class="px-4 py-3">
-                    {{ \Carbon\Carbon::parse($transaction->date)->format('d-m-Y') }}
+                <td class="py-4">
+                    {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
                 </td>
 
-                <td class="px-4 py-3">
+                <td class="py-4">
                     {{ $transaction->borrower_name }}
                 </td>
 
-                <td class="px-4 py-3">
+                <td class="py-4">
                     @foreach ($transaction->items as $item)
-                        <div>{{ $item->toolkit->toolkit_name ?? '-' }}</div>
+                        {{ $item->toolkit->toolkit_name ?? '-' }}<br>
                     @endforeach
                 </td>
 
-                <td class="px-4 py-3">
+                <td class="py-4">
                     @foreach ($transaction->items as $item)
-                        <div>{{ $item->serial->serial_number ?? '-' }}</div>
+                        {{ $item->serial->serial_number ?? '-' }}<br>
                     @endforeach
                 </td>
 
-                <td class="px-4 py-3 text-center space-x-2">
+                <td class="py-4 text-center space-x-2">
 
                     @if (! $transaction->is_confirm)
 
                         <a href="{{ route('peminjaman.edit', $transaction->id) }}"
-                           class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition">
+                           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow text-xs">
                             Edit
                         </a>
 
@@ -131,7 +140,7 @@
                               onsubmit="return confirm('Hapus transaksi ini?')">
                             @csrf
                             @method('DELETE')
-                            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition">
+                            <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow text-xs">
                                 Hapus
                             </button>
                         </form>
@@ -140,7 +149,7 @@
                               method="POST"
                               class="inline">
                             @csrf
-                            <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-xs transition">
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow text-xs">
                                 Confirm
                             </button>
                         </form>
@@ -150,27 +159,28 @@
                         @if ($transaction->items->whereNull('return_date')->count() > 0)
                             <button
                                 @click="openReturn = '{{ $transaction->id }}'"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-xs transition">
+                                class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg shadow text-xs">
                                 Pengembalian
                             </button>
                         @endif
 
-                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-xs font-medium">
-                            Confirmed
+                        <span class="bg-green-500 text-white px-4 py-2 rounded-lg shadow text-xs">
+                            ✓ confirmed
                         </span>
 
                     @endif
+
                 </td>
+
             </tr>
 
         @empty
             <tr>
-                <td colspan="7" class="p-6 text-center text-gray-400">
+                <td colspan="7" class="text-center py-6 text-gray-400">
                     Tidak ada data peminjaman
                 </td>
             </tr>
         @endforelse
-
         </tbody>
     </table>
 </div>

@@ -258,13 +258,6 @@
                     {{ $row->serial->serial_number ?? '-' }}
                 </td>
 
-                @php
-                   $log = $row->serial->conditionLogs()
-                        ->where('created_at', '<=', $row->return_date)
-                        ->orderBy('created_at', 'desc')
-                        ->first();
-                @endphp
-
                 <td>
                     {{ $row->return_condition ?? '-' }}
                 </td>

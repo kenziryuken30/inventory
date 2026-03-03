@@ -46,11 +46,8 @@ class InvSerialNumber extends Model
 }
     // kondisi TERAKHIR (yang dipakai di UI)
     public function latestCondition()
-    {
-        return $this->hasOne(
-            InvToolConditionLog::class,
-            'serial_id',
-            'id'
-        )->latestOfMany();
-    }
+{
+    return $this->hasOne(InvToolConditionLog::class, 'serial_id')
+                ->latest('id');
+}
 }

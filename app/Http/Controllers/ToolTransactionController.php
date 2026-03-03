@@ -13,7 +13,7 @@ use App\Models\InvToolConditionLog;
 
 class ToolTransactionController extends Controller
 {
-public function index(Request $request)
+    public function index(Request $request)
 {
     $query = ToolTransaction::with(['items.toolkit', 'items.serial'])
         ->whereHas('items', function ($q) {
@@ -38,7 +38,6 @@ public function index(Request $request)
 
     return view('peminjaman.index', compact('transactions'));
 }
-
 
 
     public function create()
@@ -101,66 +100,60 @@ public function index(Request $request)
     }
 });
 
-    return redirect()->route('peminjaman.index')
-        ->with('success', 'Transaksi berhasil dibuat');
+    return redirect()
+    ->route('peminjaman.index')
+    ->with('success', 'Transaksi berhasil dibuat');
 }
-
 
 public function edit($id)
 {
-    $transaction = ToolTransaction::with('items.serial', 'items.toolkit')
+    $transaction = ToolTransaction::with('items.serial')
         ->findOrFail($id);
 
-    // hanya boleh edit jika belum confirm
-    if ($transaction->is_confirm) {
-        return redirect()->route('peminjaman.index')
-            ->with('error', 'Transaksi sudah dikonfirmasi, tidak bisa diedit');
-    }
-
+    // Hanya tampilkan serial yang masih tersedia
     $serials = InvSerialNumber::with('toolkit')
         ->where('status', 'TERSEDIA')
         ->get();
 
-    return view('peminjaman.edit', compact('transaction', 'serials'));
+    return view('peminjaman.edit', compact('transaction','serials'));
 }
 
 public function update(Request $request, $id)
 {
-    $transaction = ToolTransaction::findOrFail($id);
+    $transaction = ToolTransaction::with('items')->findOrFail($id);
 
-    if ($transaction->is_confirm) {
-        return back()->with('error', 'Transaksi sudah dikonfirmasi');
-    }
-
-    if ($transaction->items()->count() === 0) {
-        return back()->with('error', 'Belum ada barang yang ditambahkan');
-    }
-
+    // Validasi form basic
     $request->validate([
-        'borrower_name' => 'required|string',
-        'client_name'   => 'nullable|string',
-        'project'       => 'nullable|string',
-        'purpose'       => 'nullable|string',
-        'date'          => 'required|date',
+        'borrower_name' => 'required|string|max:255',
+        'date' => 'required|date',
+        'client_name' => 'nullable|string|max:255',
+        'project' => 'nullable|string|max:255',
+        'purpose' => 'nullable|string|max:255',
     ]);
 
-    $transaction->update($request->only([
-        'borrower_name',
-        'client_name',
-        'project',
-        'purpose',
-        'date',
-    ]));
+    // Cek apakah ada tools
+    if ($transaction->items->count() === 0) {
+        return back()->with('error', 'Belum pilih tools!');
+    }
 
-    return redirect()->route('peminjaman.index')
-        ->with('success', 'Transaksi berhasil diperbarui');
+    // Update data utama transaksi
+    $transaction->update([
+        'borrower_name' => $request->borrower_name,
+        'date' => $request->date,
+        'client_name' => $request->client_name,
+        'project' => $request->project,
+        'purpose' => $request->purpose,
+    ]);
+
+return redirect('/peminjaman')
+    ->with('success', 'Transaksi berhasil diupdate');
 }
-
 
 public function addItem(Request $request, $id)
 {
     $request->validate([
-        'serial_ids' => 'required|array|min:1'
+        'serial_ids' => 'required|array|min:1',
+        'serial_ids.*' => 'exists:inv_serial_number,id'
     ]);
 
     $transaction = ToolTransaction::findOrFail($id);
@@ -177,7 +170,7 @@ public function addItem(Request $request, $id)
                 ->where('status', 'TERSEDIA')
                 ->findOrFail($serialId);
 
-            // cegah duplikat
+            // Cegah duplikat
             $exists = ToolTransactionItem::where('transaction_id', $transaction->id)
                 ->where('serial_id', $serialId)
                 ->exists();
@@ -191,12 +184,15 @@ public function addItem(Request $request, $id)
                 'serial_id'      => $serial->id,
                 'status'         => 'DIPINJAM',
             ]);
+
+            // 🔥 Update status serial jadi dipinjam
+            $serial->update([
+                'status' => 'DIPINJAM'
+            ]);
         }
     });
 
-    return redirect()
-        ->route('peminjaman.edit', $transaction->id)
-        ->with('success', 'Barang berhasil ditambahkan');
+    return back()->with('success', 'Tools berhasil ditambahkan');
 }
 
 
@@ -229,29 +225,34 @@ public function destroy($id)
 
 public function destroyItem($id)
 {
-    $item = ToolTransactionItem::with(['serial', 'transaction'])
-        ->findOrFail($id);
+    $item = ToolTransactionItem::find($id);
 
-    if ($item->transaction->is_confirm) {
-        return back()->with('error', 'Transaksi sudah dikonfirmasi');
+    if (!$item) {
+        return back()->with('error', 'Item tidak ditemukan');
     }
 
+    $transactionId = $item->transaction_id;
+
     DB::transaction(function () use ($item) {
-        $item->serial->update([
-            'status' => 'TERSEDIA'
-        ]);
+
+        if ($item->serial) {
+            $item->serial->update([
+                'status' => 'TERSEDIA'
+            ]);
+        }
 
         $item->delete();
     });
 
     return redirect()
-        ->route('peminjaman.edit', $item->transaction->id)
-        ->with('success', 'Barang berhasil dihapus!');
+        ->route('peminjaman.edit', $transactionId)
+        ->with('success', 'Item berhasil dihapus!');
 }
 
 public function confirm($id)
 {
-    $transaction = ToolTransaction::with('items.serial')->findOrFail($id);
+    $transaction = ToolTransaction::with('items.serial')
+        ->findOrFail($id);
 
     DB::transaction(function () use ($transaction) {
 
@@ -260,6 +261,7 @@ public function confirm($id)
         ]);
 
         foreach ($transaction->items as $item) {
+
             $item->update([
                 'status' => 'DIPINJAM'
             ]);
@@ -270,7 +272,9 @@ public function confirm($id)
         }
     });
 
-    return back()->with('success', 'Transaksi berhasil dikonfirmasi');
+    return redirect()
+        ->route('peminjaman.index')
+        ->with('success', 'Transaksi berhasil dikonfirmasi');
 }
 
 public function returnProcess(Request $request, $id)

@@ -1,142 +1,167 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="{ openModal: false }" class="min-h-screen bg-gray-100 p-8">
+<div class="max-w-7xl mx-auto">
 
-    <h1 class="text-2xl font-semibold mb-6">Edit Peminjaman Tools</h1>
+    {{-- ================= TITLE ================= --}}
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-[#268397]">
+                Edit Peminjaman Tools
+            </h2>
+            <p class="text-gray-500 text-sm">
+                Edit Proses Peminjaman dan Daftar Tools yang dipinjam
+            </p>
+        </div>
 
-    {{-- Flash Message --}}
-    @if (session('success'))
+        <a href="{{ route('peminjaman.index') }}"
+           class="bg-gray-200 hover:bg-gray-300 text-sm px-4 py-2 rounded-lg shadow">
+            ← Kembali
+        </a>
+    </div>
+
+    {{-- ================= ALERT ================= --}}
+    @if(session('success'))
         <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
             {{ session('success') }}
         </div>
     @endif
 
-    @if (session('error'))
+    @if(session('error'))
         <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
             {{ session('error') }}
         </div>
     @endif
 
-    {{-- ================= FORM UPDATE ================= --}}
-    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-        <form action="{{ route('peminjaman.update', $transaction->id) }}" method="POST">
-            @csrf
-            @method('PUT')
 
-            <div class="grid grid-cols-2 gap-6 mb-6">
+    {{-- ================= PANEL BESAR ================= --}}
+<div class="bg-white rounded-2xl shadow-xl p-8 space-y-10">
+
+    {{-- ================= FORM UPDATE (HEADER ONLY) ================= --}}
+    <form id="updateForm"
+          action="{{ route('peminjaman.update', $transaction->id) }}"
+          method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="space-y-6">
+
+            <div class="grid md:grid-cols-2 gap-8">
                 <div>
-                    <label class="block text-sm font-medium mb-2">Nama Peminjam</label>
+                    <label class="text-sm text-gray-600">Nama Peminjam</label>
                     <input type="text"
-                        name="borrower_name"
-                        value="{{ $transaction->borrower_name }}"
-                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        required>
+                           name="borrower_name"
+                           value="{{ $transaction->borrower_name }}"
+                           class="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-2">Tanggal</label>
+                    <label class="text-sm text-gray-600">Tanggal</label>
                     <input type="date"
-                        name="date"
-                        value="{{ $transaction->date->format('Y-m-d') }}"
-                        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                        required>
+                           name="date"
+                           value="{{ $transaction->date->format('Y-m-d') }}"
+                           class="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200">
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-6 mb-6">
-                <input type="text"
-                    name="client_name"
-                    value="{{ $transaction->client_name }}"
-                    placeholder="Nama Client"
-                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <label class="text-sm text-gray-600">Nama Client</label>
+                    <input type="text"
+                           name="client_name"
+                           value="{{ $transaction->client_name }}"
+                           class="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200">
+                </div>
 
-                <input type="text"
-                    name="project"
-                    value="{{ $transaction->project }}"
-                    placeholder="Proyek"
-                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                <div>
+                    <label class="text-sm text-gray-600">Proyek</label>
+                    <input type="text"
+                           name="project"
+                           value="{{ $transaction->project }}"
+                           class="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200">
+                </div>
 
-                <input type="text"
-                    name="purpose"
-                    value="{{ $transaction->purpose }}"
-                    placeholder="Keperluan"
-                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                <div>
+                    <label class="text-sm text-gray-600">Keperluan</label>
+                    <input type="text"
+                           name="purpose"
+                           value="{{ $transaction->purpose }}"
+                           class="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200">
+                </div>
             </div>
 
-            <div class="flex gap-3">
-                <button type="submit"
-                    class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-                    Simpan Perubahan
-                </button>
+        </div>
+    </form>
+    {{-- END FORM UPDATE --}}
 
-                <a href="{{ route('peminjaman.index') }}"
-                    class="bg-gray-500 text-white px-5 py-2 rounded-lg shadow hover:bg-gray-600 transition">
-                    Kembali
-                </a>
-            </div>
-        </form>
-    </div>
 
-    {{-- ================= TABLE ================= --}}
-    <div class="bg-white rounded-xl shadow-md p-6">
+    {{-- ================= DAFTAR TOOLS ================= --}}
+    <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
 
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">Daftar Alat yang Dipinjam</h2>
+            <h3 class="font-semibold text-gray-700">Daftar Tools</h3>
 
             <button type="button"
-                id="openModalBtn"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                    id="openToolsBtn"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
                 + Pilih Tools
             </button>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
+        <div class="rounded-xl overflow-hidden border">
+            <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs">
-                        <th class="px-6 py-3">No</th>
-                        <th class="px-6 py-3">Image</th>
-                        <th class="px-6 py-3">Nama Tools</th>
-                        <th class="px-6 py-3">No Seri</th>
-                        <th class="px-6 py-3">Aksi</th>
+                    <tr class="text-white bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
+                        <th class="py-3 text-center">NO</th>
+                        <th class="py-3 text-center">Image</th>
+                        <th class="py-3 text-center">Nama Tools</th>
+                        <th class="py-3 text-center">No Seri</th>
+                        <th class="py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody>
                     @forelse ($transaction->items as $item)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-3">{{ $loop->iteration }}</td>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="text-center py-4">
+                            {{ $loop->iteration }}
+                        </td>
 
-                            <td class="px-6 py-3">
-                                @if ($item->toolkit->image)
-                                    <img src="{{ asset('storage/'.$item->toolkit->image) }}"
-                                         class="w-14 h-14 object-contain rounded border">
-                                @else
-                                    -
-                                @endif
-                            </td>
+                        <td class="text-center">
+                            @if($item->toolkit->image)
+                                <img src="{{ asset('storage/'.$item->toolkit->image) }}"
+                                     class="w-12 h-12 object-contain mx-auto rounded">
+                            @endif
+                        </td>
 
-                            <td class="px-6 py-3">{{ $item->toolkit->toolkit_name }}</td>
-                            <td class="px-6 py-3">{{ $item->serial->serial_number }}</td>
+                        <td class="text-center">
+                            {{ $item->toolkit->toolkit_name }}
+                        </td>
 
-                            <td class="px-6 py-3">
-                                <form action="{{ route('peminjaman.item.destroy', $item->id) }}"
-                                      method="POST"
-                                      onsubmit="return confirm('Hapus item ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                        <td class="text-center">
+                            {{ $item->serial->serial_number }}
+                        </td>
+
+                        <td class="text-center">
+                            <form action="{{ route('peminjaman.item.destroy', $item->id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Yakin ingin menghapus item ini?')"
+                                  class="inline">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                    class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-sm hover:bg-red-200">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-gray-400 py-6">
-                                Belum ada barang yang ditambahkan
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="5" class="text-center text-gray-400 py-6">
+                            Belum ada tools
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -144,158 +169,188 @@
 
     </div>
 
- {{-- ================= MODAL ================= --}}
+
+    {{-- ================= SAVE BUTTON ================= --}}
+    <div class="flex justify-end pt-6">
+        <button type="submit"
+                form="updateForm"
+                class="bg-[#268397] hover:bg-[#1d6d7c] text-white px-8 py-3 rounded-xl shadow">
+            Save Transaksi
+        </button>
+    </div>
+
+</div>
+
+
+
+{{-- ================= MODAL ================= --}}
+{{-- ================= MODAL TOOLS ================= --}}
 <div id="toolsModal"
      class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-    <div class="bg-white w-11/12 max-w-6xl rounded-xl shadow-xl p-6 relative">
+    <div class="bg-white w-11/12 max-w-3xl rounded-2xl shadow-2xl relative">
 
-        <form action="{{ route('peminjaman.item.add', $transaction->id) }}"
-              method="POST">
-            @csrf
+        {{-- CLOSE BUTTON --}}
+        <button type="button"
+                id="closeToolsBtn"
+                class="absolute top-4 right-5 text-gray-400 hover:text-gray-600 text-xl">
+            ✕
+        </button>
 
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Pilih Tools Tersedia</h2>
-                <button type="button"
-                        id="closeModalBtn"
-                        class="text-gray-500 hover:text-gray-700 text-xl">
-                    ✕
-                </button>
-            </div>
+        {{-- HEADER --}}
+        <div class="px-8 pt-8 pb-4">
+            <h3 class="text-lg font-semibold text-gray-700">
+                Tools Tersedia
+            </h3>
+        </div>
 
-            <!-- Search -->
-            <div class="mb-4">
+        {{-- BODY --}}
+        <div class="px-8 pb-6">
+
+            {{-- SEARCH --}}
+            <div class="bg-gradient-to-r from-teal-400 to-teal-500 p-3 rounded-xl shadow-md mb-6">
                 <input type="text"
-                    id="searchToolsEdit"
-                    placeholder="Cari nama tools atau no seri..."
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                       id="searchToolsModal"
+                       placeholder="Cari nama tools atau no seri..."
+                       class="w-full bg-white rounded-lg px-4 py-2 outline-none">
             </div>
 
-            <!-- Table -->
-            <div class="overflow-y-auto max-h-100 border rounded-lg">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600 uppercase text-xs">
-                            <th class="px-4 py-3"></th>
-                            <th class="px-4 py-3">Image</th>
-                            <th class="px-4 py-3">Nama</th>
-                            <th class="px-4 py-3">No Seri</th>
-                        </tr>
-                    </thead>
-                    <tbody id="toolsTableEdit" class="divide-y divide-gray-200">
+            {{-- TABLE --}}
+            <form action="{{ route('peminjaman.item.add', $transaction->id) }}"
+                  method="POST">
+                @csrf
 
-                        @forelse ($serials as $serial)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center">
+                <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm max-h-[350px] overflow-y-auto">
+
+                    <table class="w-full text-sm">
+
+                        <thead>
+                            <tr class="text-white bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
+                                <th class="py-3 px-4 w-10"></th>
+                                <th class="py-3 px-4 text-left">Nama Tools</th>
+                                <th class="py-3 px-4 text-center">No Seri</th>
+                                <th class="py-3 px-4 text-center">Image</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="toolsTableBody" class="bg-white divide-y divide-gray-200">
+
+                            @forelse ($serials as $serial)
+                            <tr class="hover:bg-gray-50 transition">
+
+                                <td class="py-3 px-4 text-center">
                                     <input type="checkbox"
                                            name="serial_ids[]"
                                            value="{{ $serial->id }}"
-                                           class="w-4 h-4 text-blue-600 rounded">
+                                           class="w-4 h-4 accent-teal-600">
                                 </td>
 
-                                <td class="px-4 py-3">
-                                    @if ($serial->toolkit->image)
-                                        <img src="{{ asset('storage/'.$serial->toolkit->image) }}"
-                                             class="w-14 h-14 object-contain rounded border">
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-
-                                <td class="px-4 py-3">
+                                <td class="py-3 px-4 font-medium text-gray-700">
                                     {{ $serial->toolkit->toolkit_name }}
                                 </td>
 
-                                <td class="px-4 py-3">
+                                <td class="py-3 px-4 text-center text-gray-600">
                                     {{ $serial->serial_number }}
                                 </td>
+
+                                <td class="py-3 px-4 text-center">
+                                    <img src="{{ $serial->toolkit->image 
+                                        ? asset('storage/'.$serial->toolkit->image)
+                                        : asset('images/no-image.png') }}"
+                                         class="w-12 h-12 object-contain mx-auto rounded shadow-sm">
+                                </td>
+
                             </tr>
-                        @empty
+                            @empty
                             <tr>
-                                <td colspan="4" class="text-center text-gray-400 py-6">
+                                <td colspan="4"
+                                    class="text-center text-gray-400 py-6">
                                     Tidak ada tools tersedia
                                 </td>
                             </tr>
-                        @endforelse
+                            @endforelse
 
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
 
-            <!-- Footer -->
-            <div class="flex justify-end gap-3 mt-5">
-                <button type="button"
-                        id="cancelModalBtn"
-                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                    Batal
-                </button>
+                    </table>
 
-                <button type="submit"
-                        class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                    + Tambahkan
-                </button>
-            </div>
+                </div>
 
-        </form>
+                {{-- FOOTER --}}
+                <div class="flex justify-end gap-4 pt-6">
+
+                    <button type="submit"
+                            id="cancelToolsBtn"
+                            class="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition shadow">
+                        + Tambahkan
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 </div>
 
-</div>
 
+
+{{-- ================= SCRIPT ================= --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
     const modal = document.getElementById('toolsModal');
-    const openBtn = document.getElementById('openModalBtn');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const cancelBtn = document.getElementById('cancelModalBtn');
+    const openBtn = document.getElementById('openToolsBtn');
+    const closeBtns = document.querySelectorAll('#closeToolsBtn');
+    const searchInput = document.getElementById('searchToolsModal');
 
-    // Open Modal
-    openBtn.addEventListener('click', function () {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    });
+    // ================= OPEN MODAL =================
+    if (openBtn && modal) {
+        openBtn.addEventListener('click', function () {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        });
+    }
 
-    // Close Modal
+    // ================= CLOSE MODAL =================
     function closeModal() {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+
+        // reset search
+        if (searchInput) {
+            searchInput.value = '';
+            document.querySelectorAll('#toolsTableBody tr').forEach(row => {
+                row.style.display = '';
+            });
+        }
     }
 
-    closeBtn.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-
-    // Close when click outside
-    modal.addEventListener('click', function (e) {
-        if (e.target === modal) {
-            closeModal();
-        }
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
     });
 
-    // Close with ESC
-    document.addEventListener('keydown', function (e) {
-        if (e.key === "Escape") {
-            closeModal();
-        }
-    });
+    // ================= LIVE SEARCH =================
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function () {
 
-    const searchInput = document.getElementById('searchToolsEdit');
+            let keyword = this.value.toLowerCase();
 
-    if(searchInput){
-        searchInput.addEventListener('keyup', function (){
+            document.querySelectorAll('#toolsTableBody tr').forEach(function (row) {
 
-            let keyword =this.value.toLowerCase();
+                let text = row.innerText.toLowerCase();
 
-            document.querySelectorAll('#toolsTableEdit tr').forEach(function (row){
+                row.style.display = text.includes(keyword) ? '' : 'none';
 
-                row.style.display =
-                    row.innerText.toLowerCase().includes(keyword)
-                    ? ''
-                    : 'none';
-            })
-        })
+            });
+
+        });
     }
 
 });
