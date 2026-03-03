@@ -17,148 +17,162 @@
 
 <div class="bg-white rounded shadow p-4">
 
-<div class="flex justify-between items-center mb-4">
+<div class="bg-white rounded-2xl shadow-md p-5 mb-6
+            flex justify-between items-center">
 
     {{-- SEARCH & FILTER --}}
     <form method="GET"
-          action="{{ route('tools.index') }}"
-          class="flex gap-2 items-center">
+      action="{{ route('tools.index') }}"
+      class="flex gap-3 items-center">
 
-        <input type="text"
-               name="search"
-               value="{{ request('search') }}"
-               placeholder="Cari barang..."
-               class="border rounded px-3 py-2 w-64">
+    <input type="text"
+           name="search"
+           value="{{ request('search') }}"
+           placeholder="Cari barang..."
+           class="w-72 px-4 py-2 rounded-xl border border-gray-300
+                  focus:ring-2 focus:ring-cyan-500 focus:outline-none
+                  shadow-sm">
 
-        <select name="condition"
-                onchange="this.form.submit()"
-                class="border rounded px-3 py-2">
-            <option value="">Semua Kondisi</option>
-            <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>
-                Baik
-            </option>
-            <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>
-                Rusak
-            </option>
-            <option value="maintenance" {{ request('condition') === 'butuh_perbaikan' ? 'selected' : '' }}>
-                Maintenance
-            </option>
-        </select>
-    </form>
+    <select name="condition"
+            onchange="this.form.submit()"
+            class="px-4 py-2 rounded-xl border border-gray-300
+                   focus:ring-2 focus:ring-cyan-500 focus:outline-none
+                   shadow-sm">
+
+        <option value="">Semua Kondisi</option>
+        <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>
+            Baik
+        </option>
+        <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>
+            Rusak
+        </option>
+        <option value="maintenance" {{ request('condition') === 'maintenance' ? 'selected' : '' }}>
+            Maintenance
+        </option>
+    </select>
+
+</form>
 
     <button type="button"
-        id="openTambahBarang"
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+    id="openTambahBarang"
+    class="bg-gradient-to-r from-cyan-600 to-teal-500
+           text-white px-6 py-2.5 rounded-xl
+           shadow-md hover:shadow-lg
+           hover:scale-105 transition duration-200">
     + Tambah Barang
 </button>
 </div>
 
-    <table class="w-full border-collapse">
-        <thead>
-            <tr class="border-b text-sm text-gray-600">
-                <th>Foto</th>
-                <th>Nama</th>
-                <th>Kategori</th>
-                <th>No Seri</th>
-                <th>Status</th>
-                <th>Kondisi</th>
-                <th>Aksi</th>
+
+<div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+    <table class="w-full text-sm">
+
+        <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+            <tr>
+                <th class="px-6 py-3 text-left">Foto</th>
+                <th class="px-6 py-3 text-left">Nama</th>
+                <th class="px-6 py-3 text-left">Kategori</th>
+                <th class="px-6 py-3 text-left">No Seri</th>
+                <th class="px-6 py-3 text-left">Status</th>
+                <th class="px-6 py-3 text-left">Kondisi</th>
+                <th class="px-6 py-3 text-left">Aksi</th>
             </tr>
         </thead>
 
-        <tbody>
-@foreach ($tools as $tool)
-    @php
-        $condition = $tool->latestCondition->condition ?? 'baik';
-    @endphp
+        <tbody class="bg-gray-50 divide-y divide-gray-200">
 
-    <tr class="border-b text-sm align-middle">
+        @foreach ($tools as $tool)
 
-    <td class="py-2">
-        <img
-            src="{{ $tool->toolkit->image
-                ? asset('storage/'.$tool->toolkit->image)
-                : asset('images/no-image.png') }}"
-            style="width: 40px; height: 40px; object-fit: cover; border-radius: 0.25rem;">
-    </td>
-
-    <td>
-        {{ $tool->toolkit->toolkit_name }}
-    </td>
-
-    <td>
-        {{ $tool->toolkit->category->category_name ?? '-' }}
-    </td>
-
-    <td>
-        {{ $tool->serial_number }}
-    </td>
-
-    <td>
-        {{ strtoupper($tool->status) }}
-    </td>
-
-    <td>
-        {{ strtoupper($condition) }}
-    </td>
-
-    {{-- AKSI --}}
-    <td class="text-right w-28">
-        <div class="inline-flex gap-2 justify-end">
-
-            {{-- -EDIT --}}
-            <button type="button"
-                class="editBtn bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                data-id="{{ $tool->id }}"
-                data-name="{{ $tool->toolkit->toolkit_name }}"
-                data-category="{{ $tool->toolkit->category_id }}"
-                data-serial="{{ $tool->serial_number }}"
-                data-image="{{ $tool->toolkit->image }}">
-                Edit
-            </button>
-
-            {{-- -DELETE --}}
-            @if ($tool->status === 'DIPINJAM')
-                <button type="button"
-                    onclick="alert('Barang sedang dipinjam, tidak bisa dihapus')"
-                    class="text-gray-400 cursor-not-allowed">
-                    delete
-                </button>
-            @else
-                <form action="{{ route('tools.destroy', $tool->id) }}"
-                    method="POST"
-                    class="inline"
-                    onsubmit="return confirm('Yakin ingin menghapus barang ini ?')">
-                    @csrf
-                    @method('DELETE')
-                    <button class="text-red-600 hover:text-red-800">
-                        delete
-                    </button>
-                </form>
-            @endif
-
-           @php
-                $condition = strtoupper($tool->latestCondition->condition ?? 'BAIK');
+            @php
+                $condition = strtoupper($tool->latestCondition->condition ?? 'baik');
             @endphp
 
-            @if($tool->status === 'TIDAK_TERSEDIA' && $condition === 'MAINTENANCE')
-                <form action="{{ route('tools.finishMaintenance', $tool->id) }}"
-                    method="POST"
-                    class="inline">
-                    @csrf
-                    <button class="text-green-600 hover:text-green-800">
-                        Selesai Maintenance
+            <tr class="hover:bg-gray-100 transition">
+
+                {{-- FOTO --}}
+                <td class="px-6 py-4">
+                    <img src="{{ $tool->toolkit->image
+                        ? asset('storage/'.$tool->toolkit->image)
+                        : asset('images/no-image.png') }}"
+                        class="w-12 h-12 object-cover rounded-lg shadow">
+                </td>
+
+                {{-- NAMA --}}
+                <td class="px-6 py-4 font-medium">
+                    {{ $tool->toolkit->toolkit_name }}
+                </td>
+
+                {{-- KATEGORI --}}
+                <td class="px-6 py-4">
+                    <span class="px-3 py-1 text-xs bg-gray-200 rounded-full">
+                        {{ $tool->toolkit->category->category_name ?? '-' }}
+                    </span>
+                </td>
+
+                {{-- NO SERI --}}
+                <td class="px-6 py-4">
+                    {{ $tool->serial_number }}
+                </td>
+
+                {{-- STATUS --}}
+                <td class="px-6 py-4">
+                    @if($tool->status == 'TERSEDIA')
+                        <span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full shadow">
+                            Tersedia
+                        </span>
+                    @else
+                        <span class="px-3 py-1 text-xs bg-yellow-200 text-yellow-800 rounded-full shadow">
+                            Tidak Tersedia
+                        </span>
+                    @endif
+                </td>
+
+                {{-- KONDISI --}}
+                <td class="px-6 py-4">
+                    @if($condition == 'BAIK')
+                        <span class="px-4 py-1 text-xs border border-green-500 text-green-600 rounded-full">
+                            Baik
+                        </span>
+                    @elseif($condition == 'RUSAK')
+                        <span class="px-4 py-1 text-xs border border-red-500 text-red-600 rounded-full">
+                            Rusak
+                        </span>
+                    @else
+                        <span class="px-4 py-1 text-xs border border-gray-400 text-gray-600 rounded-full">
+                            Maintenance
+                        </span>
+                    @endif
+                </td>
+
+                {{-- AKSI --}}
+                <td class="px-6 py-4 flex gap-3">
+                    <button type="button"
+                        class="editBtn text-gray-600 hover:text-black transition"
+                        data-id="{{ $tool->id }}"
+                        data-name="{{ $tool->toolkit->toolkit_name }}"
+                        data-category="{{ $tool->toolkit->category_id }}"
+                        data-serial="{{ $tool->serial_number }}"
+                        data-image="{{ $tool->toolkit->image }}">
+                        ✏
                     </button>
-                </form>
-            @endif
+                    <form action="{{ route('tools.destroy', $tool->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="text-red-600 hover:text-red-800 transition">
+                            🗑
+                        </button>
+                    </form>
+                </td>
 
-        </div>
-    </td>
-</tr>
-@endforeach
-</tbody>
+            </tr>
 
+        @endforeach
 
+        </tbody>
     </table>
 </div>
 
@@ -383,36 +397,18 @@ document.addEventListener('DOMContentLoaded', function () {
    
 document.addEventListener('click', function (e) {
 
-    if (e.target.classList.contains('editBtn')) {
+    const button = e.target.closest('.editBtn');
 
-        const button = e.target;
+    if (!button) return;
 
-        const editModal = document.getElementById('editBarangModal');
-        const editForm = document.getElementById('editBarangForm');
-        const editName = document.getElementById('editName');
-        const editCategory = document.getElementById('editCategory');
-        const editSerial = document.getElementById('editSerial');
+    editName.value = button.dataset.name;
+    editCategory.value = button.dataset.category;
+    editSerial.value = button.dataset.serial;
 
-        editName.value = button.dataset.name;
-        editCategory.value = button.dataset.category;
-        editSerial.value = button.dataset.serial;
+    editForm.action = '/data-tools/' + button.dataset.id;
 
-        const editPreviewImage = document.getElementById('editPreviewImage');
-
-        const image = button.dataset.image;
-
-        if (image) {
-            editPreviewImage.src = '/storage/' + image;
-        } else {
-            editPreviewImage.src = '/images/no-image.png';
-        }
-
-        editForm.action = '/data-tools/' + button.dataset.id;
-
-        editModal.classList.remove('hidden');
-        editModal.classList.add('flex');
-    }
-
+    editModal.classList.remove('hidden');
+    editModal.classList.add('flex');
 });
 
     function closeEdit() {
