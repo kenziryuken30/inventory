@@ -194,70 +194,114 @@
         @foreach($transactions as $trx)
             @if($trx->is_confirm)
 
-                <div x-show="openReturn === '{{ $trx->id }}'" x-cloak x-data="{ selected: [] }"
-                    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div x-show="openReturn === '{{ $trx->id }}'" x-cloak x-data="{ selected: null }"
+                    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
 
-                    <div class="bg-white w-4/5 rounded-xl shadow-xl p-6">
+                    <div class="bg-white w-[900px] rounded-2xl shadow-2xl p-6 relative">
 
                         <form action="{{ route('transaksi.return', $trx->id) }}" method="POST">
                             @csrf
 
-                            <div class="flex justify-between mb-4">
-                                <h3 class="font-semibold">Pengembalian Consumable</h3>
+                            {{-- HEADER --}}
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">
+                                        Proses Pengembalian
+                                    </h3>
+                                    <p class="text-sm text-gray-500">
+                                        Pengembalian sisa Consumable
+                                    </p>
+                                </div>
 
-                                <button type="button" @click="openReturn = null" class="text-xl">&times;</button>
+                                <button type="button" @click="openReturn = null" class="text-gray-400 hover:text-gray-600 text-xl">
+                                    &times;
+                                </button>
                             </div>
 
+                            {{-- INFO ATAS --}}
+                            <div class="grid grid-cols-2 gap-4 mb-6">
 
-                            <div class="border rounded-lg overflow-hidden">
+                                <div>
+                                    <label class="text-sm text-gray-600">Nama Karyawan</label>
+                                    <input type="text" value="{{ $trx->borrower_name }}"
+                                        class="w-full mt-1 px-3 py-2 border rounded-lg bg-gray-100" readonly>
+                                </div>
+
+                                <div>
+                                    <label class="text-sm text-gray-600">Tanggal Return</label>
+                                    <input type="date" name="return_date" value="{{ date('Y-m-d') }}"
+                                        class="w-full mt-1 px-3 py-2 border rounded-lg">
+                                </div>
+
+                            </div>
+
+                            {{-- TABLE --}}
+                            <div class="rounded-xl overflow-hidden border">
+
                                 <table class="w-full text-sm">
-                                    <thead class="bg-gray-100">
+                                    <thead class="bg-gradient-to-r from-cyan-500 to-teal-500 text-white">
                                         <tr>
-                                            <th class="p-3 border">Pilih</th>
-                                            <th class="p-3 border">Consumable</th>
-                                            <th class="p-3 border">Qty</th>
-                                            <th class="p-3 border">Return</th>
+                                            <th class="p-3 text-center">Pilih</th>
+                                            <th class="p-3 text-left">Nama Consumable</th>
+                                            <th class="p-3 text-center">Stok</th>
+                                            <th class="p-3 text-center">Qty Return</th>
+                                            <th class="p-3 text-left">Keterangan</th>
                                         </tr>
                                     </thead>
 
-                                    <tbody>
+                                    <tbody class="bg-white divide-y">
                                         @foreach($trx->items as $item)
-                                            <tr>
-                                                <td class="p-3 border text-center">
-                                                    <input type="checkbox" x-model="selected" value="{{ $item->id }}">
-                                                </td>
 
-                                                <td class="p-3 border">
-                                                    {{ $item->consumable->name }}
-                                                </td>
+                                            @php
+                                                $sisa = $item->qty - ($item->qty_return ?? 0);
+                                            @endphp
 
-                                                <td class="p-3 border">
-                                                    {{ $item->qty }}
-                                                </td>
+                                            @if($sisa > 0)
 
-                                                <td class="p-3 border">
-                                                    <input type="number" name="items[{{ $item->id }}][qty]" min="0x`"
-                                                        max="{{ $item->qty }}" class="border rounded px-2 py-1 w-full"
-                                                        :disabled="!selected.includes('{{ $item->id }}')">
-                                                </td>
-                                            </tr>
+                                                <tr class="hover:bg-gray-50 transition">
+
+                                                    <td class="p-3 text-center">
+                                                        <input type="radio" name="selected_item" value="{{ $item->id }}" x-model="selected">
+                                                    </td>
+
+                                                    <td class="p-3">
+                                                        {{ $item->consumable->name }}
+                                                    </td>
+
+                                                    <td class="p-3 text-center">
+                                                        {{ $sisa }}
+                                                    </td>
+
+                                                    <td class="p-3 text-center">
+                                                        <input type="number" name="items[{{ $item->id }}][qty]" min="1" max="{{ $sisa }}"
+                                                            class="w-24 px-2 py-1 border rounded-md text-center"
+                                                            :disabled="selected != '{{ $item->id }}'">
+                                                    </td>
+
+                                                    <td class="p-3">
+                                                        <input type="text" name="items[{{ $item->id }}][note]" placeholder="Keterangan..."
+                                                            class="w-full px-2 py-1 border rounded-md"
+                                                            :disabled="selected != '{{ $item->id }}'">
+                                                    </td>
+
+                                                </tr>
+
+                                            @endif
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
 
-
+                            {{-- BUTTON --}}
                             <div class="flex justify-end gap-3 mt-6">
-
-                                <button type="button" @click="openReturn = null" class="px-4 py-2 border rounded-lg">
+                                <button type="button" @click="openReturn = null" class="px-4 py-2 rounded-lg border">
                                     Batal
                                 </button>
 
-                                <button type="submit" :disabled="selected.length === 0"
-                                    class="bg-blue-600 text-white px-6 py-2 rounded-lg">
-                                    Return
+                                <button type="submit" :disabled="!selected"
+                                    class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg shadow">
+                                    Kembalikan
                                 </button>
-
                             </div>
 
                         </form>
