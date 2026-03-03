@@ -313,6 +313,9 @@ class ConsumableTransactionController extends Controller
 
             foreach ($trx->items as $item) {
 
+            $consumable = InvConsumable::lockForUpdate()
+                ->find($item->consumable_id);
+
                 if ($item->qty > $item->consumable->stock) {
                     throw new \Exception(
                         "Stock {$item->consumable->name} tidak cukup"
