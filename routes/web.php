@@ -95,3 +95,11 @@ Route::get('/laporan/consumable/export/excel',
 Route::get('/report-consumable/export', 
     [ReportConsumableController::class, 'export']
 )->name('report.export');
+
+Route::get('/laporan/tools/export-pdf',
+    [ReportToolController::class,'exportPDF'])
+    ->name('laporan.tools.export.pdf');
+
+Route::get('/laporan/tools/export-excel',
+    [ReportToolController::class,'exportExcel'])
+    ->name('laporan.tools.export.excel');

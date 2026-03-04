@@ -40,6 +40,20 @@
             </a>
         </div>
 
+        <a href="{{ route('laporan.tools.export.pdf',['type'=>$type]) }}"
+        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow text-sm">
+        Export PDF
+        </a>
+
+        <a href="{{ route('laporan.tools.export.excel',[
+            'type'=>$type,
+            'start_date'=>request('start_date'),
+            'end_date'=>request('end_date')
+            ]) }}"
+            class="bg-green-600 text-white px-4 py-2 rounded-lg shadow">
+            Export Excel
+        </a>
+
     </div>
 </form>
 

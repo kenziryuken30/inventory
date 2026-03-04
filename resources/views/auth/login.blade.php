@@ -33,7 +33,7 @@ body{
 
 /* LOGO */
 .logo{
-    width:320px; /* diperbesar */
+    width:320px;
     position:relative;
     z-index:2;
 }
@@ -43,7 +43,7 @@ body{
     position:absolute;
     bottom:0;
     left:0;
-    width:100%;   /* penuh */
+    width:100%;
     object-fit:cover;
 }
 
@@ -123,6 +123,35 @@ body{
     color:red;
     font-size:13px;
     margin-bottom:15px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px){
+
+    body{
+        flex-direction:column;
+    }
+
+    .left{
+        width:100%;
+        height:35vh;
+    }
+
+    .right{
+        width:100%;
+        height:65vh;
+    }
+
+    .logo{
+        width:200px;
+    }
+
+    .login-card{
+        width:90%;
+        padding:30px;
+    }
+
 }
 </style>
 </head>
