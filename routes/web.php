@@ -83,3 +83,15 @@ Route::get('/laporan/transaksi-tools',
 Route::get('/laporan/consumable/transaksi', 
     [ReportConsumableController::class, 'transaksi']
 )->name('laporan.consumable.transaksi');
+
+Route::get('/laporan/consumable/export/pdf',
+    [ReportConsumableController::class, 'exportPdf']
+)->name('laporan.consumable.export.pdf');
+
+Route::get('/laporan/consumable/export/excel',
+    [ReportConsumableController::class, 'exportExcel']
+)->name('laporan.consumable.export.excel');
+
+Route::get('/report-consumable/export', 
+    [ReportConsumableController::class, 'export']
+)->name('report.export');
