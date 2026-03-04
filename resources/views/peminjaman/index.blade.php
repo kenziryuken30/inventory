@@ -211,7 +211,10 @@
          x-data="{ selected: [] }"
          class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-        <div class="bg-white w-4/5 rounded-xl shadow-xl p-6">
+        <div class="bg-gray-50 w-11/12 max-w-5xl
+            rounded-2xl
+            shadow-[0_20px_40px_rgba(0,0,0,0.15)]
+            p-8 relative">
 
             <form action="{{ route('peminjaman.return.process', $transaction->id) }}"
                   method="POST">
@@ -233,60 +236,68 @@
 
 
                 {{-- INFO --}}
-                <div class="grid grid-cols-2 gap-4 mb-5">
+                <div class="grid grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label class="text-sm text-gray-600">Nama Karyawan</label>
+                        <label class="text-sm text-gray-600 mb-1 block">Nama Karyawan</label>
                         <input type="text"
                                value="{{ $transaction->borrower_name }}"
-                               class="w-full border rounded px-3 py-2 bg-gray-100"
+                               class="w-full bg-gray-100 border border-gray-300
+                                rounded-xl px-4 py-2
+                                shadow-inner
+                                focus:ring-2 focus:ring-cyan-500
+                                focus:outline-none"
                                readonly>
                     </div>
 
                     <div>
-                        <label class="text-sm text-gray-600">Tanggal Pengembalian</label>
+                        <label class="text-sm text-gray-600 mb-1 block">Tanggal Pengembalian</label>
                         <input type="date"
                                name="return_date"
                                value="{{ date('Y-m-d') }}"
-                               class="w-full border rounded px-3 py-2 "
+                               class="w-full bg-gray-100 border border-gray-300
+                                rounded-xl px-4 py-2
+                                shadow-inner
+                                focus:ring-2 focus:ring-cyan-500
+                                focus:outline-none"
                                required>
                     </div>
                 </div>
 
 
                 {{-- TABLE ITEM --}}
-                <div class="border rounded-lg overflow-hidden">
+                <div class="rounded-xl overflow-hidden border">
                     <table class="w-full text-sm">
-                        <thead class="bg-gray-100">
+                        <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
                             <tr>
-                                <th class="p-3 border">Pilih</th>
-                                <th class="p-3 border">Nama Alat</th>
-                                <th class="p-3 border">No Seri</th>
-                                <th class="p-3 border">Kondisi</th>
-                                <th class="p-3 border">Keterangan</th>
+                                <th class="py-3 px-4 text-left">Pilih</th>
+                                <th class="py-3 px-4 text-left">Nama Alat</th>
+                                <th class="py-3 px-4 text-left">No Seri</th>
+                                <th class="py-3 px-4 text-left">Kondisi</th>
+                                <th class="py-3 px-4 text-left">Keterangan</th>
                             </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody class="bg-white divide-y">
                         @foreach ($transaction->items->whereNull('return_date') as $item)
-                        <tr>
-                            <td class="p-3 border text-center">
-                                <input type="checkbox"
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 border text-center">
+                                <input type="checkbox" class="w-4 h-4"
                                        x-model="selected"
                                        value="{{ $item->id }}"
                                        name="items[{{ $item->id }}][id]">
                             </td>
 
-                            <td class="p-3 border">
+                            <td class="px-4 py-3 border">
                                 {{ $item->toolkit->toolkit_name }}
                             </td>
 
-                            <td class="p-3 border">
+                            <td class="px-4 py-3 border">
                                 {{ $item->serial->serial_number }}
                             </td>
 
-                            <td class="p-3 border">
+                            <td class="px-4 py-3 border">
                                 <select name="items[{{ $item->id }}][condition]"
-                                        class="border rounded px-2 py-1 w-full"
+                                        class="border rounded-lg px-3 py-1 shadow-sm"
                                         :disabled="!selected.includes('{{ $item->id }}')">
                                     <option value="BAIK">Baik</option>
                                     <option value="MAINTENANCE">Butuh Perbaikan</option>
@@ -294,10 +305,10 @@
                                 </select>
                             </td>
 
-                            <td class="p-3 border">
+                            <td class="px-4 py-3 border">
                                 <input type="text"
                                        name="items[{{ $item->id }}][note]"
-                                       class="border rounded px-2 py-1 w-full"
+                                       class="w-full border rounded-lg px-3 py-1 shadow-inner"
                                        placeholder="Keterangan..."
                                        :disabled="!selected.includes('{{ $item->id }}')">
                             </td>
@@ -313,7 +324,11 @@
 
                     <button type="button"
                             @click="openReturn = null"
-                            class="px-4 py-2 border rounded-lg">
+                            class="px-5 py-2
+                            bg-gray-200
+                            rounded-xl
+                            shadow
+                            hover:bg-gray-300">
                         Batal
                     </button>
 
@@ -322,7 +337,11 @@
                             :class="selected.length === 0
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 : 'bg-blue-600 text-white'"
-                            class="px-6 py-2 rounded-lg transition">
+                            class="px-5 py-2
+                            bg-gray-300
+                            text-gray-700
+                            rounded-xl
+                            shadow">
                         Kembalikan <span x-text="selected.length"></span> Alat
                     </button>
 

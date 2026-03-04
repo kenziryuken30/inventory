@@ -94,8 +94,8 @@
 
         @foreach ($tools as $tool)
 
-            @php
-                $condition = strtoupper($tool->latestCondition->condition ?? 'baik');
+           @php
+                $condition = $tool->latestCondition->condition ?? 'baik';
             @endphp
 
             <tr class="hover:bg-gray-100 transition">
@@ -127,24 +127,34 @@
 
                 {{-- STATUS --}}
                 <td class="px-6 py-4">
-                    @if($tool->status == 'TERSEDIA')
-                        <span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full shadow">
-                            Tersedia
+
+                    @if (strtolower($tool->status) == 'dipinjam')
+
+                        <span class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full shadow">
+                            Dipinjam
                         </span>
+                        
+                    @elseif (strtolower($tool->status) == 'tersedia')
+
+                    <span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full shadow">
+                        Tersedia
+                    </span>
+
                     @else
-                        <span class="px-3 py-1 text-xs bg-yellow-200 text-yellow-800 rounded-full shadow">
-                            Tidak Tersedia
-                        </span>
+                    <span class="px-3 py-1 text-xs bg-yellow-200 text-yellow-800 rounded-full shadow">
+                        Tidak Tersedia
+                    </span>
                     @endif
+                    
                 </td>
 
                 {{-- KONDISI --}}
                 <td class="px-6 py-4">
-                    @if($condition == 'BAIK')
+                    @if($condition == 'baik')
                         <span class="px-4 py-1 text-xs border border-green-500 text-green-600 rounded-full">
                             Baik
                         </span>
-                    @elseif($condition == 'RUSAK')
+                    @elseif($condition == 'rusak')
                         <span class="px-4 py-1 text-xs border border-red-500 text-red-600 rounded-full">
                             Rusak
                         </span>
@@ -156,7 +166,21 @@
                 </td>
 
                 {{-- AKSI --}}
-                <td class="px-6 py-4 flex gap-3">
+                <td class="px-6 py-4 flex gap-3 items-center">
+
+                @if(($tool->latestCondition->condition ?? '') === 'maintenance')
+                    <form action="{{ route('tools.finishMaintenance', $tool->id) }}"
+                        method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="text-green-600 hover:text-green-800 text-lg transition"
+                            title="Selesai Maintenace">
+                            ✔
+                        </button>
+                    </form>
+                    
+                @endif
+
                     <button type="button"
                         class="editBtn text-gray-600 hover:text-black transition"
                         data-id="{{ $tool->id }}"
@@ -190,7 +214,11 @@
 <div id="tambahBarangModal"
      class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-    <div class="bg-white w-11/12 max-w-xl rounded-xl shadow-xl p-6 relative">
+    <div class="w-11/12 max-w-xl
+            bg-[#efefef]
+            rounded-2xl
+            shadow-[0_15px_40px_rgba(0,0,0,0.25)]
+            p-8 relative">          
 
         <form action="{{ route('tools.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -221,11 +249,27 @@
                 <input type="text"
                        name="toolkit_name"
                        placeholder="Nama Barang"
-                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                       class="w-full
+                        bg-[#f5f5f5]
+                        border border-gray-400
+                        rounded-xl
+                        px-5 py-3
+                        shadow-[0_6px_10px_rgba(0,0,0,0.15)]
+                        focus:outline-none
+                        focus:ring-0
+                        transition">
 
                 <select name="category_id"
                     required
-                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                    class="w-full
+                    bg-[#f5f5f5]
+                    border border-gray-400
+                    rounded-xl
+                    px-5 py-3
+                    shadow-[0_6px_10px_rgba(0,0,0,0.15)]
+                    focus:outline-none
+                    focus:ring-0
+                    transition">
 
                 <option value="">Pilih Kategori</option>
 
@@ -240,26 +284,52 @@
                 <input type="text"
                        name="serial_number"
                        placeholder="No Seri"
-                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                       class="w-full bg-white
+                        border border-gray-300
+                        rounded-xl
+                        px-5 py-3
+                        shadow-[0_4px_10px_rgba(0,0,0,0.08)]
+                        focus:ring-2 focus:ring-cyan-500
+                        focus:outline-none
+                        transition">
 
                 <input type="file"
-                       name="image"
-                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                name="image"
+                class="bg-[#e6e6e6]
+                        border border-gray-400
+                        rounded-lg
+                        px-4 py-2
+                        shadow-sm
+                        cursor-pointer">
 
             </div>
 
             <!-- Footer -->
-            <div class="flex justify-end gap-3 mt-6">
+           <div class="flex justify-end gap-4 mt-8">
+
                 <button type="button"
-                        id="cancelTambahBarang"
-                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                    id="cancelTambahBarang"
+                    class="px-6 py-2.5
+                        bg-[#dcdcdc]
+                        text-gray-800
+                        rounded-xl
+                        shadow-[0_6px_10px_rgba(0,0,0,0.2)]
+                        hover:bg-[#cfcfcf]
+                        transition">
                     Batal
                 </button>
 
                 <button type="submit"
-                        class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                    Simpan
+                    class="px-6 py-2.5
+                        bg-[#e0e0e0]
+                        text-black
+                        rounded-xl
+                        shadow-[0_6px_12px_rgba(0,0,0,0.25)]
+                        hover:bg-[#d5d5d5]
+                        transition">
+                    Tambah
                 </button>
+
             </div>
 
         </form>
@@ -271,7 +341,11 @@
 <div id="editBarangModal"
      class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-    <div class="bg-white w-11/12 max-w-xl rounded-xl shadow-xl p-6 relative">
+    <div class="w-11/12 max-w-xl
+            bg-[#efefef]
+            rounded-2xl
+            shadow-[0_15px_40px_rgba(0,0,0,0.25)]
+            p-8 relative">  
 
         <form id="editBarangForm" method="POST" enctype="multipart/form-data">
             @csrf
@@ -293,11 +367,27 @@
                 <input type="text"
                        name="toolkit_name"
                        id="editName"
-                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                       class="w-full
+                        bg-[#f5f5f5]
+                        border border-gray-400
+                        rounded-xl
+                        px-5 py-3
+                        shadow-[0_6px_10px_rgba(0,0,0,0.15)]
+                        focus:outline-none
+                        focus:ring-0
+                        transition">
 
                 <select name="category_id"
                         id="editCategory"
-                        class="w-full border rounded-lg px-4 py-2">
+                        class="w-full
+                        bg-[#f5f5f5]
+                        border border-gray-400
+                        rounded-xl
+                        px-5 py-3
+                        shadow-[0_6px_10px_rgba(0,0,0,0.15)]
+                        focus:outline-none
+                        focus:ring-0
+                        transition">    
 
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}">
@@ -310,12 +400,25 @@
                 <input type="text"
                        name="serial_number"
                        id="editSerial"
-                       class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                       class="w-full
+                        bg-[#f5f5f5]
+                        border border-gray-400
+                        rounded-xl
+                        px-5 py-3
+                        shadow-[0_6px_10px_rgba(0,0,0,0.15)]
+                        focus:outline-none
+                        focus:ring-0
+                        transition">
 
                 <div>
                         <input type="file"
-                            name="image"
-                            class="w-full border rounded-lg px-4 py-2">
+                        name="image"
+                        class="bg-[#e6e6e6]
+                                border border-gray-400
+                                rounded-lg
+                                px-4 py-2
+                                shadow-sm
+                                cursor-pointer">
 
                     
                 </div>
@@ -324,19 +427,32 @@
             
 
             <!-- Footer -->
-            <div class="flex justify-end gap-3 mt-6">
+            <div class="flex justify-end gap-4 mt-8">
+
                 <button type="button"
-                        id="cancelEditModal"
-                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                    id="cancelTambahBarang"
+                    class="px-6 py-2.5
+                        bg-[#dcdcdc]
+                        text-gray-800
+                        rounded-xl
+                        shadow-[0_6px_10px_rgba(0,0,0,0.2)]
+                        hover:bg-[#cfcfcf]
+                        transition">
                     Batal
                 </button>
 
                 <button type="submit"
-                        class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Update
+                    class="px-6 py-2.5
+                        bg-[#e0e0e0]
+                        text-black
+                        rounded-xl
+                        shadow-[0_6px_12px_rgba(0,0,0,0.25)]
+                        hover:bg-[#d5d5d5]
+                        transition">
+                    Tambah
                 </button>
-            </div>
 
+            </div>
         </form>
 
     </div>

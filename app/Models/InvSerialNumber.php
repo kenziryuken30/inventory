@@ -21,17 +21,6 @@ class InvSerialNumber extends Model
         'status',
         'image'
     ];
-    protected static function booted()
-{
-    static::created(function ($serial) {
-        InvToolConditionLog::create([
-            'serial_id' => $serial->id,
-            'condition' => 'baik',
-            'note' => 'Kondisi awal saat input alat',
-        ]);
-    });
-}
-
 
     // relasi ke toolkit
     public function toolkit()
@@ -40,14 +29,16 @@ class InvSerialNumber extends Model
     }
 
     // semua riwayat kondisi
-   public function conditionLogs()
-{
-    return $this->hasMany(InvToolConditionLog::class, 'serial_id');
-}
-    // kondisi TERAKHIR (yang dipakai di UI)
+    public function conditionLogs()
+    {
+        return $this->hasMany(InvToolConditionLog::class, 'serial_id');
+    }
+
+    // kondisi terakhir
     public function latestCondition()
-{
-    return $this->hasOne(InvToolConditionLog::class, 'serial_id')
-                ->latest('id');
+    {
+        return $this->hasOne(InvToolConditionLog::class, 'serial_id')
+                    ->latestOfMany();
+    }
 }
-}
+
