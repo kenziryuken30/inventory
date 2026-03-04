@@ -19,7 +19,6 @@ body{
     background:#f3f4f6;
 }
 
-/* ================= LEFT ================= */
 
 .left{
     width:55%;
@@ -31,23 +30,20 @@ body{
     overflow:hidden;
 }
 
-/* LOGO */
 .logo{
-    width:320px;
+    width:320px; /* diperbesar */
     position:relative;
     z-index:2;
 }
 
-/* TOOLS FULL BAWAH */
 .tools{
     position:absolute;
     bottom:0;
     left:0;
-    width:100%;
+    width:100%;   /* penuh */
     object-fit:cover;
 }
 
-/* ================= RIGHT ================= */
 
 .right{
     width:45%;
@@ -56,7 +52,7 @@ body{
     justify-content:center;
 }
 
-/* CARD */
+
 .login-card{
     width:420px;
     background:#ffffff;
