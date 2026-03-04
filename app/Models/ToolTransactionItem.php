@@ -24,6 +24,7 @@ class ToolTransactionItem extends Model
         'return_date' => 'datetime',
     ];
 
+
     public function transaction()
     {
         return $this->belongsTo(ToolTransaction::class, 'transaction_id');

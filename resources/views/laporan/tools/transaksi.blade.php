@@ -82,18 +82,23 @@
         <table class="w-full text-sm">
 
             <thead class="bg-linear-to-r from-cyan-600 to-teal-500 text-white">
-                <tr>
-                    <th class="px-6 py-3">ID</th>
+                <tr class="text-center">
+                    <th class="px-6 py-3">NO</th>
+                    <th class="px-6 py-3">KODE TRANSAKSI</th>
                     <th class="px-6 py-3">TGL PINJAM</th>
                     <th class="px-6 py-3">KARYAWAN</th>
                     <th class="px-6 py-3">ALAT PINJAM</th>
-                    <th class="px-6 py-3 text-center">AKSI</th>
+                    <th class="px-6 py-3">AKSI</th>
                 </tr>
             </thead>
 
-            <tbody class="bg-gray-50 divide-y divide-gray-200">
+            <tbody class="bg-gray-50 divide-y divide-gray-200 text-center">
                 @forelse($data as $row)
                 <tr class="hover:bg-gray-100">
+
+                    <td class="px-6 py-4">
+                        {{ $loop->iteration }}
+                    </td>
 
                     <td class="px-6 py-4">
                         {{ $row->transaction_code }}
@@ -108,10 +113,12 @@
                     </td>
 
                     <td class="px-6 py-4">
+                    <div class="flex flex-col items-center">
                         @foreach($row->items as $item)
                             <div>{{ $item->toolkit->toolkit_name ?? '-' }}</div>
                         @endforeach
-                    </td>
+                    </div>
+                </td>
 
                     <td class="px-6 py-4 text-center">
                         <button
@@ -150,6 +157,12 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+
+                <div>
+                    <p class="font-semibold">Kode Transaksi</p>
+                    <p>{{ $row->transaction_code }}</p>
+                </div>
+                
                 <div>
                     <p class="font-semibold">Karyawan</p>
                     <p>{{ $row->borrower_name }}</p>
@@ -223,7 +236,8 @@
 
         <thead class="bg-linear-to-r from-cyan-600 to-teal-500 text-white">
             <tr class="text-left">
-                <th class="px-6 py-3">ID</th>
+                <th class="px-6 py-3">NO</th>
+                <th class="px-6 py-3">KODE TRANSAKSI</th>
                 <th class="px-6 py-3">TGL KEMBALI</th>
                 <th class="px-6 py-3">KARYAWAN</th>
                 <th class="px-6 py-3">ALAT DIPINJAM</th>
@@ -235,35 +249,39 @@
 
         <tbody class="bg-gray-50 divide-y divide-gray-200">
 
-            @forelse($data as $row)
-            <tr class="hover:bg-gray-100 transition">
+            @forelse($data as $index => $row)
+            <tr class="hover:bg-gray-100 text-center">
 
-                <td class="px-6 py-4 font-medium text-gray-600">
-                    {{ $row->transaction->transaction_code ?? '-' }}
+                <td class="px-6 py-4">
+                {{ $loop->iteration }}
                 </td>
 
                 <td class="px-6 py-4">
-                    {{ \Carbon\Carbon::parse($row->return_date)->format('d M Y') }}
+                {{ $row->transaction->transaction_code }}
                 </td>
 
                 <td class="px-6 py-4">
-                    {{ $row->transaction->borrower_name ?? '-' }}
+                {{ \Carbon\Carbon::parse($row->return_date)->format('d M Y') }}
                 </td>
 
                 <td class="px-6 py-4">
-                    {{ $row->toolkit->toolkit_name ?? '-' }}
+                {{ $row->transaction->borrower_name }}
+                </td>
+
+                <td class="px-6 py-4">
+                {{ $row->toolkit->toolkit_name }}
                 </td>
 
                 <td class="px-6 py-4">
                     {{ $row->serial->serial_number ?? '-' }}
                 </td>
 
-                <td>
-                    {{ $row->return_condition ?? '-' }}
+                <td class="px-6 py-4">
+                 {{ $row->return_condition ?? '-' }}
                 </td>
 
-                <td>
-                    {{ $row->return_note ?? '-' }}
+                <td class="px-6 py-4">
+                {{ $row->return_note ?? '-' }}
                 </td>
 
             </tr>
