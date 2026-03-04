@@ -26,22 +26,41 @@
       action="{{ route('tools.index') }}"
       class="flex gap-3 items-center">
 
+    <div class="relative">
+
     <input type="text"
            name="search"
+           id="searchInput"
            value="{{ request('search') }}"
            placeholder="Cari barang..."
            class="w-72 bg-white text-gray-700
-              border border-gray-300
-              rounded-xl px-4 py-2
-              shadow-sm
-              focus:ring-2 focus:ring-white
-              focus:outline-none">
+                  border border-gray-300
+                  rounded-xl px-4 py-2 pr-10
+                  shadow-sm
+                  focus:ring-2 focus:ring-white
+                  focus:outline-none">
+
+    @if(request('search'))
+        <button type="button"
+                id="clearSearch"
+                class="absolute right-3 top-1/2 -translate-y-1/2
+                       text-gray-400 hover:text-red-500
+                       text-sm font-bold">
+            ✕
+        </button>
+    @endif
+
+</div>
+
+   <div class="relative inline-block">
 
     <select name="condition"
-            onchange="this.form.submit()"
-            class="bg-white text-gray-700
+        onchange="this.form.submit()"
+        class="appearance-none
+               bg-white text-gray-700
                border border-gray-300
-               rounded-xl px-4 py-2
+               rounded-xl
+               pl-4 pr-10 py-2
                shadow-sm
                focus:ring-2 focus:ring-white
                focus:outline-none">
@@ -57,6 +76,21 @@
             Maintenance
         </option>
     </select>
+
+    <!-- PANAH MANUAL -->
+   <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+    <svg class="w-4 h-4 text-gray-500"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="1.5"
+         viewBox="0 0 24 24">
+        <path stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19 9l-7 7-7-7" />
+    </svg>
+</div>
+
+</div>
 
 </form>
 
@@ -727,6 +761,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const editSerial = document.getElementById('editSerial');
     const closeEditBtn = document.getElementById('closeEditModal');
     const cancelEditBtn = document.getElementById('cancelEditModal');
+    const clearBtn = document.getElementById('clearSearch');
+const searchInput = document.getElementById('searchInput');
+
+if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        window.location.href = "{{ route('tools.index') }}";
+    });
+}
 
    
 document.addEventListener('click', function (e) {
