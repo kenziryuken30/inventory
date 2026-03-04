@@ -65,15 +65,6 @@
 
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
 
-                <div class="px-4 py-2 bg-white rounded-xl shadow text-sm">
-                    Total Item Diminta :
-                    <span class="font-bold text-teal-600">
-                        {{ $type == 'pengeluaran'
-        ? $data->flatMap->items->sum('qty')
-        : $data->sum('qty') }}
-                    </span>
-                </div>
-
                 <a href="{{ route('laporan.consumable.transaksi', array_merge(request()->all(), ['type' => 'pengeluaran'])) }}"
                     class="px-4 py-2 rounded-xl text-sm {{ $type == 'pengeluaran' ? 'bg-white shadow font-semibold' : 'text-gray-600' }}">
                     📤 Pengeluaran
@@ -89,16 +80,23 @@
                 Total {{ ucfirst($type) }} : {{ $data->count() }}
             </div>
 
+            <div class="px-4 py-2 bg-white rounded-xl shadow text-sm">
+                Total Item Diminta :
+                <span class="font-bold text-teal-600">
+                    {{ $type == 'pengeluaran'
+        ? $data->flatMap->items->sum('qty')
+        : $data->sum('qty') }}
+                </span>
+            </div>
+
         </div>
 
 
         {{-- ================= TABLE ================= --}}
+        <div class="bg-white shadow-[0_10px_25px_rgba(0,0,0,0.1)] 
+    rounded-2xl overflow-hidden">
 
-        @if($type == 'pengeluaran')
-
-            {{-- ================= TABLE LAPORAN ================= --}}
-            <div class="bg-white shadow-lg rounded-xl overflow-hidden"></div>
-            <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+            <div class="max-h-[420px] overflow-y-auto">
 
                 <table class="min-w-full text-sm text-gray-700">
 
@@ -110,7 +108,11 @@
                             <th class="px-4 py-3">Karyawan</th>
                             <th class="px-4 py-3">Consumable</th>
                             <th class="px-4 py-3 text-center">Jumlah</th>
-                            <th class="px-4 py-3 text-center">Detail</th>
+                            @if($type == 'pengeluaran')
+                                <th class="px-4 py-3 text-center">Detail</th>
+                            @else
+                                <th class="px-4 py-3">Keterangan</th>
+                            @endif
                         </tr>
                     </thead>
 
@@ -168,17 +170,23 @@
                                     @if($type == 'pengeluaran')
                                         {{ $row->items->sum('qty') }}
                                     @else
-                                        {{ $row->qty }}
+                                        {{ $row->qty_return }}
                                     @endif
                                 </td>
 
                                 {{-- ================= DETAIL ================= --}}
-                                <td class="px-4 py-3 text-center">
-                                    <button @click="openDetail = {{ $row->id }}"
-                                        class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-xs">
-                                        👁 Detail
-                                    </button>
-                                </td>
+                                @if($type == 'pengeluaran')
+                                    <td class="px-4 py-3 text-center">
+                                        <button @click="openDetail = {{ $row->id }}"
+                                            class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-xs">
+                                            👁 Detail
+                                        </button>
+                                    </td>
+                                @else
+                                    <td class="px-4 py-3">
+                                        {{ $row->transaction->purpose ?? '-' }}
+                                    </td>
+                                @endif
 
                             </tr>
 
@@ -194,193 +202,165 @@
                 </table>
             </div>
 
-        @else
 
-            <div class="bg-white shadow-lg rounded-xl p-6">
+            {{-- ================= MODAL ================= --}}
+            @if($type == 'pengeluaran')
 
-                @forelse($data as $row)
+                @foreach($data as $row)
 
-                    <div class="border rounded-xl p-6 mb-6 shadow">
+                    <div x-show="openDetail === {{ $row->id }}" x-transition x-cloak
+                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-                        {{-- HEADER INFO --}}
-                        <div class="grid grid-cols-3 gap-4 text-sm mb-4">
+                        <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6">
 
-                            <div>
-                                <p class="font-semibold">Kode Transaksi</p>
-                                <p>{{ $row->transaction_code }}</p>
+                            {{-- HEADER --}}
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold">Detail Transaksi Consumable</h3>
+                                <button @click="openDetail = null">✕</button>
                             </div>
 
-                            <div>
-                                <p class="font-semibold">Tanggal</p>
-                                <p>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</p>
+                            {{-- INFO GRID --}}
+                            <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+
+                                <div>
+                                    <p class="font-semibold">Kode Transaksi</p>
+                                    <p>{{ $row->transaction_code }}</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Tanggal kembali</p>
+                                    {{ \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') }}
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Karyawan</p>
+                                    <p>{{ $row->borrower_name }}</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Client</p>
+                                    <p>{{ $row->client ?? '-' }}</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Project</p>
+                                    <p>{{ $row->project ?? '-' }}</p>
+                                </div>
+
+                                <div class="col-span-2">
+                                    <p class="font-semibold">Keperluan</p>
+                                    <div class="bg-gray-100 rounded-xl px-4 py-3 shadow">
+                                        {{ $row->purpose ?? '-' }}
+                                    </div>
+                                </div>
+
                             </div>
 
-                            <div>
-                                <p class="font-semibold">Karyawan</p>
-                                <p>{{ $row->borrower_name }}</p>
-                            </div>
+                            {{-- TABLE ITEM --}}
+                            <div class="bg-gray-50 rounded-lg overflow-hidden">
 
-                        </div>
+                                <table class="w-full text-sm">
 
-                        {{-- TABLE ITEM RETURN --}}
-                        <div class="bg-gray-50 rounded-lg overflow-hidden">
+                                    <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left">NAMA CONSUMABLE</th>
+                                            <th class="px-4 py-2 text-left">QTY</th>
+                                            <th class="px-4 py-2 text-left">UNIT</th>
+                                        </tr>
+                                    </thead>
 
-                            <table class="w-full text-sm">
-
-                                <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">NAMA CONSUMABLE</th>
-                                        <th class="px-4 py-2 text-left">QTY KELUAR</th>
-                                        <th class="px-4 py-2 text-left">QTY RETURN</th>
-                                        <th class="px-4 py-2 text-left">UNIT</th>
-                                        <th class="px-4 py-2 text-left">KETERANGAN</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach($row->items as $item)
-                                        @if($item->qty_return)
-
+                                    <tbody>
+                                        @foreach($row->items as $item)
                                             <tr class="border-b">
                                                 <td class="px-4 py-2">
                                                     {{ $item->consumable->name }}
                                                 </td>
-
                                                 <td class="px-4 py-2">
                                                     {{ $item->qty }}
                                                 </td>
-
-                                                <td class="px-4 py-2 font-semibold text-teal-600">
-                                                    {{ $item->qty_return }}
-                                                </td>
-
                                                 <td class="px-4 py-2">
                                                     {{ $item->consumable->unit }}
                                                 </td>
-
-                                                <td class="px-4 py-2">
-                                                    {{ $item->keterangan ?? '-' }}
-                                                </td>
                                             </tr>
+                                        @endforeach
+                                    </tbody>
 
-                                        @endif
-                                    @endforeach
-                                </tbody>
+                                </table>
 
-                            </table>
+                            </div>
+
+                            {{-- FOOTER --}}
+                            <div class="text-right mt-4">
+                                <button @click="openDetail = null" class="bg-gray-200 px-4 py-2 rounded-lg">
+                                    Tutup
+                                </button>
+                            </div>
 
                         </div>
-
                     </div>
 
-                @empty
-                    <p class="text-gray-400 text-center py-10">
-                        Tidak ada transaksi return
-                    </p>
-                @endforelse
+                @endforeach
+            @endif
 
-            </div>
+            @if($type == 'pengembalian')
 
-        @endif
+                @foreach($data as $row)
 
-        {{-- ================= MODAL ================= --}}
-        @if($type == 'pengeluaran')
+                    <div x-show="openDetail === {{ $row->id }}" x-transition x-cloak
+                        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-            @foreach($data as $row)
+                        <div class="bg-white w-full max-w-xl rounded-xl shadow-xl p-6">
 
-                <div x-show="openDetail === {{ $row->id }}" x-transition x-cloak
-                    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-
-                    <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6">
-
-                        {{-- HEADER --}}
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold">Detail Transaksi Consumable</h3>
-                            <button @click="openDetail = null">✕</button>
-                        </div>
-
-                        {{-- INFO GRID --}}
-                        <div class="grid grid-cols-2 gap-4 text-sm mb-4">
-
-                            <div>
-                                <p class="font-semibold">Kode Transaksi</p>
-                                <p>{{ $row->transaction_code }}</p>
+                            {{-- HEADER --}}
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold">Detail Pengembalian Consumable</h3>
+                                <button @click="openDetail = null">✕</button>
                             </div>
 
-                            <div>
-                                <p class="font-semibold">Tanggal</p>
-                                <p>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</p>
-                            </div>
+                            {{-- INFO --}}
+                            <div class="grid grid-cols-2 gap-4 text-sm mb-4">
 
-                            <div>
-                                <p class="font-semibold">Karyawan</p>
-                                <p>{{ $row->borrower_name }}</p>
-                            </div>
-
-                            <div>
-                                <p class="font-semibold">Client</p>
-                                <p>{{ $row->client ?? '-' }}</p>
-                            </div>
-
-                            <div>
-                                <p class="font-semibold">Project</p>
-                                <p>{{ $row->project ?? '-' }}</p>
-                            </div>
-
-                            <div class="col-span-2">
-                                <p class="font-semibold">Keperluan</p>
-                                <div class="bg-gray-100 rounded-xl px-4 py-3 shadow">
-                                    {{ $row->purpose ?? '-' }}
+                                <div>
+                                    <p class="font-semibold">Kode Transaksi</p>
+                                    <p>{{ $row->transaction->transaction_code }}</p>
                                 </div>
+
+                                <div>
+                                    <p class="font-semibold">Tanggal Pengembalian</p>
+                                    <p>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Karyawan</p>
+                                    <p>{{ $row->transaction->borrower_name }}</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Consumable</p>
+                                    <p>{{ $row->consumable->name }}</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-semibold">Jumlah Dikembalikan</p>
+                                    <p class="text-teal-600 font-bold">
+                                        {{ $row->qty_return }} {{ $row->consumable->unit }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            {{-- FOOTER --}}
+                            <div class="text-right mt-4">
+                                <button @click="openDetail = null" class="bg-gray-200 px-4 py-2 rounded-lg">
+                                    Tutup
+                                </button>
                             </div>
 
                         </div>
-
-                        {{-- TABLE ITEM --}}
-                        <div class="bg-gray-50 rounded-lg overflow-hidden">
-
-                            <table class="w-full text-sm">
-
-                                <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">NAMA CONSUMABLE</th>
-                                        <th class="px-4 py-2 text-left">QTY</th>
-                                        <th class="px-4 py-2 text-left">UNIT</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach($row->items as $item)
-                                        <tr class="border-b">
-                                            <td class="px-4 py-2">
-                                                {{ $item->consumable->name }}
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                {{ $item->qty }}
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                {{ $item->consumable->unit }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                        {{-- FOOTER --}}
-                        <div class="text-right mt-4">
-                            <button @click="openDetail = null" class="bg-gray-200 px-4 py-2 rounded-lg">
-                                Tutup
-                            </button>
-                        </div>
-
                     </div>
-                </div>
 
-            @endforeach
-        @endif
+                @endforeach
+            @endif
 
-    </div>
+        </div>
 @endsection
