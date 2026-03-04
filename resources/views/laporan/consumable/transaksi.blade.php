@@ -12,38 +12,51 @@
 
         {{-- ================= FILTER ================= --}}
         <form method="GET" action="{{ route('laporan.consumable.transaksi') }}"
-            class="mb-6 bg-gradient-to-r from-cyan-500 to-teal-500 p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
+            class="mb-6 bg-gradient-to-r from-cyan-600 to-teal-500 p-6 rounded-2xl shadow-lg flex flex-wrap gap-4 items-end">
 
             <input type="hidden" name="type" value="{{ $type }}">
 
             <div>
-                <label class="text-white text-sm">Nama Peminjam</label>
+                <label class="text-white text-sm block mb-1">Nama Peminjam</label>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari..."
                     class="px-4 py-2 rounded-lg shadow w-64">
             </div>
 
             <div>
-                <label class="text-white text-sm">Dari</label>
+                <label class="text-white text-sm block mb-1">Dari Tanggal</label>
                 <input type="date" name="start_date" value="{{ request('start_date') }}"
                     class="px-3 py-2 rounded-lg shadow">
             </div>
 
             <div>
-                <label class="text-white text-sm">Sampai</label>
+                <label class="text-white text-sm block mb-1">Sampai Tanggal</label>
                 <input type="date" name="end_date" value="{{ request('end_date') }}" class="px-3 py-2 rounded-lg shadow">
             </div>
 
             <div class="flex gap-2">
+
                 <button class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow font-semibold">
-                    Filter
+                    🔎 Filter
                 </button>
 
                 <a href="{{ route('laporan.consumable.transaksi', ['type' => $type]) }}"
                     class="bg-red-500 text-white px-4 py-2 rounded-lg shadow">
                     Reset
                 </a>
-            </div>
 
+                {{-- EXPORT PDF --}}
+                <a href="{{ route('laporan.consumable.export.pdf', request()->all()) }}"
+                    class="bg-gray-800 text-white px-4 py-2 rounded-lg shadow hover:bg-black">
+                    📄 Export PDF
+                </a>
+
+                {{-- EXPORT EXCEL --}}
+                <a href="{{ route('laporan.consumable.export.excel', request()->all()) }}"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700">
+                    📊 Export Excel
+                </a>
+
+            </div>
         </form>
 
 
@@ -52,12 +65,21 @@
 
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
 
-                <a href="{{ route('laporan.consumable.transaksi', ['type' => 'pengeluaran']) }}"
+                <div class="px-4 py-2 bg-white rounded-xl shadow text-sm">
+                    Total Item Diminta :
+                    <span class="font-bold text-teal-600">
+                        {{ $type == 'pengeluaran'
+        ? $data->flatMap->items->sum('qty')
+        : $data->sum('qty') }}
+                    </span>
+                </div>
+
+                <a href="{{ route('laporan.consumable.transaksi', array_merge(request()->all(), ['type' => 'pengeluaran'])) }}"
                     class="px-4 py-2 rounded-xl text-sm {{ $type == 'pengeluaran' ? 'bg-white shadow font-semibold' : 'text-gray-600' }}">
                     📤 Pengeluaran
                 </a>
 
-                <a href="{{ route('laporan.consumable.transaksi', ['type' => 'pengembalian']) }}"
+                <a href="{{ route('laporan.consumable.transaksi', array_merge(request()->all(), ['type' => 'pengembalian'])) }}"
                     class="px-4 py-2 rounded-xl text-sm {{ $type == 'pengembalian' ? 'bg-white shadow font-semibold' : 'text-gray-600' }}">
                     📥 Pengembalian
                 </a>
@@ -71,91 +93,195 @@
 
 
         {{-- ================= TABLE ================= --}}
-        <div class="bg-white shadow-lg rounded-xl overflow-hidden">
 
-            <table class="min-w-full text-sm text-gray-700">
+        @if($type == 'pengeluaran')
 
-                <thead class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
-                    <tr>
-                        <th class="px-4 py-3 text-center">No</th>
-                        <th class="px-4 py-3">Kode</th>
-                        <th class="px-4 py-3">Tanggal</th>
-                        <th class="px-4 py-3">Peminjam</th>
-                        <th class="px-4 py-3">Consumable</th>
-                        <th class="px-4 py-3 text-center">Detail</th>
-                    </tr>
-                </thead>
+            {{-- ================= TABLE LAPORAN ================= --}}
+            <div class="bg-white shadow-lg rounded-xl overflow-hidden"></div>
+            <div class="bg-white shadow-lg rounded-xl overflow-hidden">
 
-                <tbody class="divide-y">
+                <table class="min-w-full text-sm text-gray-700">
 
-                    @forelse($data as $row)
-
-                        <tr class="hover:bg-gray-50">
-
-                            <td class="px-4 py-3 text-center">
-                                {{ $loop->iteration }}
-                            </td>
-
-                            {{-- ================= KODE ================= --}}
-                            <td class="px-4 py-3 font-semibold text-blue-600">
-                                @if($type == 'pengeluaran')
-                                    {{ $row->transaction_code }}
-                                @else
-                                    {{ $row->transaction->transaction_code }}
-                                @endif
-                            </td>
-
-                            {{-- ================= TANGGAL ================= --}}
-                            <td class="px-4 py-3">
-                                @if($type == 'pengeluaran')
-                                    {{ \Carbon\Carbon::parse($row->date)->format('d-m-Y') }}
-                                @else
-                                    {{ \Carbon\Carbon::parse($row->return_date)->format('d-m-Y') }}
-                                @endif
-                            </td>
-
-                            {{-- ================= BORROWER ================= --}}
-                            <td class="px-4 py-3">
-                                @if($type == 'pengeluaran')
-                                    {{ $row->borrower_name }}
-                                @else
-                                    {{ $row->transaction->borrower_name }}
-                                @endif
-                            </td>
-
-                            {{-- ================= CONSUMABLE ================= --}}
-                            <td class="px-4 py-3">
-                                @if($type == 'pengeluaran')
-                                    @foreach($row->items as $item)
-                                        <div>{{ $item->consumable->name }}</div>
-                                    @endforeach
-                                @else
-                                    {{ $row->consumable->name }}
-                                @endif
-                            </td>
-
-                            {{-- ================= DETAIL ================= --}}
-                            <td class="px-4 py-3 text-center">
-                                <button @click="openDetail = {{ $row->id }}"
-                                    class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-xs">
-                                    👁 Detail
-                                </button>
-                            </td>
-
-                        </tr>
-
-                    @empty
+                    <thead class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-gray-400">
-                                Tidak ada data
-                            </td>
+                            <th class="px-4 py-3 text-center">No</th>
+                            <th class="px-4 py-3">Kode</th>
+                            <th class="px-4 py-3">Tanggal</th>
+                            <th class="px-4 py-3">Karyawan</th>
+                            <th class="px-4 py-3">Consumable</th>
+                            <th class="px-4 py-3 text-center">Jumlah</th>
+                            <th class="px-4 py-3 text-center">Detail</th>
                         </tr>
-                    @endforelse
+                    </thead>
 
-                </tbody>
-            </table>
-        </div>
+                    <tbody class="divide-y">
 
+                        @forelse($data as $row)
+
+                            <tr class="hover:bg-gray-50">
+
+                                <td class="px-4 py-3 text-center">
+                                    {{ $loop->iteration }}
+                                </td>
+
+                                {{-- ================= KODE ================= --}}
+                                <td class="px-4 py-3 font-semibold text-blue-600">
+                                    @if($type == 'pengeluaran')
+                                        {{ $row->transaction_code }}
+                                    @else
+                                        {{ $row->transaction->transaction_code }}
+                                    @endif
+                                </td>
+
+                                {{-- ================= TANGGAL ================= --}}
+                                <td class="px-4 py-3">
+                                    @if($type == 'pengeluaran')
+                                        {{ \Carbon\Carbon::parse($row->date)->format('d-m-Y') }}
+                                    @else
+                                        {{ \Carbon\Carbon::parse($row->return_date)->format('d-m-Y') }}
+                                    @endif
+                                </td>
+
+                                {{-- ================= BORROWER ================= --}}
+                                <td class="px-4 py-3">
+                                    @if($type == 'pengeluaran')
+                                        {{ $row->borrower_name }}
+                                    @else
+                                        {{ $row->transaction->borrower_name }}
+                                    @endif
+                                </td>
+
+                                {{-- ================= CONSUMABLE ================= --}}
+                                <td class="px-4 py-3">
+                                    @if($type == 'pengeluaran')
+                                        @foreach($row->items as $item)
+                                            <div>{{ $item->consumable->name }}</div>
+                                        @endforeach
+                                    @else
+                                        {{ $row->consumable->name }}
+                                    @endif
+                                </td>
+
+                                {{-- ================= JUMLAH ================= --}}
+                                <td class="px-4 py-3 text-center font-semibold text-teal-600">
+
+                                    @if($type == 'pengeluaran')
+                                        {{ $row->items->sum('qty') }}
+                                    @else
+                                        {{ $row->qty }}
+                                    @endif
+                                </td>
+
+                                {{-- ================= DETAIL ================= --}}
+                                <td class="px-4 py-3 text-center">
+                                    <button @click="openDetail = {{ $row->id }}"
+                                        class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-xs">
+                                        👁 Detail
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        @empty
+                            <tr>
+                                <td colspan="6" class="p-8 text-center text-gray-400">
+                                    Tidak ada data
+                                </td>
+                            </tr>
+                        @endforelse
+
+                    </tbody>
+                </table>
+            </div>
+
+        @else
+
+            <div class="bg-white shadow-lg rounded-xl p-6">
+
+                @forelse($data as $row)
+
+                    <div class="border rounded-xl p-6 mb-6 shadow">
+
+                        {{-- HEADER INFO --}}
+                        <div class="grid grid-cols-3 gap-4 text-sm mb-4">
+
+                            <div>
+                                <p class="font-semibold">Kode Transaksi</p>
+                                <p>{{ $row->transaction_code }}</p>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold">Tanggal</p>
+                                <p>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</p>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold">Karyawan</p>
+                                <p>{{ $row->borrower_name }}</p>
+                            </div>
+
+                        </div>
+
+                        {{-- TABLE ITEM RETURN --}}
+                        <div class="bg-gray-50 rounded-lg overflow-hidden">
+
+                            <table class="w-full text-sm">
+
+                                <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">NAMA CONSUMABLE</th>
+                                        <th class="px-4 py-2 text-left">QTY KELUAR</th>
+                                        <th class="px-4 py-2 text-left">QTY RETURN</th>
+                                        <th class="px-4 py-2 text-left">UNIT</th>
+                                        <th class="px-4 py-2 text-left">KETERANGAN</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach($row->items as $item)
+                                        @if($item->qty_return)
+
+                                            <tr class="border-b">
+                                                <td class="px-4 py-2">
+                                                    {{ $item->consumable->name }}
+                                                </td>
+
+                                                <td class="px-4 py-2">
+                                                    {{ $item->qty }}
+                                                </td>
+
+                                                <td class="px-4 py-2 font-semibold text-teal-600">
+                                                    {{ $item->qty_return }}
+                                                </td>
+
+                                                <td class="px-4 py-2">
+                                                    {{ $item->consumable->unit }}
+                                                </td>
+
+                                                <td class="px-4 py-2">
+                                                    {{ $item->keterangan ?? '-' }}
+                                                </td>
+                                            </tr>
+
+                                        @endif
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                @empty
+                    <p class="text-gray-400 text-center py-10">
+                        Tidak ada transaksi return
+                    </p>
+                @endforelse
+
+            </div>
+
+        @endif
 
         {{-- ================= MODAL ================= --}}
         @if($type == 'pengeluaran')
@@ -187,7 +313,7 @@
                             </div>
 
                             <div>
-                                <p class="font-semibold">Peminjam</p>
+                                <p class="font-semibold">Karyawan</p>
                                 <p>{{ $row->borrower_name }}</p>
                             </div>
 
