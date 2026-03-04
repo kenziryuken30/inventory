@@ -5,12 +5,9 @@
 <h2 class="text-3xl font-bold text-[#268397] mb-1">Dashboard</h2>
 <p class="text-gray-500 mb-10">Selamat datang di Sistem Inventory Management</p>
 
-{{-- ===================== --}}
-{{-- CARD ATAS --}}
-{{-- ===================== --}}
+
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
 
-    {{-- Total Barang --}}
     <div class="p-6 flex justify-between items-center rounded-2xl shadow-xl text-white
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
@@ -33,7 +30,6 @@
         </svg>
     </div>
 
-    {{-- Alat Tersedia --}}
     <div class="p-6 flex justify-between items-center rounded-2xl shadow-xl text-white
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
@@ -54,7 +50,6 @@
         </svg>
     </div>
 
-    {{-- Alat Dipinjam --}}
     <div class="p-6 flex justify-between items-center rounded-2xl shadow-xl text-white
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
@@ -76,7 +71,6 @@
         </svg>
     </div>
 
-    {{-- Consumable Menipis --}}
     <div class="p-6 flex justify-between items-center rounded-2xl shadow-xl text-white
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
@@ -99,12 +93,9 @@
 
 </div>
 
-{{-- ===================== --}}
-{{-- BOX STYLE --}}
-{{-- ===================== --}}
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-    {{-- PEMINJAMAN --}}
     <div class="rounded-2xl bg-white shadow-xl overflow-hidden">
 
         <div class="px-6 py-4 text-white
@@ -149,7 +140,7 @@
         </div>
     </div>
 
-    {{-- CONSUMABLE --}}
+
     <div class="rounded-2xl bg-white shadow-xl overflow-hidden">
 
         <div class="px-6 py-4 text-white
