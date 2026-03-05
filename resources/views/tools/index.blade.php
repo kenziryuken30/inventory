@@ -461,18 +461,226 @@
 {{-- ================= STYLE & SCRIPT ================= --}}
 
 <style>
-
-.modal-box {
-    background: #fff;
-    padding: 1.5rem;
-    width: 100%; max-width: 500px;
-    border-radius: .5rem;
+/* =================================================
+   GLOBAL
+================================================= */
+body {
+    background-color: #f4f8fb;
 }
-.modal-title { font-weight: 600; margin-bottom: 1rem; }
-.input { width: 100%; margin-bottom: .75rem; padding: .5rem; border: 1px solid #ccc; border-radius: .25rem; }
-.hidden { display: none; }
-</style>
 
+h2 {
+    font-size: 26px !important;
+    font-weight: 700;
+    color: #169fb2;
+    letter-spacing: 0.2px;
+}
+
+/* =================================================
+   HEADER BAR (SEARCH AREA)
+================================================= */
+.bg-gradient-to-r {
+    background: linear-gradient(
+        135deg,
+        #63d3e3 0%,
+        #4fbecb 45%,
+        #3fa9b5 100%
+    ) !important;
+}
+
+.bg-gradient-to-r {
+    padding: 22px !important;
+}
+
+/* =================================================
+   SEARCH INPUT & SELECT
+================================================= */
+input[name="search"],
+select[name="condition"] {
+    height: 44px;
+    font-size: 13px;
+    border-radius: 14px !important;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+input[name="search"]::placeholder {
+    color: #9ca3af;
+}
+
+/* =================================================
+   ADD BUTTON
+================================================= */
+#openTambahBarang {
+    background: #ffffff;
+    font-weight: 600;
+    border-radius: 14px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+#openTambahBarang:hover {
+    background: #f8fafc;
+}
+
+/* =================================================
+   TABLE CONTAINER
+================================================= */
+table {
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+thead tr {
+    background: linear-gradient(
+        135deg,
+        #5fd0df 0%,
+        #47b9c7 100%
+    ) !important;
+}
+
+thead th {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* =================================================
+   TABLE BODY
+================================================= */
+tbody tr {
+    background: #ffffff;
+}
+
+tbody tr:hover {
+    background: #eef8fb !important;
+}
+
+td {
+    vertical-align: middle;
+}
+
+/* =================================================
+   IMAGE
+================================================= */
+td img {
+    width: 46px;
+    height: 46px;
+    background: #ffffff;
+    padding: 4px;
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* =================================================
+   BADGE GENERAL
+================================================= */
+td span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    padding: 6px 12px !important;
+    font-size: 11.5px;
+    font-weight: 600;
+    border-radius: 999px;
+}
+
+/* =================================================
+   STATUS COLOR
+================================================= */
+.bg-green-100 {
+    background: #e6f7ef !important;
+    color: #1f9254 !important;
+}
+
+.bg-blue-100 {
+    background: #e9f2ff !important;
+    color: #1e40af !important;
+}
+
+.bg-yellow-200,
+.bg-yellow-100 {
+    background: #fff4da !important;
+    color: #9a6a19 !important;
+}
+
+/* =================================================
+   KONDISI OUTLINE
+================================================= */
+.border-green-500 {
+    border: 1.8px solid #4fbf9c !important;
+    color: #1f9254 !important;
+}
+
+.border-red-500 {
+    border: 1.8px solid #ef6b6b !important;
+    color: #b42318 !important;
+}
+
+.border-gray-400 {
+    border: 1.8px solid #9ca3af !important;
+    color: #4b5563 !important;
+}
+
+/* =================================================
+   ACTION ICON
+================================================= */
+td button {
+    font-size: 17px;
+}
+
+td button:hover {
+    transform: scale(1.15);
+}
+
+/* =================================================
+   MODAL
+================================================= */
+#tambahBarangModal > div,
+#editBarangModal > div {
+    background: linear-gradient(
+        180deg,
+        #f7f7f7 0%,
+        #eeeeee 100%
+    ) !important;
+    border-radius: 22px !important;
+}
+
+#tambahBarangModal h2,
+#editBarangModal h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #169fb2;
+}
+
+/* =================================================
+   MODAL INPUT
+================================================= */
+#tambahBarangModal input,
+#tambahBarangModal select,
+#editBarangModal input,
+#editBarangModal select {
+    border-radius: 14px;
+    font-size: 14px;
+}
+
+/* =================================================
+   BUTTON
+================================================= */
+button[type="submit"] {
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+/* =================================================
+   SHADOW GLOBAL
+================================================= */
+.shadow-lg {
+    box-shadow: 0 18px 40px rgba(0,0,0,0.18) !important;
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
