@@ -28,8 +28,7 @@ class ConsumableTransactionController extends Controller
             ]);
         }
 
-        $transactions = $query->orderBy('created_at', 'desc')->get();
-        $transactions = $query->orderBy('date', 'desc')->get();
+        $transactions = $query->orderByDesc('date')->get();
 
         return view('transaksi.index', compact('transactions'));
     }
@@ -53,12 +52,12 @@ class ConsumableTransactionController extends Controller
 
         DB::transaction(function () use ($request) {
 
-        do {
-        $letters = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3));
-        $numbers = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
-        $transactionCode = $letters . $numbers;
+            do {
+                $letters = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3));
+                $numbers = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
+                $transactionCode = $letters . $numbers;
             } while (InvConsumableTransaction::where('transaction_code', $transactionCode)->exists());
-    
+
             $trx = InvConsumableTransaction::create([
                 'transaction_code' => $transactionCode,
                 'borrower_name' => $request->borrower_name,
@@ -92,26 +91,26 @@ class ConsumableTransactionController extends Controller
     }
 
     public function returnFull($id)
-{
-    $trx = InvConsumableTransaction::with('items')->findOrFail($id);
+    {
+        $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
-    if ($trx->is_confirm) {
-        return back()->with('error', 'Barang sudah dikembalikan sebelumnya');
-    }
-
-    DB::transaction(function () use ($trx) {
-        foreach ($trx->items as $item) {
-            InvConsumable::where('id', $item->consumable_id)
-                ->increment('stock', $item->qty);
+        if ($trx->is_confirm) {
+            return back()->with('error', 'Barang sudah dikembalikan sebelumnya');
         }
 
-        $trx->update([
-            'is_confirm' => true
-        ]);
-    });
+        DB::transaction(function () use ($trx) {
+            foreach ($trx->items as $item) {
+                InvConsumable::where('id', $item->consumable_id)
+                    ->increment('stock', $item->qty);
+            }
 
-    return back()->with('success', 'Return berhasil');
-}
+            $trx->update([
+                'is_confirm' => true
+            ]);
+        });
+
+        return back()->with('success', 'Return berhasil');
+    }
 
     public function edit($id)
     {
@@ -313,8 +312,8 @@ class ConsumableTransactionController extends Controller
 
             foreach ($trx->items as $item) {
 
-            $consumable = InvConsumable::lockForUpdate()
-                ->find($item->consumable_id);
+                $consumable = InvConsumable::lockForUpdate()
+                    ->find($item->consumable_id);
 
                 if ($item->qty > $item->consumable->stock) {
                     throw new \Exception(
@@ -351,10 +350,13 @@ class ConsumableTransactionController extends Controller
                     throw new \Exception("Qty melebihi sisa");
                 }
 
-                $item->increment('qty_return', $data['qty']);
+                $item->qty_return += $data['qty'];
 
-                $consumable = $item->consumable;
-                $consumable->increment('stock', $data['qty']);
+                $item->note = $data['note'] ?? '-';
+
+                $item->save();
+
+                $item->consumable->increment('stock', $data['qty']);
             }
         }
 
@@ -373,7 +375,7 @@ class ConsumableTransactionController extends Controller
             ->route('transaksi.index')
             ->with('success', 'Barang berhasil dikembalikan');
     }
-    
+
     public function storeItem(Request $request, $id)
     {
         $request->validate([
@@ -400,5 +402,4 @@ class ConsumableTransactionController extends Controller
 
         return back()->with('success', 'Consumable berhasil ditambahkan');
     }
-    
 }

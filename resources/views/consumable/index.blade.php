@@ -2,7 +2,13 @@
 
 @section('content')
 
-    <div x-data="{ add:false, edit:false, item:{} }" class="px-8 pt-6 pb-10">
+    <div x-data="{ 
+                    add:false, 
+                    edit:false, 
+                    preview:false, 
+                    previewImage:'', 
+                    item:{} 
+                }" class="px-8 pt-6 pb-10">
 
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-start mb-6">
@@ -80,64 +86,63 @@
                 <tbody class="text-gray-700 text-sm">
 
                     @forelse($consumables as $c)
-                                <tr class="border-b hover:bg-gray-50 transition">
+                        <tr class="border-b hover:bg-gray-50 transition">
 
-                                    {{-- FOTO --}}
-                                    <td class="py-3 text-center">
-                                        <div class="flex justify-center">
-                                            <img src="{{ $c->image
-                        ? asset('storage/' . $c->image)
-                        : asset('images/no-image.png') }}"
-                                                class="w-12 h-12 object-contain rounded-md border bg-white p-1">
-                                        </div>
-                                    </td>
+                            {{-- FOTO --}}
+                            <td class="py-3 text-center">
+                                <div class="flex justify-center">
+                                    <img src="{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}"
+                                        @click="preview=true; previewImage='{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}'"
+                                        class="w-12 h-12 object-contain rounded-md border bg-white p-1 cursor-pointer hover:scale-110 transition">
+                                </div>
+                            </td>
 
-                                    {{-- NAMA --}}
-                                    <td class="py-3 pl-4 font-medium text-gray-800 align-middle">
-                                        {{ $c->name }}
-                                    </td>
+                            {{-- NAMA --}}
+                            <td class="py-3 pl-4 font-medium text-gray-800 align-middle">
+                                {{ $c->name }}
+                            </td>
 
-                                    {{-- KATEGORI --}}
-                                    <td class="py-3 text-center align-middle">
-                                        <span class="px-3 py-1 text-xs rounded-full bg-gray-200">
-                                            {{ optional($c->category)->category_name ?? '-' }}
-                                        </span>
-                                    </td>
+                            {{-- KATEGORI --}}
+                            <td class="py-3 text-center align-middle">
+                                <span class="px-3 py-1 text-xs rounded-full bg-gray-200">
+                                    {{ optional($c->category)->category_name ?? '-' }}
+                                </span>
+                            </td>
 
-                                    {{-- STOK --}}
-                                    <td class="py-3 text-center align-middle">
-                                        <div
-                                            class="font-semibold {{ $c->stock < $c->minimum_stock ? 'text-red-600' : 'text-gray-800' }}">
-                                            {{ $c->stock }}
-                                        </div>
-                                        <div class="text-xs text-gray-400 -mt-1">
-                                            {{ $c->unit }}
-                                        </div>
-                                    </td>
+                            {{-- STOK --}}
+                            <td class="py-3 text-center align-middle">
+                                <div
+                                    class="font-semibold {{ $c->stock < $c->minimum_stock ? 'text-red-600' : 'text-gray-800' }}">
+                                    {{ $c->stock }}
+                                </div>
+                                <div class="text-xs text-gray-400 -mt-1">
+                                    {{ $c->unit }}
+                                </div>
+                            </td>
 
-                                    {{-- AKSI --}}
-                                    <td class="py-3 text-center align-middle">
-                                        <div class="flex justify-center gap-4 text-lg">
+                            {{-- AKSI --}}
+                            <td class="py-3 text-center align-middle">
+                                <div class="flex justify-center gap-4 text-lg">
 
-                                            <button type="button" @click="edit = true; item = @js($c)"
-                                                class="text-gray-600 hover:text-blue-600 transition">
-                                                ✏
-                                            </button>
+                                    <button type="button" @click="edit = true; item = @js($c)"
+                                        class="text-gray-600 hover:text-blue-600 transition">
+                                        ✏
+                                    </button>
 
-                                            <form method="POST" action="/consumable/{{ $c->id }}"
-                                                onsubmit="return confirm('Yakin hapus data ini?')">
-                                                @csrf
-                                                @method('DELETE')
+                                    <form method="POST" action="/consumable/{{ $c->id }}"
+                                        onsubmit="return confirm('Yakin hapus data ini?')">
+                                        @csrf
+                                        @method('DELETE')
 
-                                                <button type="submit" class="text-gray-600 hover:text-red-600 transition">
-                                                    🗑
-                                                </button>
-                                            </form>
+                                        <button type="submit" class="text-gray-600 hover:text-red-600 transition">
+                                            🗑
+                                        </button>
+                                    </form>
 
-                                        </div>
-                                    </td>
+                                </div>
+                            </td>
 
-                                </tr>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="5" class="py-8 text-center text-gray-400">
@@ -197,6 +202,17 @@
             </div>
         </div>
 
+        {{-- ================= MODAL PREVIEW FOTO ================= --}}
+        <div x-show="preview" x-cloak class="modal" @click.self="preview=false">
+            <div class="modal-box bg-transparent shadow-none max-w-3xl">
+
+                <div class="flex justify-end mb-2">
+                    <button @click="preview=false" class="text-white text-2xl">✕</button>
+                </div>
+
+                <img :src="previewImage" class="w-full max-h-[80vh] object-contain rounded-xl bg-white p-4 shadow-xl">
+            </div>
+        </div>
 
         {{-- ================= MODAL EDIT ================= --}}
         <div x-show="edit" x-cloak class="modal">
@@ -248,10 +264,11 @@
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, .4);
+            background: rgba(0, 0, 0, .7);
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
         }
 
         .modal-box {

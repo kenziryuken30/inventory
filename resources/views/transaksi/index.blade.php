@@ -80,7 +80,7 @@
                         <tr class="hover:bg-gray-50 transition">
 
                             <td class="px-4 py-3 text-center">
-                                {{ $transactions->count() - $loop->index }}
+                                {{ $loop->iteration }}
                             </td>
 
                             <td class="px-4 py-3 font-semibold text-blue-600">

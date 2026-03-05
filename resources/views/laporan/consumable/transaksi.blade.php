@@ -94,24 +94,24 @@
 
         {{-- ================= TABLE ================= --}}
         <div class="bg-white shadow-[0_10px_25px_rgba(0,0,0,0.1)] 
-    rounded-2xl overflow-hidden">
+        rounded-2xl overflow-hidden">
 
             <div class="max-h-[420px] overflow-y-auto">
 
                 <table class="min-w-full text-sm text-gray-700">
 
-                    <thead class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
+                    <thead class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600 sticky top-0 z-10">
                         <tr>
-                            <th class="px-4 py-3 text-center">No</th>
-                            <th class="px-4 py-3">Kode</th>
-                            <th class="px-4 py-3">Tanggal</th>
-                            <th class="px-4 py-3">Karyawan</th>
-                            <th class="px-4 py-3">Consumable</th>
-                            <th class="px-4 py-3 text-center">Jumlah</th>
+                            <th class="px-4 py-3 text-center bg-gray-100">No</th>
+                            <th class="px-4 py-3 bg-gray-100">Kode</th>
+                            <th class="px-4 py-3 bg-gray-100">Tanggal</th>
+                            <th class="px-4 py-3 bg-gray-100">Karyawan</th>
+                            <th class="px-4 py-3 bg-gray-100">Consumable</th>
+                            <th class="px-4 py-3 text-center bg-gray-100">Jumlah</th>
                             @if($type == 'pengeluaran')
-                                <th class="px-4 py-3 text-center">Detail</th>
+                                <th class="px-4 py-3 text-center bg-gray-100">Detail</th>
                             @else
-                                <th class="px-4 py-3">Keterangan</th>
+                                <th class="px-4 py-3 bg-gray-100">Keterangan</th>
                             @endif
                         </tr>
                     </thead>
@@ -184,7 +184,7 @@
                                     </td>
                                 @else
                                     <td class="px-4 py-3">
-                                        {{ $row->transaction->purpose ?? '-' }}
+                                        {{ $row->note ?? '-' }}
                                     </td>
                                 @endif
 

@@ -94,7 +94,8 @@ class ReportConsumableController extends Controller
         // ================= PENGELUARAN =================
         if ($type == 'pengeluaran') {
 
-            $query = InvConsumableTransaction::with('items.consumable');
+            $query = InvConsumableTransaction::with('items.consumable')
+            ->latest();
 
             if ($request->search) {
                 $query->where('borrower_name', 'like', '%' . $request->search . '%');

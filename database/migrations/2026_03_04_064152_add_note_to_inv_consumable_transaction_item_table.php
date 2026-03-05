@@ -11,21 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_report_borrow_item', function (Blueprint $table) {
-            $table->string('id',20)->primary();
-            $table->string('report_borrow_id',20);
-            $table->string('toolkit_id',20);
-    });
-
-
+        Schema::table('inv_consumable_transaction_item', function (Blueprint $table) {
+            $table->text('note')->nullable();
+        });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_report_borrow_item');
+        Schema::table('inv_consumable_transaction_item', function (Blueprint $table) {
+            //
+        });
     }
 };
