@@ -5,9 +5,8 @@
     <title>Inventory</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <script src="https://unpkg.com/phosphor-icons"></script>
     <style>
         [x-cloak]{display:none!important}
 
@@ -42,20 +41,20 @@
     </style>
 </head>
 
-<body x-data="{ sidebarOpen:true }">
+<body x-data="{ sidebarOpen: true }">
 
-<div class="flex min-h-screen relative overflow-hidden">
+<div class="flex min-h-screen w-full relative">
 
     <img src="{{ asset('images/kiri.png') }}"
-         :class="sidebarOpen ? 'left-64' : 'left-20'"
-         class="absolute bottom-0 w-[340px] transition-all duration-300 z-0 pointer-events-none">
+        class="hidden lg:block absolute bottom-0 left-64 w-[340px] pointer-events-none -z-10">
 
     <img src="{{ asset('images/kana1.png') }}"
-         class="absolute right-0 bottom-0 w-[340px] z-0 pointer-events-none">
+        class="hidden lg:block absolute right-0 bottom-0 w-[340px] pointer-events-none -z-10">
 
     <!-- SIDEBAR -->
-    <aside :class="sidebarOpen ? 'w-64' : 'w-20'"
-           class="relative z-10 flex flex-col bg-[#f4f6f9] shadow-2xl transition-all duration-300">
+  <aside 
+    :class="sidebarOpen ? 'w-64' : 'w-20'"
+    class="relative z-10 flex flex-col bg-[#f4f6f9] shadow-2xl transition-all duration-300">
 
         <!-- HEADER (WARNA BARU) -->
         <div class="px-4 py-4 bg-[#D5EEFF]">
@@ -187,14 +186,14 @@
     </aside>
 
     <!-- TOGGLE -->
-    <button
-        @click="sidebarOpen=!sidebarOpen"
-        :class="sidebarOpen ? 'left-60':'left-16'"
-        class="fixed top-14 bg-cyan-500 text-white w-10 h-10 rounded-full shadow-lg z-50 transition-all">
-        ☰
-    </button>
+   <button
+@click="sidebarOpen=!sidebarOpen"
+:class="sidebarOpen ? 'left-64':'left-20'"
+class="fixed top-6 bg-cyan-500 text-white w-10 h-10 rounded-full shadow-lg z-50 transition-all flex items-center justify-center">
+<i class="ph ph-list"></i>
+</button>
 
-    <main class="flex-1 p-8 relative z-10">
+    <main class="flex-1 w-full p-4 md:p-6 lg:p-8 relative z-10 ml-6">
         @yield('content')
     </main>
 

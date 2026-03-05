@@ -2,19 +2,18 @@
 
 @section('content')
 
-<h2 class="text-3xl font-bold text-[#268397] mb-1">Dashboard</h2>
-<p class="text-gray-500 mb-10">Selamat datang di Sistem Inventory Management</p>
+<h2 class="text-4xl md:text-3xl font-bold text-[#268397] mb-1">Dashboard</h2>
+<p class="text-base md:text-sm text-gray-500 mb-10">Selamat datang di Sistem Inventory Management</p>
 
-
-<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">    
 
     <div class="p-6 flex justify-between items-center rounded-2xl shadow-xl text-white
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
         <div>
-            <p class="text-sm opacity-90">Total Barang</p>
-            <p class="text-3xl font-bold">{{ $totalBarang }}</p>
-            <p class="text-xs opacity-75">Semua item dalam inventory</p>
+            <p class="text-base md:text-sm opacity-90">Total Barang</p>
+            <p class="text-4xl md:text-3xl font-bold">{{ $totalBarang }}</p>
+            <p class="text-sm md:text-xs opacity-75">Semua item dalam inventory</p>
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg"
@@ -75,13 +74,13 @@
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
         <div>
-            <p class="text-sm opacity-90">Consumable Menipis</p>
-            <p class="text-3xl font-bold">{{ $consumableMenipis }}</p>
-            <p class="text-xs opacity-75">Di bawah minimum stok</p>
+            <p class="text-sm md:text-sm opacity-90">Consumable Menipis</p>
+            <p class="text-3xl md:text-3xl font-bold">{{ $consumableMenipis }}</p>
+            <p class="text-xs md:text-xs opacity-75">Di bawah minimum stok</p>
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg"
-             class="w-10 h-10"
+             class="w-12 h-12 md:w-10 md:h-10"
              fill="none"
              viewBox="0 0 24 24"
              stroke="currentColor"
@@ -96,13 +95,13 @@
 {{-- ===================== --}}
 {{-- BOX STYLE --}}
 {{-- ===================== --}}
-<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
     <div class="rounded-2xl bg-white shadow-xl overflow-hidden">
 
         <div class="px-6 py-4 text-white
             bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
-            <h3 class="font-semibold">
+            <h3 class="text-lg md:text-base font-semibold"> 
                 Peminjaman Terbaru
             </h3>
         </div>
@@ -113,10 +112,10 @@
                 <div class="flex justify-between items-center py-4 border-b last:border-none">
 
                     <div>
-                        <p class="font-medium text-gray-800">
+                        <p class="text-lg md:text-base font-medium text-gray-800">
                             {{ $trx->tool->name ?? '-' }}
                         </p>
-                        <p class="text-xs text-gray-500">
+                        <p class="text-sm md:text-xs text-gray-500">
                             {{ $trx->employee->full_name ?? '-' }} • 
                             {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
                         </p>
@@ -127,7 +126,7 @@
                             Dipinjam
                         </span>
                     @else
-                        <span class="bg-green-500 text-white text-xs px-4 py-1 rounded-full shadow">
+                        <span class="bg-green-500 text-white text-sm md:text-xs px-4 py-1 rounded-full shadow-sm">
                             Selesai
                         </span>
                     @endif
