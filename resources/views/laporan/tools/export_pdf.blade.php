@@ -44,6 +44,13 @@ Laporan Pengembalian Tools
 @endif
 </h2>
 
+<p style="text-align:center;">
+Periode :
+{{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
+s/d
+{{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
+</p>
+
 <table>
 
 <thead>

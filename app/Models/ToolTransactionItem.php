@@ -30,10 +30,10 @@ class ToolTransactionItem extends Model
         return $this->belongsTo(ToolTransaction::class, 'transaction_id');
     }
 
-    public function toolkit()
-    {
-        return $this->belongsTo(InvToolkit::class, 'toolkit_id', 'id');
-    }
+public function toolkit()
+{
+    return $this->belongsTo(InvToolkit::class, 'toolkit_id', 'id');
+}
 
     public function serial()
     {
