@@ -85,7 +85,7 @@
                     <table class="w-full table-fixed text-sm" id="tableConsumables">
                         <thead>
                             <tr class="text-white text-sm
-                            bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
+                                bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
 
                                 <th class="py-3 w-12"></th>
                                 <th>Foto</th>
@@ -142,8 +142,9 @@
 
                 {{-- BUTTON --}}
                 <div class="flex justify-end mt-6">
-                    <button class="bg-[#268397] hover:bg-[#1d6d7c]
-                                                                                text-white px-6 py-2 rounded-lg shadow">
+                    <button
+                        class="bg-[#268397] hover:bg-[#1d6d7c]
+                                                                                    text-white px-6 py-2 rounded-lg shadow">
                         Save
                     </button>
                 </div>
@@ -211,7 +212,7 @@
                                     {{-- STOCK --}}
                                     <td
                                         class="text-center font-semibold
-                                                                                                        {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
+                                                                                                                {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
                                         {{ $c->stock }}
                                         @if($c->stock <= $c->minimum_stock)
                                             <div class="text-xs text-red-400">
@@ -291,6 +292,27 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
+                
+                /* ================= SEARCH ================= */
+                document.getElementById("searchConsumable")
+                    .addEventListener("keyup", function () {
+
+                        let keyword = this.value.toLowerCase();
+                        let rows = document.querySelectorAll("#popupTable tbody tr");
+
+                        rows.forEach(row => {
+
+                            let name = row.children[2].innerText.toLowerCase();
+
+                            if (name.includes(keyword)) {
+                                row.style.display = "";
+                            } else {
+                                row.style.display = "none";
+                            }
+
+                        });
+
+                    });
 
                 document.getElementById('btnAddConsumable')
                     .addEventListener('click', function () {
@@ -324,44 +346,44 @@
                             } else {
 
                                 const html = `
-                            <tr data-id="${id}" class="border-b hover:bg-gray-50 align-middle">
+                                <tr data-id="${id}" class="border-b hover:bg-gray-50 align-middle">
 
-                                <td class="py-3 text-center no font-medium"></td>
+                                    <td class="py-3 text-center no font-medium"></td>
 
-                                <td class="py-2 text-center">
-                                    <img src="${image}"
-                                        class="w-14 h-14 object-cover rounded-xl border shadow-sm mx-auto">
-                                </td>
+                                    <td class="py-2 text-center">
+                                        <img src="${image}"
+                                            class="w-14 h-14 object-cover rounded-xl border shadow-sm mx-auto">
+                                    </td>
 
-                                <td class="py-2">
-                                    <span class="font-medium block">${name}</span>
-                                </td>
+                                    <td class="py-2">
+                                        <span class="font-medium block">${name}</span>
+                                    </td>
 
-                                <td class="py-2 text-center">
-                                    <input type="number"
-                                        value="${qty}"
-                                        min="1"
-                                        onchange="updateQty(this)"
-                                        class="w-20 h-9 text-center border rounded-lg qty-input-main">
-                                </td>
+                                    <td class="py-2 text-center">
+                                        <input type="number"
+                                            value="${qty}"
+                                            min="1"
+                                            onchange="updateQty(this)"
+                                            class="w-20 h-9 text-center border rounded-lg qty-input-main">
+                                    </td>
 
-                                <td class="py-2 text-center">
-                                    <button type="button"
-                                        onclick="removeRow(this)"
-                                        class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-sm hover:bg-red-200">
-                                        Hapus
-                                    </button>
+                                    <td class="py-2 text-center">
+                                        <button type="button"
+                                            onclick="removeRow(this)"
+                                            class="bg-red-100 text-red-600 px-3 py-1 rounded-lg text-sm hover:bg-red-200">
+                                            Hapus
+                                        </button>
 
-                                    <input type="hidden"
-                                        name="items[${index}][consumable_id]"
-                                        value="${id}">
+                                        <input type="hidden"
+                                            name="items[${index}][consumable_id]"
+                                            value="${id}">
 
-                                    <input type="hidden"
-                                        name="items[${index}][qty]"
-                                        value="${qty}"
-                                        class="hidden-qty">
-                                </td>
-                            </tr>`;
+                                        <input type="hidden"
+                                            name="items[${index}][qty]"
+                                            value="${qty}"
+                                            class="hidden-qty">
+                                    </td>
+                                </tr>`;
 
                                 document.querySelector('#tableConsumables tbody')
                                     .insertAdjacentHTML('beforeend', html);

@@ -15,7 +15,8 @@ class InvConsumableTransactionItem extends Model
         'transaction_id',
         'consumable_id',
         'qty',
-        'qty_return'
+        'qty_return',
+        'note'
     ];
 
     public function transaction()

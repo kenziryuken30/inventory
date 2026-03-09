@@ -18,7 +18,9 @@ class InvConsumableTransaction extends Model
         'project',
         'purpose',
         'date',
-        'is_confirm'
+        'return_date',
+        'is_confirm',
+        'is_return'
     ];
 
     protected $casts = [

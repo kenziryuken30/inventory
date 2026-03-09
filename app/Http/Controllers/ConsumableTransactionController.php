@@ -223,8 +223,14 @@ class ConsumableTransactionController extends Controller
                 return $i->qty == $i->qty_return;
             });
 
+            $trx->update([
+                'return_date' => $request->return_date
+            ]);
+
             if ($allReturned) {
-                $trx->update(['is_confirm' => true]);
+                $trx->update([
+                    'is_return' => true
+                ]);
             }
         });
 
@@ -233,10 +239,13 @@ class ConsumableTransactionController extends Controller
 
     public function returnProcess(Request $request, $id)
     {
+        $request->validate([
+            'return_date' => 'required|date'
+        ]);
+
         DB::transaction(function () use ($request, $id) {
 
-            $trx = InvConsumableTransaction::with('items')
-                ->findOrFail($id);
+            $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
             foreach ($request->items as $itemId => $data) {
 
@@ -252,22 +261,22 @@ class ConsumableTransactionController extends Controller
                         throw new \Exception("Qty melebihi sisa");
                     }
 
-                    // update return
                     $item->increment('qty_return', $qtyReturn);
 
-                    // update stock
                     InvConsumable::where('id', $item->consumable_id)
                         ->increment('stock', $qtyReturn);
                 }
             }
 
-            // cek apakah semua sudah kembali
             $allReturned = $trx->items->every(function ($i) {
                 return $i->qty == $i->qty_return;
             });
 
             if ($allReturned) {
-                $trx->update(['is_confirm' => true]);
+                $trx->update([
+                    'is_confirm' => true,
+                    'return_date' => $request->return_date
+                ]);
             }
         });
 
@@ -336,13 +345,13 @@ class ConsumableTransactionController extends Controller
 
     public function kembali(Request $request, $id)
     {
-        $trx = InvConsumableTransaction::with('items')->findOrFail($id);
+        $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
 
         foreach ($request->items as $itemId => $data) {
 
             if (!empty($data['qty']) && $data['qty'] > 0) {
 
-                $item = InvConsumableTransactionItem::find($itemId);
+                $item = InvConsumableTransactionItem::findOrFail($itemId);
 
                 $sisa = $item->qty - $item->qty_return;
 
@@ -350,15 +359,22 @@ class ConsumableTransactionController extends Controller
                     throw new \Exception("Qty melebihi sisa");
                 }
 
-                $item->qty_return += $data['qty'];
+                $item->increment('qty_return', $data['qty']);
 
-                $item->note = $data['note'] ?? '-';
+                $item->update([
+                    'note' => $data['note'] ?? '-'
+                ]);
 
-                $item->save();
-
-                $item->consumable->increment('stock', $data['qty']);
+                InvConsumable::where('id', $item->consumable_id)
+                    ->increment('stock', $data['qty']);
             }
         }
+
+        $trx->load('items');
+
+        $trx->update([
+            'return_date' => $request->return_date
+        ]);
 
         $allReturned = $trx->items->every(function ($i) {
             return $i->qty == $i->qty_return;
@@ -366,8 +382,7 @@ class ConsumableTransactionController extends Controller
 
         if ($allReturned) {
             $trx->update([
-                'is_return' => true,
-                'return_date' => $request->return_date
+                'is_return' => true
             ]);
         }
 

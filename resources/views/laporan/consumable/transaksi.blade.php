@@ -140,7 +140,7 @@
                                     @if($type == 'pengeluaran')
                                         {{ \Carbon\Carbon::parse($row->date)->format('d-m-Y') }}
                                     @else
-                                        {{ \Carbon\Carbon::parse($row->return_date)->format('d-m-Y') }}
+                                        {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d-m-Y') }}
                                     @endif
                                 </td>
 
@@ -327,7 +327,7 @@
 
                                 <div>
                                     <p class="font-semibold">Tanggal Pengembalian</p>
-                                    <p>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</p>
+                                    <p>{{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}</p>
                                 </div>
 
                                 <div>

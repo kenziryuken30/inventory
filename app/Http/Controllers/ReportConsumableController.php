@@ -39,54 +39,100 @@ class ReportConsumableController extends Controller
             $data = $query->get();
         } else { // ================= PENGEMBALIAN =================
 
-    $query = InvConsumableTransactionItem::with([
-        'transaction',
-        'consumable'
-    ])
-    ->whereNotNull('qty_return')
-    ->where('qty_return', '>', 0)
-    ->latest();
+            $query = InvConsumableTransactionItem::with([
+                'transaction',
+                'consumable'
+            ])
+                ->whereNotNull('qty_return')
+                ->where('qty_return', '>', 0)
+                ->latest();
 
-    if ($search) {
-        $query->whereHas('transaction', function ($q) use ($search) {
-            $q->where('borrower_name', 'like', '%' . $search . '%');
-        });
-    }
+            if ($search) {
+                $query->whereHas('transaction', function ($q) use ($search) {
+                    $q->where('borrower_name', 'like', '%' . $search . '%');
+                });
+            }
 
-    if ($start && $end) {
-        $query->whereBetween('created_at', [
-            Carbon::parse($start)->startOfDay(),
-            Carbon::parse($end)->endOfDay()
-        ]);
-    }
+            if ($start && $end) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($start)->startOfDay(),
+                    Carbon::parse($end)->endOfDay()
+                ]);
+            }
 
-    $data = $query->get();
-}
+            $data = $query->get();
+        }
 
         return view('laporan.consumable.transaksi', compact('data', 'type'));
     }
 
     public function exportPdf(Request $request)
     {
-        $type = $request->type ?? 'pengeluaran';
+        $type = $request->type;
 
-        $data = $this->getFilteredData($request, $type)->get();
+        $query = InvConsumableTransactionItem::with(['transaction', 'consumable']);
 
-        $pdf = Pdf::loadView('laporan.consumable.export', compact('data', 'type'))
-            ->setPaper('a4', 'landscape');
+        if ($request->start_date && $request->end_date) {
+            $query->whereHas('transaction', function ($q) use ($request) {
+                $q->whereBetween('date', [$request->start_date, $request->end_date]);
+            });
+        }
 
-        return $pdf->download('Laporan-Consumable.export.pdf');
+        $data = $query->get();
+
+        $pdf = Pdf::loadView('laporan.consumable.export', [
+            'data' => $data,
+            'type' => $type
+        ]);
+
+        return $pdf->download('laporan_consumable.pdf');
     }
 
     public function exportExcel(Request $request)
     {
-        $type = $request->type ?? 'pengeluaran';
+        $type = $request->type;
 
-        $data = $this->getFilteredData($request, $type)->get();
+        if ($type == 'pengeluaran') {
+
+            $query = InvConsumableTransaction::with('items.consumable');
+
+            if ($request->start_date) {
+                $query->whereDate('date', '>=', $request->start_date);
+            }
+
+            if ($request->end_date) {
+                $query->whereDate('date', '<=', $request->end_date);
+            }
+
+            if ($request->search) {
+                $query->where('borrower_name', 'like', '%' . $request->search . '%');
+            }
+
+            $data = $query->get();
+        } else {
+
+            $query = InvConsumableTransactionItem::with('transaction', 'consumable');
+
+            if ($request->start_date) {
+                $query->whereDate('return_date', '>=', $request->start_date);
+            }
+
+            if ($request->end_date) {
+                $query->whereDate('return_date', '<=', $request->end_date);
+            }
+
+            if ($request->search) {
+                $query->whereHas('transaction', function ($q) use ($request) {
+                    $q->where('borrower_name', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $data = $query->get();
+        }
 
         return Excel::download(
             new ReportConsumableExport($data, $type),
-            'Laporan-Consumable.xlsx'
+            'laporan_consumable.xlsx'
         );
     }
     public function getFilteredData($request, $type)
@@ -95,7 +141,7 @@ class ReportConsumableController extends Controller
         if ($type == 'pengeluaran') {
 
             $query = InvConsumableTransaction::with('items.consumable')
-            ->latest();
+                ->latest();
 
             if ($request->search) {
                 $query->where('borrower_name', 'like', '%' . $request->search . '%');
@@ -131,7 +177,7 @@ class ReportConsumableController extends Controller
 
             if ($request->start_date && $request->end_date) {
                 $query->whereHas('transaction', function ($q) use ($request) {
-                    $q->whereBetween('date', [
+                    $q->whereBetween('return_date', [
                         Carbon::parse($request->start_date)->startOfDay(),
                         Carbon::parse($request->end_date)->endOfDay()
                     ]);

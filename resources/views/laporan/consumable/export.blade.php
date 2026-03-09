@@ -46,9 +46,13 @@
                 <th>Karyawan</th>
                 <th>Consumable</th>
                 <th>Jumlah</th>
-                <th>Client</th>
-                <th>Project</th>
-                <th>Keperluan</th>
+                @if($type == 'pengembalian')
+                    <th>Keterangan</th>
+                @else
+                    <th>Client</th>
+                    <th>Project</th>
+                    <th>Keperluan</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -79,13 +83,11 @@
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $item->transaction->transaction_code ?? '-' }}</td>
-                        <td>{{ $item->return_date ?? '-' }}</td>
+                        <td>{{ $item->transaction->date ? \Carbon\Carbon::parse($item->transaction->date)->format('d-m-Y') : '-' }}</td>
                         <td>{{ $item->transaction->borrower_name ?? '-' }}</td>
                         <td>{{ $item->consumable->name ?? '-' }}</td>
                         <td>{{ $item->qty_return ?? 0 }}</td>
-                        <td>{{ $item->transaction->client ?? '-' }}</td>
-                        <td>{{ $item->transaction->project ?? '-' }}</td>
-                        <td>{{ $item->transaction->purpose ?? '-' }}</td>
+                        <td>{{ $item->note ?? '-' }}</td>
                     </tr>
                 @endforeach
 

@@ -50,13 +50,11 @@ class ReportConsumableExport implements FromCollection, WithHeadings
                 $rows[] = [
                     $no++,
                     $item->transaction->transaction_code,
-                    $item->return_date,
+                    $item->transaction->return_date ?? '-',
                     $item->transaction->borrower_name,
                     $item->consumable->name ?? '-',
                     $item->qty_return,
-                    $item->transaction->client ?? '-',
-                    $item->transaction->project ?? '-',
-                    $item->transaction->purpose ?? '-',
+                    $item->note ?? '-',
                 ];
             }
         }
@@ -66,6 +64,18 @@ class ReportConsumableExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
+        if ($this->type == 'pengembalian') {
+            return [
+                'No',
+                'Kode',
+                'Tanggal',
+                'Peminjam',
+                'Consumable',
+                'Jumlah',
+                'Keterangan',
+            ];
+        }
+
         return [
             'No',
             'Kode',
