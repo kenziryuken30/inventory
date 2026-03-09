@@ -10,30 +10,37 @@
     <style>
         [x-cloak]{display:none!important}
 
-        body{
-            background:#e9edf2;
-            overflow-x:hidden;
-        }
+body{
+    font-size: 16px;
+    background:#e9edf2;
+    overflow-x:hidden;
+    font-size:16px;
+}
 
-        .sidebar-bg{
-            background:url("{{ asset('images/siedbar.png') }}") no-repeat center;
-            background-size:cover;
-        }
+html,body{
+    height:100%;
+}
 
-        .menu-item{
-            transition:.2s;
-            font-weight:500;
-            color:#0f172a;
-        }
+.sidebar-bg{
+    background:url("{{ asset('images/siedbar.png') }}") no-repeat center bottom;
+    background-size:cover;
+}
+
+.menu-item i{
+    font-size:15px;
+    width:22px;
+    text-align:center;
+}
 
         .menu-item i{
             font-size:20px;
         }
 
-        .menu-item:hover{
-            background:rgba(255,255,255,.65);
-            transform:translateX(4px);
-        }
+       .menu-item:hover{
+    background:rgba(255,255,255,.75);
+    transform:translateX(4px);
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
 
         .divider{
             border-top:1px solid rgba(15,23,42,.2);
@@ -43,7 +50,7 @@
 
 <body x-data="{ sidebarOpen: true }">
 
-<div class="flex min-h-screen w-full relative">
+<div class="flex h-screen w-full relative">
 
     <img src="{{ asset('images/kiri.png') }}"
         class="hidden lg:block absolute bottom-0 left-64 w-[340px] pointer-events-none -z-10">
@@ -52,12 +59,12 @@
         class="hidden lg:block absolute right-0 bottom-0 w-[340px] pointer-events-none -z-10">
 
     <!-- SIDEBAR -->
-  <aside 
-    :class="sidebarOpen ? 'w-64' : 'w-20'"
-    class="relative z-10 flex flex-col bg-[#f4f6f9] shadow-2xl transition-all duration-300">
+<aside 
+:class="sidebarOpen ? 'w-64' : 'w-20'"
+class="fixed left-0 top-0 h-screen z-40 flex flex-col shadow-2xl transition-all duration-300 sidebar-bg">
 
         <!-- HEADER (WARNA BARU) -->
-        <div class="px-4 py-4 bg-[#D5EEFF]">
+        <div class="mt-auto px-4 py-3 bg-[#D5EEFF]">
             <div class="flex items-center gap-3 ml-2">
                 <img src="{{ asset('images/tecno.png') }}" class="w-10">
                 <div x-show="sidebarOpen">
@@ -70,12 +77,12 @@
         <div class="divider"></div>
 
         <!-- MENU -->
-        <div class="flex-1 sidebar-bg py-6">
-            <ul class="space-y-2 text-sm px-4">
+         <div class="flex-1 py-6 pb-20">
+            <ul class="space-y-2 text-sm px-5">
 
                 <li>
                     <a href="{{ route('dashboard') }}"
-                       class="menu-item flex items-center gap-3 px-3 py-2 rounded-lg">
+                      class="menu-item flex items-center gap-3 px-3 py-2 rounded-lg whitespace-nowrap">
                         <i class="ph ph-house"></i>
                         <span x-show="sidebarOpen">Dashboard</span>
                     </a>
@@ -183,19 +190,22 @@
             </form>
         </div>
 
-    </aside>
 
-    <!-- TOGGLE -->
-   <button
-@click="sidebarOpen=!sidebarOpen"
-:class="sidebarOpen ? 'left-64':'left-20'"
-class="fixed top-6 bg-cyan-500 text-white w-10 h-10 rounded-full shadow-lg z-50 transition-all flex items-center justify-center">
-<i class="ph ph-list"></i>
+      <button
+@click="sidebarOpen = !sidebarOpen"
+class="absolute top-6 -right-5 bg-cyan-500 text-white w-10 h-10
+rounded-full shadow-lg z-50 transition-all duration-300
+flex items-center justify-center border-2 border-white">
+<i class="ph ph-list text-xl"></i>
 </button>
 
-    <main class="flex-1 w-full p-4 md:p-6 lg:p-8 relative z-10 ml-6">
-        @yield('content')
-    </main>
+</aside>
+
+<main 
+:class="sidebarOpen ? 'ml-64' : 'ml-20'"
+class="p-6 md:p-8 lg:p-10 w-full transition-all duration-300">
+    @yield('content')
+</main>
 
 </div>
 </body>

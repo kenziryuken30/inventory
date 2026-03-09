@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="w-full ">
 <h2 class="text-xl font-semibold mb-4">Data Tools</h2>
 
 {{-- ALERT --}}
@@ -17,14 +18,18 @@
 
 <div class="bg-white rounded shadow p-4">
 
-<div class="bg-gradient-to-r from-cyan-600 to-teal-500
-            rounded-2xl shadow-lg p-5 mb-6
-            flex justify-between items-center">
+<div class="bg-gradient-to-r from-cyan-500 to-teal-400 
+rounded-2xl shadow-lg p-5 mb-6
+flex flex-col md:flex-row
+gap-4
+md:justify-between md:items-center">
 
     {{-- SEARCH & FILTER --}}
-    <form method="GET"
-      action="{{ route('tools.index') }}"
-      class="flex gap-3 items-center">
+    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+
+<form method="GET"
+action="{{ route('tools.index') }}"
+class="flex flex-col sm:flex-row gap-3">
 
     <div class="relative">
 
@@ -33,7 +38,7 @@
            id="searchInput"
            value="{{ request('search') }}"
            placeholder="Cari barang..."
-           class="w-72 bg-white text-gray-700
+           class="w-full sm:w-72 bg-white text-gray-700
                   border border-gray-300
                   rounded-xl px-4 py-2 pr-10
                   shadow-sm
@@ -93,155 +98,175 @@
 </div>
 
 </form>
+    </div>
 
     <button type="button"
     id="openTambahBarang"
     class="bg-gray-100 text-gray-700
-           px-6 py-2.5 rounded-xl
-           shadow-[0_4px_12px_rgba(0,0,0,0.15)]
-           hover:bg-gray-200
-           hover:shadow-[0_6px_18px_rgba(0,0,0,0.2)]
-           hover:-translate-y-0.5
-           transition duration-200">
+    w-full md:w-auto md:ml-auto
+    px-6 py-2.5 rounded-xl 
+    w-full sm:w-auto
+    shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+    hover:bg-gray-200
+    hover:shadow-[0_6px_18px_rgba(0,0,0,0.2)]
+    hover:-translate-y-0.5
+    transition duration-200">
     + Tambah Barang
 </button>
 </div>
 
 
-<div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+<div class="bg-white rounded-2xl tools-shadow overflow-hidden">
 
-    <table class="w-full text-sm">
+<div class="overflow-x-auto">
 
-        <thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+<table class="w-full text-sm min-w-[700px]">
+
+<thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
             <tr>
-                <th class="px-6 py-3 text-left">Foto</th>
-                <th class="px-6 py-3 text-left">Nama</th>
-                <th class="px-6 py-3 text-left">Kategori</th>
-                <th class="px-6 py-3 text-left">No Seri</th>
-                <th class="px-6 py-3 text-left">Status</th>
-                <th class="px-6 py-3 text-left">Kondisi</th>
-                <th class="px-6 py-3 text-left">Aksi</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left">Foto</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left">Nama</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Kategori</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">No Seri</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Status</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Kondisi</th>
+            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Aksi</th>
             </tr>
-        </thead>
+</thead>
 
-        <tbody class="bg-gray-50 divide-y divide-gray-200">
+<tbody class="bg-white divide-y divide-gray-100">
 
-        @foreach ($tools as $tool)
+@foreach ($tools as $tool)
 
-           @php
-                $condition = $tool->latestCondition->condition ?? 'baik';
-            @endphp
+@php
+$condition = $tool->latestCondition->condition ?? 'baik';
+@endphp
 
-            <tr class="hover:bg-gray-100 transition">
+<tr class="hover:bg-cyan-50 transition h-[70px]">
 
-                {{-- FOTO --}}
-                <td class="px-6 py-4">
-                    <img src="{{ $tool->toolkit->image
-                        ? asset('storage/'.$tool->toolkit->image)
-                        : asset('images/no-image.png') }}"
-                        class="w-12 h-12 object-cover rounded-lg shadow">
-                </td>
+<td class="px-3 sm:px-6 py-3 sm:py-4">
+<img src="{{ $tool->toolkit->image
+? asset('storage/'.$tool->toolkit->image)
+: asset('images/no-image.png') }}"
+class="w-10 h-10 sm:w-12 sm:h-12 object-contain bg-white rounded-lg shadow p-1 cursor-pointer previewImage">
+</td>
 
-                {{-- NAMA --}}
-                <td class="px-6 py-4 font-medium">
-                    {{ $tool->toolkit->toolkit_name }}
-                </td>
+<td class="px-6 py-4 font-semibold text-gray-800">
+{{ $tool->toolkit->toolkit_name }}
+</td>
 
-                {{-- KATEGORI --}}
-                <td class="px-6 py-4">
-                    <span class="px-3 py-1 text-xs bg-gray-200 rounded-full">
-                        {{ $tool->toolkit->category->category_name ?? '-' }}
-                    </span>
-                </td>
+<td class="px-3 sm:px-6 py-3 sm:py-4 text-center">
+<span class="px-3 py-1 text-xs bg-gray-200 rounded-full">
+{{ $tool->toolkit->category->category_name ?? '-' }}
+</span>
+</td>
 
-                {{-- NO SERI --}}
-                <td class="px-6 py-4">
-                    {{ $tool->serial_number }}
-                </td>
+<td class="px-3 sm:px-6 py-3 sm:py-4 text-center font-medium text-gray-700">
+{{ $tool->serial_number }}
+</td>
 
-                {{-- STATUS --}}
-                <td class="px-6 py-4">
+<td class="px-3 sm:px-6 py-3 sm:py-4 text-center">
 
-                    @if (strtolower($tool->status) == 'dipinjam')
+@if (strtolower($tool->status) == 'dipinjam')
 
-                        <span class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full shadow">
-                            Dipinjam
-                        </span>
-                        
-                    @elseif (strtolower($tool->status) == 'tersedia')
+<span class="inline-block w-24 px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+Dipinjam
+</span>
 
-                    <span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full shadow">
-                        Tersedia
-                    </span>
+@elseif (strtolower($tool->status) == 'tersedia')
 
-                    @else
-                    <span class="px-3 py-1 text-xs bg-yellow-200 text-yellow-800 rounded-full shadow">
-                        Tidak Tersedia
-                    </span>
-                    @endif
-                    
-                </td>
+<span class="inline-block w-24 px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+Tersedia
+</span>
 
-                {{-- KONDISI --}}
-                <td class="px-6 py-4">
-                    @if($condition == 'baik')
-                        <span class="px-4 py-1 text-xs border border-green-500 text-green-600 rounded-full">
-                            Baik
-                        </span>
-                    @elseif($condition == 'rusak')
-                        <span class="px-4 py-1 text-xs border border-red-500 text-red-600 rounded-full">
-                            Rusak
-                        </span>
-                    @else
-                        <span class="px-4 py-1 text-xs border border-gray-400 text-gray-600 rounded-full">
-                            Maintenance
-                        </span>
-                    @endif
-                </td>
+@else
 
-                {{-- AKSI --}}
-                <td class="px-6 py-4 flex gap-3 items-center">
+<span class="inline-block w-24 px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+Tidak Tersedia
+</span>
 
-                @if(($tool->latestCondition->condition ?? '') === 'maintenance')
-                    <form action="{{ route('tools.finishMaintenance', $tool->id) }}"
-                        method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="text-green-600 hover:text-green-800 text-lg transition"
-                            title="Selesai Maintenace">
-                            ✔
-                        </button>
-                    </form>
-                    
-                @endif
+@endif
 
-                    <button type="button"
-                        class="editBtn text-gray-600 hover:text-black transition"
-                        data-id="{{ $tool->id }}"
-                        data-name="{{ $tool->toolkit->toolkit_name }}"
-                        data-category="{{ $tool->toolkit->category_id }}"
-                        data-serial="{{ $tool->serial_number }}"
-                        data-image="{{ $tool->toolkit->image }}">
-                        ✏
-                    </button>
-                    <form action="{{ route('tools.destroy', $tool->id) }}"
-                        method="POST"
-                        onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="text-red-600 hover:text-red-800 transition">
-                            🗑
-                        </button>
-                    </form>
-                </td>
+</td>
 
-            </tr>
+<td class="px-6 py-4 text-center">
 
-        @endforeach
+@if($condition == 'baik')
 
-        </tbody>
-    </table>
+<span class="inline-block w-28 px-3 py-1 text-xs border border-green-500 text-green-600 rounded-full">
+Baik
+</span>
+
+@elseif($condition == 'rusak')
+
+<span class="inline-block w-28 px-3 py-1 text-xs border border-red-500 text-red-600 rounded-full">
+Rusak
+</span>
+
+@else
+
+<span class="inline-block w-28 px-3 py-1 text-xs border border-gray-400 text-gray-600 rounded-full">
+Maintenance
+</span>
+
+@endif
+
+</td>
+
+<td class="px-6 py-4 text-center">
+
+<div class="flex justify-center items-center gap-2 sm:gap-4">
+
+@if(($tool->latestCondition->condition ?? '') === 'maintenance')
+
+<form action="{{ route('tools.finishMaintenance', $tool->id) }}" method="POST">
+@csrf
+<button type="submit"
+class="text-green-600 hover:text-green-800 text-lg"
+title="Selesai Maintenance">
+✔
+</button>
+</form>
+
+@endif
+
+<button type="button"
+class="editBtn text-gray-600 hover:text-black"
+data-id="{{ $tool->id }}"
+data-name="{{ $tool->toolkit->toolkit_name }}"
+data-category="{{ $tool->toolkit->category_id }}"
+data-serial="{{ $tool->serial_number }}"
+data-image="{{ $tool->toolkit->image }}">
+✏
+</button>
+
+<form action="{{ route('tools.destroy', $tool->id) }}"
+method="POST"
+onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
+
+@csrf
+@method('DELETE')
+
+<button type="submit"
+class="text-red-600 hover:text-red-800">
+🗑
+</button>
+
+</form>
+
+</div>
+
+</td>
+
+</tr>
+
+@endforeach
+
+</tbody>
+</table>
+
+</div>
+
 </div>
 
 {{-- ================= MODAL TAMBAH BARANG ================= --}}
@@ -252,7 +277,7 @@
             bg-[#efefef]
             rounded-2xl
             shadow-[0_15px_40px_rgba(0,0,0,0.25)]
-            p-8 relative">          
+            p-6 sm:p-8 relative">          
 
         <form action="{{ route('tools.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -379,7 +404,7 @@
             bg-[#efefef]
             rounded-2xl
             shadow-[0_15px_40px_rgba(0,0,0,0.25)]
-            p-8 relative">  
+            p-6 sm:p-8 relative">  
 
         <form id="editBarangForm" method="POST" enctype="multipart/form-data">
             @csrf
@@ -464,7 +489,7 @@
             <div class="flex justify-end gap-4 mt-8">
 
                 <button type="button"
-                    id="cancelTambahBarang"
+                    id="cancelEditModal"
                     class="px-6 py-2.5
                         bg-[#dcdcdc]
                         text-gray-800
@@ -492,13 +517,32 @@
     </div>
 </div>
 
+{{-- -IMAGE PREVIEW --}}
+
+<div id="imagePreviewModal"
+class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[999]">
+
+    <div class="relative">
+
+        <button id="closePreview"
+        class="absolute -top-10 right-0 text-white text-3xl hover:scale-110 transition">
+        ✕
+        </button>
+
+        <img id="previewImg"
+        class="max-w-[500px] max-h-[400px] object-contain rounded-xl shadow-2xl bg-white p-6">
+
+    </div>
+
+</div>
+
 {{-- ================= STYLE & SCRIPT ================= --}}
 
 <style>
 /* =================================================
    GLOBAL
 ================================================= */
-body {
+.main-content {
     background-color: #f4f8fb;
 }
 
@@ -512,17 +556,14 @@ h2 {
 /* =================================================
    HEADER BAR (SEARCH AREA)
 ================================================= */
-.bg-gradient-to-r {
-    background: linear-gradient(
-        135deg,
-        #63d3e3 0%,
-        #4fbecb 45%,
-        #3fa9b5 100%
-    ) !important;
-}
-
-.bg-gradient-to-r {
-    padding: 22px !important;
+.tools-header{
+background: linear-gradient(
+135deg,
+#5cc6d9 0%,
+#3fb2c8 45%,
+#2f9fb8 100%
+);
+padding:22px;
 }
 
 /* =================================================
@@ -564,12 +605,13 @@ table {
     border-spacing: 0;
 }
 
-thead tr {
-    background: linear-gradient(
-        135deg,
-        #5fd0df 0%,
-        #47b9c7 100%
-    ) !important;
+thead tr{
+background: linear-gradient(
+135deg,
+#5cc6d9 0%,
+#3fb2c8 45%,
+#2f9fb8 100%
+) !important;
 }
 
 thead th {
@@ -587,8 +629,8 @@ tbody tr {
     background: #ffffff;
 }
 
-tbody tr:hover {
-    background: #eef8fb !important;
+tbody tr:hover{
+background:#f2fafc;
 }
 
 td {
@@ -711,8 +753,12 @@ button[type="submit"] {
 /* =================================================
    SHADOW GLOBAL
 ================================================= */
-.shadow-lg {
-    box-shadow: 0 18px 40px rgba(0,0,0,0.18) !important;
+.tools-shadow{
+box-shadow:0 12px 30px rgba(0,0,0,0.12);
+}
+
+.overflow-x-auto {
+    scrollbar-width: thin;
 }
 </style>
 
@@ -802,6 +848,39 @@ document.addEventListener('click', function (e) {
         }
     });
 
+    /* =========================
+       IMAGE PREVIEW
+    ========================== */
+
+    const previewModal = document.getElementById("imagePreviewModal");
+const previewImg = document.getElementById("previewImg");
+const closePreview = document.getElementById("closePreview");
+
+document.querySelectorAll(".previewImage").forEach(img => {
+
+    img.addEventListener("click", function(){
+
+        previewImg.src = this.src;
+
+        previewModal.classList.remove("hidden");
+        previewModal.classList.add("flex");
+
+    });
+
+});
+
+closePreview?.addEventListener("click", () => {
+    previewModal.classList.add("hidden");
+    previewModal.classList.remove("flex");
+});
+
+previewModal?.addEventListener("click", e => {
+    if(e.target === previewModal){
+        previewModal.classList.add("hidden");
+        previewModal.classList.remove("flex");
+    }
+});
+
 
     /* =========================
        ESC CLOSE (GLOBAL)
@@ -816,5 +895,7 @@ document.addEventListener('click', function (e) {
 
 });
 </script>
+
+</div>
 
 @endsection

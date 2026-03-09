@@ -109,19 +109,22 @@
         <div class="px-6 py-4">
 
             @forelse($peminjamanTerbaru as $trx)
+            
                 <div class="flex justify-between items-center py-4 border-b last:border-none">
 
                     <div>
+
                         <p class="text-lg md:text-base font-medium text-gray-800">
-                            {{ $trx->tool->name ?? '-' }}
+                        {{ $trx->items->pluck('toolkit.toolkit_name')->filter()->join(', ') ?: '-' }}
                         </p>
+
                         <p class="text-sm md:text-xs text-gray-500">
-                            {{ $trx->employee->full_name ?? '-' }} • 
+                            {{ $trx->borrower_name ?? '-' }} • 
                             {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
                         </p>
                     </div>
 
-                    @if($trx->status == 'dipinjam')
+                    @if($trx->is_confirm)
                         <span class="bg-yellow-400 text-xs px-4 py-1 rounded-full shadow">
                             Dipinjam
                         </span>
