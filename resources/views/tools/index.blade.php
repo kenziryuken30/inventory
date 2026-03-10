@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full ">
+<div class="w-full min-h-screen flex flex-col">
 <h2 class="text-xl font-semibold mb-4">Data Tools</h2>
 
 {{-- ALERT --}}
@@ -116,7 +116,7 @@ class="flex flex-col sm:flex-row gap-3">
 </div>
 
 
-<div class="bg-white rounded-2xl tools-shadow overflow-hidden">
+<div class="bg-white rounded-2xl tools-shadow overflow-hidden min-h-[400px]">
 
 <div class="overflow-x-auto">
 

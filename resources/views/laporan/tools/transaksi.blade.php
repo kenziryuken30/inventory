@@ -410,7 +410,7 @@ Tutup
 </td>
 
 <td class="px-6 py-5">
-{{ $row->toolkit->toolkit_name }}
+{{ $row->toolkit->toolkit_name ?? '-' }}
 </td>
 
 <td class="px-6 py-5">
