@@ -135,22 +135,37 @@
                 </form>
             </div>
 
-            <button
-                @click="sidebarOpen = !sidebarOpen"
-                class="absolute top-6 -right-5 bg-cyan-500 text-white w-10 h-10 rounded-full shadow-lg z-50 flex items-center justify-center border-2 border-white transition-transform active:scale-90">
-                <i class="ph ph-list text-xl"></i>
-            </button>
+<button
+@click="sidebarOpen = !sidebarOpen"
+:class="sidebarOpen ? 'left-[240px]' : 'left-[64px]'"
+class="fixed top-[50px] z-[60]
+bg-cyan-500 text-white
+w-8 h-8
+rounded-full shadow-lg
+flex items-center justify-center
+border-2 border-white
+transition-all duration-300">
+
+<i class="ph ph-list text-sm"></i>
+
+</button>
         </aside>
 
         <div :class="sidebarOpen ? 'pl-[256px]' : 'pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative">
-            
-            <img src="{{ asset('images/kiri.png') }}" class="hidden lg:block fixed bottom-0 left-64 w-[340px] pointer-events-none -z-10 opacity-70">
-            <img src="{{ asset('images/kana1.png') }}" class="hidden lg:block fixed right-0 bottom-0 w-[340px] pointer-events-none -z-10 opacity-70">
 
-            <main class="px-8 py-8 max-w-[1400px] mx-auto">
-                @yield('content')
-            </main>
-        </div>
+    <!-- background kiri -->
+    <img src="{{ asset('images/kiri.png') }}"
+         class="fixed left-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-80">
+
+    <!-- background kanan -->
+    <img src="{{ asset('images/kana1.png') }}"
+         class="fixed right-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-80">
+
+    <main class="px-6 py-8 relative z-10">
+        @yield('content')
+    </main>
+
+</div>
 
     </div>
 

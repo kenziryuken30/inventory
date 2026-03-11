@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full min-h-screen flex flex-col">
+<div class="max-w-7xl mx-auto w-full px-6 py-4">
 <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight mb-4">Data Tools</h2>
 
 {{-- ALERT --}}
@@ -16,7 +16,6 @@
     </div>
 @endif
 
-<div class="px-2 p-4">
 
 <div class="rounded-2xl shadow-md p-5 mb-6
 flex flex-col md:flex-row
@@ -24,7 +23,7 @@ gap-4
 md:justify-between md:items-center"
 style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
     {{-- SEARCH & FILTER --}}
-    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+<div class="flex flex-col sm:flex-row gap-3 w-full">
 
 <form method="GET"
 action="{{ route('tools.index') }}"
@@ -119,19 +118,27 @@ class="flex flex-col sm:flex-row gap-3">
 
 <div class="overflow-x-auto">
 
-<table class="w-full text-sm min-w-[700px]">
+<table class="w-full text-sm min-w-[700px] table-auto">
 
 <thead class="text-white"
 style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-            <tr>
-            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left">Foto</th>
-            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left">Nama</th>
-            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Kategori</th>
-            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">No Seri</th>
-            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Status</th>
-            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Kondisi</th>
-            <th class="px-3 sm:px-6 py-3 sm:py-4  text-center">Aksi</th>
-            </tr>
+<tr>
+
+<th class="w-[80px] text-center">Foto</th>
+
+<th class="text-left">Nama</th>
+
+<th class="hidden md:table-cell text-center">Kategori</th>
+
+<th class="hidden md:table-cell text-center">No Seri</th>
+
+<th class="text-center">Status</th>
+
+<th class="hidden md:table-cell text-center">Kondisi</th>
+
+<th class="text-center w-[110px]">Aksi</th>
+
+</tr>
 </thead>
 
 <tbody class="bg-white divide-y divide-gray-100">
@@ -144,11 +151,13 @@ $condition = $tool->latestCondition->condition ?? 'baik';
 
 <tr class="hover:bg-cyan-50 transition h-[70px]">
 
-<td class="px-3 sm:px-6 py-3 sm:py-4">
-<img src="{{ $tool->toolkit->image
-? asset('storage/'.$tool->toolkit->image)
-: asset('images/no-image.png') }}"
-class="w-10 h-10 sm:w-12 sm:h-12 object-contain bg-white rounded-lg shadow p-1 cursor-pointer previewImage">
+<td class="px-3 py-3 text-center w-[80px]">
+<img 
+src="{{ $tool->toolkit->image ? asset('storage/'.$tool->toolkit->image) : asset('images/no-image.png') }}"
+
+class="w-12 h-12 min-w-[48px] min-h-[48px] object-contain bg-white rounded-lg shadow p-1 cursor-pointer previewImage"
+
+onerror="this.src='{{ asset('images/no-image.png') }}'">
 </td>
 
 <td class="px-6 py-4 font-semibold text-gray-800">
