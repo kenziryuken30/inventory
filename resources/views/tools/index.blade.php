@@ -16,7 +16,7 @@
     </div>
 @endif
 
-<div class="bg-white rounded shadow p-4">
+<div class="px-2 p-4">
 
 <div class="bg-gradient-to-r from-cyan-500 to-teal-400 
 rounded-2xl shadow-lg p-5 mb-6
@@ -136,7 +136,7 @@ class="flex flex-col sm:flex-row gap-3">
 
 <tbody class="bg-white divide-y divide-gray-100">
 
-@foreach ($tools as $tool)
+@forelse ($tools as $tool)
 
 @php
 $condition = $tool->latestCondition->condition ?? 'baik';
@@ -260,7 +260,18 @@ class="text-red-600 hover:text-red-800">
 
 </tr>
 
-@endforeach
+@empty
+
+<tr>
+    <td colspan="7" class="text-center py-10 text-gray-400 italic">
+        <div class="flex flex-col itmes-center gap-2">
+        <div class="text-4xl">📦</div>
+        <p class="text-gray-500">Tidak ada data tool</p>
+        </div>
+    </td>
+</tr>
+
+@endforelse
 
 </tbody>
 </table>

@@ -142,12 +142,12 @@
             </button>
         </aside>
 
-        <div :class="sidebarOpen ? 'pl-64' : 'pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative">
+        <div :class="sidebarOpen ? 'pl-[250px]' : 'pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative">
             
             <img src="{{ asset('images/kiri.png') }}" class="hidden lg:block fixed bottom-0 left-64 w-[340px] pointer-events-none -z-10 opacity-70">
             <img src="{{ asset('images/kana1.png') }}" class="hidden lg:block fixed right-0 bottom-0 w-[340px] pointer-events-none -z-10 opacity-70">
 
-            <main class="p-6 md:p-8 lg:p-10">
+            <main class="px-6 py-8">
                 @yield('content')
             </main>
         </div>

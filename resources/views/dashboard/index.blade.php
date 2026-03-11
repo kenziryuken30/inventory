@@ -106,11 +106,11 @@
             </h3>
         </div>
 
-        <div class="px-6 py-4">
+        <div>
 
             @forelse($peminjamanTerbaru as $trx)
             
-                <div class="flex justify-between items-center py-4 border-b last:border-none">
+                <div class="px-6 py-4 flex justify-between items-center border-b last:border-none">
 
                     <div>
 

@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="p-8 min-h-screen font-sans relative">
+<div class="px-8 pt-0 pb-8 min-h-screen font-sans relative">
 
 {{-- HEADER --}}
 <div class="flex justify-between items-start mb-6 relative z-10">
@@ -21,7 +21,7 @@
 
 
 {{-- FILTER BOX --}}
-<div class="bg-gradient-to-r from-[#2db3d3] to-[#42c5d6] p-6 rounded-2xl shadow-lg mb-8 border border-white/20">
+<div class="bg-gradient-to-r from-[#2db3d3] to-[#42c5d6] p-6 rounded-2xl shadow-lg mb-4 border border-white/20">
 
 <form method="GET"
       action="{{ route('laporan.tools.transaksi') }}"
