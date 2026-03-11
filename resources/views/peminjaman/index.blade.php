@@ -2,8 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6 max-w-7xl mx-auto"
-     x-data="{ openReturn: null }">
+<div class="w-full min-h-screen flex flex-col">
 
     {{-- ================= HEADER ================= --}}
     <div class="flex justify-between items-center mb-6">
@@ -42,11 +41,12 @@
                    class="w-full bg-white border-0 rounded-xl px-4 py-2.5 pr-8 text-sm shadow-inner focus:ring-2 focus:ring-white focus:outline-none">
             
             {{-- Tombol X Langsung Reset --}}
-            <button type="button" 
-                    onclick="document.getElementById('searchInput').value=''; this.closest('form').submit();" 
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition text-sm font-bold"
-                    style="display: {{ request('search') ? 'block' : 'none' }}" id="clearSearchBtn">
-                ✕
+            <button type="button"
+                onclick="document.getElementById('searchInput').value=''; this.closest('form').submit();"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition"
+                style="display:{{ request('search') ? 'block' : 'none' }}"
+                id="clearSearchBtn">
+                X
             </button>
         </div>
 
@@ -279,4 +279,3 @@
 </style>
 @endpush
 @endsection
-```

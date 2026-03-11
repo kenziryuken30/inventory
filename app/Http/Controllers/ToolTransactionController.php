@@ -206,17 +206,15 @@ public function destroy($id)
 
     DB::transaction(function () use ($transaction) {
 
-        // kembalikan status serial
         foreach ($transaction->items as $item) {
-            $item->serial->update([
-                'status' => 'TERSEDIA'
-            ]);
+            if ($item->serial) {
+                $item->serial->update([
+                    'status' => 'TERSEDIA'
+                ]);
+            }
         }
 
-        // hapus item
         $transaction->items()->delete();
-
-        // hapus transaksi
         $transaction->delete();
     });
 

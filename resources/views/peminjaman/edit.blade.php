@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6 max-w-7xl mx-auto">
+<div class="w-full min-h-screen flex flex-col">
 
     {{-- ================= TITLE ================= --}}
     <div class="flex justify-between items-center mb-6">
@@ -137,7 +137,7 @@
                             </td>
 
                             <td class="text-center py-2 px-4">
-                                @if($item->toolkit->image)
+                                @if($item->toolkit && $item->toolkit->image)
                                     <img src="{{ asset('storage/'.$item->toolkit->image) }}"
                                          class="w-12 h-12 object-contain mx-auto rounded-md shadow-sm border">
                                 @else
@@ -148,11 +148,11 @@
                             </td>
 
                             <td class="text-center py-4 px-4 font-medium text-gray-800">
-                                {{ $item->toolkit->toolkit_name }}
+                                {{ $item->toolkit->toolkit_name ?? '-' }}
                             </td>
 
                             <td class="text-center py-4 px-4 text-gray-600 font-mono">
-                                {{ $item->serial->serial_number }}
+                                {{ $item->serial->serial_number ?? '-' }}
                             </td>
 
                             <td class="text-center py-4 px-4">

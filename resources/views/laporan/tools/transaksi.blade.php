@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="px-8 pt-0 pb-8 min-h-screen font-sans relative">
+<div class="w-full min-h-screen flex flex-col">
 
 {{-- HEADER --}}
 <div class="flex justify-between items-start mb-6 relative z-10">

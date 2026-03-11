@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6">
+<div class="w-full min-h-screen flex flex-col">
     {{-- Header Page --}}
     <div class="flex justify-between items-end mb-6">
         <div>
