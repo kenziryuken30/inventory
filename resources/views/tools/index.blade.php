@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="w-full min-h-screen flex flex-col">
-<h2 class="text-xl font-semibold mb-4">Data Tools</h2>
+<h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight mb-4">Data Tools</h2>
 
 {{-- ALERT --}}
 @if (session('success'))
@@ -18,12 +18,11 @@
 
 <div class="px-2 p-4">
 
-<div class="bg-gradient-to-r from-cyan-500 to-teal-400 
-rounded-2xl shadow-lg p-5 mb-6
+<div class="rounded-2xl shadow-md p-5 mb-6
 flex flex-col md:flex-row
 gap-4
-md:justify-between md:items-center">
-
+md:justify-between md:items-center"
+style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
     {{-- SEARCH & FILTER --}}
     <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
 
@@ -122,7 +121,8 @@ class="flex flex-col sm:flex-row gap-3">
 
 <table class="w-full text-sm min-w-[700px]">
 
-<thead class="bg-gradient-to-r from-cyan-600 to-teal-500 text-white">
+<thead class="text-white"
+style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
             <tr>
             <th class="px-3 sm:px-6 py-3 sm:py-4 text-left">Foto</th>
             <th class="px-3 sm:px-6 py-3 sm:py-4 text-left">Nama</th>
@@ -618,11 +618,10 @@ table {
 
 thead tr{
 background: linear-gradient(
-135deg,
-#5cc6d9 0%,
-#3fb2c8 45%,
-#2f9fb8 100%
-) !important;
+180deg,
+#5FD0DF,
+#1CA7B6
+);
 }
 
 thead th {
@@ -739,7 +738,7 @@ td button:hover {
 #editBarangModal h2 {
     font-size: 18px;
     font-weight: 700;
-    color: #169fb2;
+    color: #1CA7B6;
 }
 
 /* =================================================

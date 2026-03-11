@@ -65,8 +65,8 @@
         </div>
 
 
-        {{-- ================= TABLE ================= --}}
-        <div class="rounded-2xl shadow-lg overflow-hidden bg-white">
+        {{-- ================= TABLE (SUDAH DIRAPIKAN) ================= --}}
+        <div class="rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-100">
 
             <table class="w-full text-sm">
 
@@ -75,57 +75,58 @@
                     <tr class="text-white text-xs uppercase tracking-wider"
                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
 
-                        <th class="py-3 text-center w-28">Foto</th>
-                        <th class="py-3 text-left pl-4">Nama Barang</th>
-                        <th class="py-3 text-center">Kategori</th>
-                        <th class="py-3 text-center">Stok Tersedia</th>
-                        <th class="py-3 text-center w-28">Aksi</th>
+                        {{-- Tambah padding dan align middle --}}
+                        <th class="py-4 px-4 text-center w-28 align-middle">Foto</th>
+                        <th class="py-4 px-4 text-left align-middle">Nama Barang</th>
+                        <th class="py-4 px-4 text-center align-middle">Kategori</th>
+                        <th class="py-4 px-4 text-center align-middle">Stok Tersedia</th>
+                        <th class="py-4 px-4 text-center w-28 align-middle">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody class="text-gray-700 text-sm">
 
                     @forelse($consumables as $c)
-                        <tr class="border-b hover:bg-gray-50 transition">
+                        {{-- GARIS DIPERHALUS: border-b border-gray-100 (warna lebih terang) --}}
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
 
                             {{-- FOTO --}}
-                            <td class="py-3 text-center">
+                            <td class="py-4 px-4 text-center align-middle">
                                 <div class="flex justify-center">
                                     <img src="{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}"
                                         @click="preview=true; previewImage='{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}'"
-                                        class="w-12 h-12 object-contain rounded-md border bg-white p-1 cursor-pointer hover:scale-110 transition">
+                                        class="w-12 h-12 object-contain rounded-lg border border-gray-100 bg-white p-1 cursor-pointer hover:scale-105 transition shadow-sm">
                                 </div>
                             </td>
 
                             {{-- NAMA --}}
-                            <td class="py-3 pl-4 font-medium text-gray-800 align-middle">
+                            <td class="py-4 px-4 font-medium text-gray-800 align-middle">
                                 {{ $c->name }}
                             </td>
 
                             {{-- KATEGORI --}}
-                            <td class="py-3 text-center align-middle">
-                                <span class="px-3 py-1 text-xs rounded-full bg-gray-200">
+                            <td class="py-4 px-4 text-center align-middle">
+                                <span class="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600 border border-gray-200">
                                     {{ optional($c->category)->category_name ?? '-' }}
                                 </span>
                             </td>
 
                             {{-- STOK --}}
-                            <td class="py-3 text-center align-middle">
-                                <div
-                                    class="font-semibold {{ $c->stock < $c->minimum_stock ? 'text-red-600' : 'text-gray-800' }}">
+                            <td class="py-4 px-4 text-center align-middle">
+                                <div class="font-semibold {{ $c->stock < $c->minimum_stock ? 'text-red-600' : 'text-gray-800' }}">
                                     {{ $c->stock }}
                                 </div>
-                                <div class="text-xs text-gray-400 -mt-1">
+                                <div class="text-xs text-gray-400 mt-0.5">
                                     {{ $c->unit }}
                                 </div>
                             </td>
 
                             {{-- AKSI --}}
-                            <td class="py-3 text-center align-middle">
+                            <td class="py-4 px-4 text-center align-middle">
                                 <div class="flex justify-center gap-4 text-lg">
 
                                     <button type="button" @click="edit = true; item = @js($c)"
-                                        class="text-gray-600 hover:text-blue-600 transition">
+                                        class="text-gray-500 hover:text-blue-600 transition transform hover:scale-110">
                                         ✏
                                     </button>
 
@@ -134,7 +135,7 @@
                                         @csrf
                                         @method('DELETE')
 
-                                        <button type="submit" class="text-gray-600 hover:text-red-600 transition">
+                                        <button type="submit" class="text-gray-500 hover:text-red-600 transition transform hover:scale-110">
                                             🗑
                                         </button>
                                     </form>
@@ -145,8 +146,11 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-8 text-center text-gray-400">
-                                Data kosong
+                            <td colspan="5" class="py-10 text-center text-gray-400 bg-white">
+                                <div class="flex flex-col items-center gap-2">
+                                    <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-2.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                    <span>Data belum tersedia</span>
+                                </div>
                             </td>
                         </tr>
                     @endforelse
@@ -156,6 +160,7 @@
             </table>
         </div>
 
+        {{-- ... MODAL TAMBAH, PREVIEW, EDIT BIARKAN APA ADANYA ... --}}
 
         {{-- ================= MODAL TAMBAH ================= --}}
         <div x-show="add" x-cloak class="modal">
