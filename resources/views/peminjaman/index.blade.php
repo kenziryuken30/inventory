@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full min-h-screen flex flex-col">
+<div x-data="{openReturn: null}" class="w-full min-h-screen flex flex-col">
 
     {{-- ================= HEADER ================= --}}
     <div class="flex justify-between items-center mb-6">

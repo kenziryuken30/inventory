@@ -7,6 +7,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     
     <style>
         [x-cloak] { display: none !important; }
@@ -48,13 +49,20 @@
     </style>
 </head>
 
-<body x-data="{ sidebarOpen: true }" class="h-full">
+<body x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
 
     <div class="relative flex min-h-screen w-full">
 
+        <div
+    x-show="sidebarOpen"
+    x-transition.opacity
+    class="fixed inset-0 bg-black/40 z-40 lg:hidden"
+    @click="sidebarOpen = false">
+    </div>
+
         <aside 
-            :class="sidebarOpen ? 'w-64' : 'w-20'"
-            class="fixed left-0 top-0 h-screen z-50 flex flex-col shadow-2xl transition-all duration-300 sidebar-bg overflow-visible">
+            :class="sidebarOpen ? 'translate-x-0 lg:w-64' : '-translate-x-full lg:translate-x-0 lg:w-20'"
+            class="fixed left-0 top-0 h-screen z-50 flex flex-col shadow-2xl transition-all duration-300 transform sidebar-bg">
             
             <div class="flex-none px-4 py-4 bg-[#D5EEFF]">
                 <div class="flex items-center gap-3 ml-2">
@@ -135,6 +143,9 @@
                 </form>
             </div>
 
+
+        </aside>
+
 <button
 @click="sidebarOpen = !sidebarOpen"
 :class="sidebarOpen ? 'left-[240px]' : 'left-[64px]'"
@@ -149,19 +160,18 @@ transition-all duration-300">
 <i class="ph ph-list text-sm"></i>
 
 </button>
-        </aside>
 
-        <div :class="sidebarOpen ? 'pl-[256px]' : 'pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative">
+        <div :class="sidebarOpen ? 'lg:pl-[256px]' : 'lg:pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative pl-0">
 
     <!-- background kiri -->
     <img src="{{ asset('images/kiri.png') }}"
-         class="fixed left-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-80">
+         class="hidden lg:block fixed left-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-80">
 
     <!-- background kanan -->
     <img src="{{ asset('images/kana1.png') }}"
-         class="fixed right-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-80">
+         class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-80">
 
-    <main class="px-6 py-8 relative z-10">
+    <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         @yield('content')
     </main>
 
