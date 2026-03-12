@@ -12,11 +12,6 @@
                 Laporan {{ ucfirst($type) }} Tools
             </p>
         </div>
-
-        <a href="{{ url()->previous() }}"
-            class="bg-white hover:bg-gray-100 text-gray-500 px-5 py-1.5 rounded-xl text-xs font-bold border border-gray-200 shadow-sm transition flex items-center gap-2">
-            ← Kembali
-        </a>
     </div>
 
 
