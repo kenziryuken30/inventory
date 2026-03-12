@@ -20,11 +20,6 @@
 
             <div class="flex gap-3">
 
-                <a href="{{ url()->previous() }}"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition">
-                    ← Kembali
-                </a>
-
                 <a href="{{ route('transaksi.create') }}"
                     class="text-white px-6 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
                     style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
