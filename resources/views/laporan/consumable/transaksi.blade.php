@@ -53,7 +53,7 @@
                 {{-- EXPORT EXCEL --}}
                 <a href="{{ route('laporan.consumable.export.excel', request()->all()) }}"
                     class="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700">
-                    📊 Export Excel
+                     Export Excel
                 </a>
 
             </div>

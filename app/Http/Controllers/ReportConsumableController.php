@@ -5,186 +5,148 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\InvConsumableTransaction;
 use App\Models\InvConsumableTransactionItem;
-use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportConsumableExport;
 
-
 class ReportConsumableController extends Controller
 {
+
     public function transaksi(Request $request)
     {
-        $type = $request->type ?? 'pengeluaran';
-        $search = $request->search;
-        $start = $request->start_date;
-        $end   = $request->end_date;
+        $type = $request->get('type', 'pengeluaran');
 
-        if ($type == 'pengeluaran') {
-
-            $query = InvConsumableTransaction::with('items.consumable')
-                ->latest();
-
-            if ($search) {
-                $query->where('borrower_name', 'like', '%' . $search . '%');
-            }
-
-            if ($start && $end) {
-                $query->whereBetween('date', [
-                    Carbon::parse($start)->startOfDay(),
-                    Carbon::parse($end)->endOfDay()
-                ]);
-            }
-
-            $data = $query->get();
-        } else { // ================= PENGEMBALIAN =================
+        if ($type === 'pengembalian') {
 
             $query = InvConsumableTransactionItem::with([
                 'transaction',
                 'consumable'
             ])
                 ->whereNotNull('qty_return')
-                ->where('qty_return', '>', 0)
-                ->latest();
+                ->where('qty_return', '>', 0);
 
-            if ($search) {
-                $query->whereHas('transaction', function ($q) use ($search) {
-                    $q->where('borrower_name', 'like', '%' . $search . '%');
+            if ($request->filled('start_date')) {
+                $query->whereHas('transaction', function ($q) use ($request) {
+                    $q->whereDate('return_date', '>=', $request->start_date);
                 });
             }
 
-            if ($start && $end) {
-                $query->whereBetween('created_at', [
-                    Carbon::parse($start)->startOfDay(),
-                    Carbon::parse($end)->endOfDay()
-                ]);
+            if ($request->filled('end_date')) {
+                $query->whereHas('transaction', function ($q) use ($request) {
+                    $q->whereDate('return_date', '<=', $request->end_date);
+                });
             }
 
-            $data = $query->get();
+            if ($request->filled('search')) {
+                $query->whereHas('transaction', function ($q) use ($request) {
+                    $q->where('borrower_name', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $data = $query->latest()->get();
+        } else {
+
+            $query = InvConsumableTransaction::with([
+                'items.consumable'
+            ]);
+
+            if ($request->filled('start_date')) {
+                $query->whereDate('date', '>=', $request->start_date);
+            }
+
+            if ($request->filled('end_date')) {
+                $query->whereDate('date', '<=', $request->end_date);
+            }
+
+            if ($request->filled('search')) {
+                $query->where('borrower_name', 'like', '%' . $request->search . '%');
+            }
+
+            $data = $query->latest()->get();
         }
 
         return view('laporan.consumable.transaksi', compact('data', 'type'));
     }
 
+
+
     public function exportPdf(Request $request)
     {
-        $type = $request->type;
+        $type = $request->type ?? 'pengeluaran';
 
-        $query = InvConsumableTransactionItem::with(['transaction', 'consumable']);
+        $data = $this->getData($request, $type);
 
-        if ($request->start_date && $request->end_date) {
-            $query->whereHas('transaction', function ($q) use ($request) {
-                $q->whereBetween('date', [$request->start_date, $request->end_date]);
-            });
-        }
+        $pdf = Pdf::loadView('laporan.consumable.export', compact('data', 'type'))
+            ->setPaper('A4', 'landscape');
 
-        $data = $query->get();
-
-        $pdf = Pdf::loadView('laporan.consumable.export', [
-            'data' => $data,
-            'type' => $type
-        ]);
-
-        return $pdf->download('laporan_consumable.pdf');
+        return $pdf->download('laporan_consumable_' . $type . '.pdf');
     }
+
+
 
     public function exportExcel(Request $request)
     {
-        $type = $request->type;
+        $type = $request->type ?? 'pengeluaran';
 
-        if ($type == 'pengeluaran') {
-
-            $query = InvConsumableTransaction::with('items.consumable');
-
-            if ($request->start_date) {
-                $query->whereDate('date', '>=', $request->start_date);
-            }
-
-            if ($request->end_date) {
-                $query->whereDate('date', '<=', $request->end_date);
-            }
-
-            if ($request->search) {
-                $query->where('borrower_name', 'like', '%' . $request->search . '%');
-            }
-
-            $data = $query->get();
-        } else {
-
-            $query = InvConsumableTransactionItem::with('transaction', 'consumable');
-
-            if ($request->start_date) {
-                $query->whereDate('return_date', '>=', $request->start_date);
-            }
-
-            if ($request->end_date) {
-                $query->whereDate('return_date', '<=', $request->end_date);
-            }
-
-            if ($request->search) {
-                $query->whereHas('transaction', function ($q) use ($request) {
-                    $q->where('borrower_name', 'like', '%' . $request->search . '%');
-                });
-            }
-
-            $data = $query->get();
-        }
+        $data = $this->getData($request, $type);
 
         return Excel::download(
             new ReportConsumableExport($data, $type),
-            'laporan_consumable.xlsx'
+            'laporan_consumable_' . $type . '.xlsx'
         );
     }
-    public function getFilteredData($request, $type)
+
+
+
+    private function getData($request, $type)
     {
-        // ================= PENGELUARAN =================
-        if ($type == 'pengeluaran') {
-
-            $query = InvConsumableTransaction::with('items.consumable')
-                ->latest();
-
-            if ($request->search) {
-                $query->where('borrower_name', 'like', '%' . $request->search . '%');
-            }
-
-            if ($request->start_date) {
-                $query->whereDate('date', '>=', $request->start_date);
-            }
-
-            if ($request->end_date) {
-                $query->whereDate('date', '<=', $request->end_date);
-            }
-
-            return $query;
-        }
-
-        // ================= PENGEMBALIAN =================
-        else {
+        if ($type === 'pengembalian') {
 
             $query = InvConsumableTransactionItem::with([
                 'transaction',
                 'consumable'
             ])
                 ->whereNotNull('qty_return')
-                ->where('qty_return', '>', 0)
-                ->latest();
+                ->where('qty_return', '>', 0);
 
-            if ($request->search) {
+            if ($request->filled('start_date')) {
+                $query->whereHas('transaction', function ($q) use ($request) {
+                    $q->whereDate('return_date', '>=', $request->start_date);
+                });
+            }
+
+            if ($request->filled('end_date')) {
+                $query->whereHas('transaction', function ($q) use ($request) {
+                    $q->whereDate('return_date', '<=', $request->end_date);
+                });
+            }
+
+            if ($request->filled('search')) {
                 $query->whereHas('transaction', function ($q) use ($request) {
                     $q->where('borrower_name', 'like', '%' . $request->search . '%');
                 });
             }
 
-            if ($request->start_date && $request->end_date) {
-                $query->whereHas('transaction', function ($q) use ($request) {
-                    $q->whereBetween('return_date', [
-                        Carbon::parse($request->start_date)->startOfDay(),
-                        Carbon::parse($request->end_date)->endOfDay()
-                    ]);
-                });
+            return $query->latest()->get();
+        } else {
+
+            $query = InvConsumableTransaction::with([
+                'items.consumable'
+            ]);
+
+            if ($request->filled('start_date')) {
+                $query->whereDate('date', '>=', $request->start_date);
             }
 
-            return $query;
+            if ($request->filled('end_date')) {
+                $query->whereDate('date', '<=', $request->end_date);
+            }
+
+            if ($request->filled('search')) {
+                $query->where('borrower_name', 'like', '%' . $request->search . '%');
+            }
+
+            return $query->latest()->get();
         }
     }
 }
