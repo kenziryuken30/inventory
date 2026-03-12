@@ -30,7 +30,7 @@ public function index(Request $request)
             $query->whereDate('return_date', '<=', $request->end_date);
         }
 
-        $data = $query->latest()->get();
+        $data = $query->latest()->paginate(10)->withQueryString();
 
     } else {
 
@@ -47,7 +47,7 @@ public function index(Request $request)
             $query->whereDate('date', '<=', $request->end_date);
         }
 
-        $data = $query->latest()->get();
+        $data = $query->latest()->paginate(10);
     }
 
     return view('laporan.tools.transaksi', compact('data','type'));

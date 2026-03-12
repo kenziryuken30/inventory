@@ -177,7 +177,7 @@
                     <tr class="hover:bg-gray-50 text-center">
 
                         <td class="px-6 py-5">
-                            {{ $loop->iteration }}
+                            {{ $data->firstItem() + $loop->index }}
                         </td>
 
 
@@ -394,7 +394,7 @@
                 <tr class="text-center hover:bg-gray-50">
 
                     <td class="px-6 py-5">
-                        {{ $loop->iteration }}
+                        {{ $data->firstItem() + $loop->index }}
                     </td>
 
                     <td class="px-6 py-5">
@@ -442,9 +442,15 @@
 
                 @endforelse
 
+
+
             </tbody>
 
         </table>
+
+        <div class="flex justify-center mt-6">
+            {{ $data->links() }}
+        </div>
 
     </div>
 
