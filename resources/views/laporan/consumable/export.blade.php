@@ -47,11 +47,11 @@
                 <th>Consumable</th>
                 <th>Jumlah</th>
                 @if($type == 'pengembalian')
-                    <th>Keterangan</th>
+                <th>Keterangan</th>
                 @else
-                    <th>Client</th>
-                    <th>Project</th>
-                    <th>Keperluan</th>
+                <th>Client</th>
+                <th>Project</th>
+                <th>Keperluan</th>
                 @endif
             </tr>
         </thead>
@@ -61,35 +61,35 @@
 
             @if($type == 'pengeluaran')
 
-                @foreach($data as $transaction)
-                    @foreach($transaction->items as $item)
-                        <tr>
-                            <td>{{ $no++ }}</td>
-                            <td>{{ $transaction->transaction_code ?? '-' }}</td>
-                            <td>{{ $transaction->date ?? '-' }}</td>
-                            <td>{{ $transaction->borrower_name ?? '-' }}</td>
-                            <td>{{ $item->consumable->name ?? '-' }}</td>
-                            <td>{{ $item->qty ?? 0 }}</td>
-                            <td>{{ $transaction->client ?? '-' }}</td>
-                            <td>{{ $transaction->project ?? '-' }}</td>
-                            <td>{{ $transaction->purpose ?? '-' }}</td>
-                        </tr>
-                    @endforeach
-                @endforeach
+            @foreach($data as $transaction)
+            @foreach($transaction->items as $item)
+            <tr>
+                <td>{{ $no++ }}</td>
+                <td>{{ $transaction->transaction_code ?? '-' }}</td>
+                <td>{{ $transaction->date ?? '-' }}</td>
+                <td>{{ $transaction->borrower_name ?? '-' }}</td>
+                <td>{{ $item->consumable->name ?? '-' }}</td>
+                <td>{{ $item->qty ?? 0 }}</td>
+                <td>{{ $transaction->client ?? '-' }}</td>
+                <td>{{ $transaction->project ?? '-' }}</td>
+                <td>{{ $transaction->purpose ?? '-' }}</td>
+            </tr>
+            @endforeach
+            @endforeach
 
             @else
 
-                @foreach($data as $item)
-                    <tr>
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $item->transaction->transaction_code ?? '-' }}</td>
-                        <td>{{ $item->transaction->date ? \Carbon\Carbon::parse($item->transaction->date)->format('d-m-Y') : '-' }}</td>
-                        <td>{{ $item->transaction->borrower_name ?? '-' }}</td>
-                        <td>{{ $item->consumable->name ?? '-' }}</td>
-                        <td>{{ $item->qty_return ?? 0 }}</td>
-                        <td>{{ $item->note ?? '-' }}</td>
-                    </tr>
-                @endforeach
+            @foreach($data as $item)
+            <tr>
+                <td>{{ $no++ }}</td>
+                <td>{{ $item->transaction->transaction_code ?? '-' }}</td>
+                <td>{{ $item->transaction->date ? \Carbon\Carbon::parse($item->transaction->date)->format('d-m-Y') : '-' }}</td>
+                <td>{{ $item->transaction->borrower_name ?? '-' }}</td>
+                <td>{{ $item->consumable->name ?? '-' }}</td>
+                <td>{{ $item->qty_return ?? 0 }}</td>
+                <td>{{ $item->note ?? '-' }}</td>
+            </tr>
+            @endforeach
 
             @endif
 

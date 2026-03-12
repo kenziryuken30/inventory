@@ -5,7 +5,7 @@
 <h2 class="text-4xl md:text-3xl font-bold text-[#268397] mb-1">Dashboard</h2>
 <p class="text-base md:text-sm text-gray-500 mb-10">Selamat datang di Sistem Inventory Management</p>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">    
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
 
     <div class="p-6 flex justify-between items-center rounded-2xl shadow-xl text-white
         bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
@@ -17,11 +17,11 @@
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg"
-             class="w-10 h-10"
-             fill="none"
-             viewBox="0 0 24 24"
-             stroke="currentColor"
-             stroke-width="1.8">
+            class="w-10 h-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M3 7l9-4 9 4-9 4-9-4z" />
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -39,11 +39,11 @@
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg"
-             class="w-10 h-10"
-             fill="none"
-             viewBox="0 0 24 24"
-             stroke="currentColor"
-             stroke-width="2">
+            class="w-10 h-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M5 13l4 4L19 7" />
         </svg>
@@ -59,11 +59,11 @@
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg"
-             class="w-10 h-10"
-             fill="none"
-             viewBox="0 0 24 24"
-             stroke="currentColor"
-             stroke-width="1.8">
+            class="w-10 h-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8">
             <circle cx="12" cy="12" r="9" />
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M12 7v5l3 3" />
@@ -80,11 +80,11 @@
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg"
-             class="w-12 h-12 md:w-10 md:h-10"
-             fill="none"
-             viewBox="0 0 24 24"
-             stroke="currentColor"
-             stroke-width="1.8">
+            class="w-12 h-12 md:w-10 md:h-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M12 9v2m0 4h.01M5 19h14L12 4 5 19z" />
         </svg>
@@ -101,7 +101,7 @@
 
         <div class="px-6 py-4 text-white
             bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)]">
-            <h3 class="text-lg md:text-base font-semibold"> 
+            <h3 class="text-lg md:text-base font-semibold">
                 Peminjaman Terbaru
             </h3>
         </div>
@@ -109,36 +109,36 @@
         <div>
 
             @forelse($peminjamanTerbaru as $trx)
-            
-                <div class="px-6 py-4 flex justify-between items-center border-b last:border-none">
 
-                    <div>
+            <div class="px-6 py-4 flex justify-between items-center border-b last:border-none">
 
-                        <p class="text-lg md:text-base font-medium text-gray-800">
+                <div>
+
+                    <p class="text-lg md:text-base font-medium text-gray-800">
                         {{ $trx->items->pluck('toolkit.toolkit_name')->filter()->join(', ') ?: '-' }}
-                        </p>
+                    </p>
 
-                        <p class="text-sm md:text-xs text-gray-500">
-                            {{ $trx->borrower_name ?? '-' }} • 
-                            {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
-                        </p>
-                    </div>
-
-                    @if($trx->is_confirm)
-                        <span class="bg-yellow-400 text-xs px-4 py-1 rounded-full shadow">
-                            Dipinjam
-                        </span>
-                    @else
-                        <span class="bg-green-500 text-white text-sm md:text-xs px-4 py-1 rounded-full shadow-sm">
-                            Selesai
-                        </span>
-                    @endif
-
+                    <p class="text-sm md:text-xs text-gray-500">
+                        {{ $trx->borrower_name ?? '-' }} •
+                        {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
+                    </p>
                 </div>
+
+                @if($trx->is_confirm)
+                <span class="bg-yellow-400 text-xs px-4 py-1 rounded-full shadow">
+                    Dipinjam
+                </span>
+                @else
+                <span class="bg-green-500 text-white text-sm md:text-xs px-4 py-1 rounded-full shadow-sm">
+                    Selesai
+                </span>
+                @endif
+
+            </div>
             @empty
-                <div class="py-6 text-gray-400 text-sm text-center">
-                    Belum ada data
-                </div>
+            <div class="py-6 text-gray-400 text-sm text-center">
+                Belum ada data
+            </div>
             @endforelse
 
         </div>
@@ -157,26 +157,26 @@
         <div class="px-6 py-4">
 
             @forelse($consumableTerbaru as $item)
-                <div class="flex justify-between items-center py-4 border-b last:border-none">
+            <div class="flex justify-between items-center py-4 border-b last:border-none">
 
-                    <div>
-                        <p class="font-medium text-gray-800">
-                            {{ $item->consumable->name ?? '-' }}
-                        </p>
-                        <p class="text-xs text-gray-500">
-                            {{ $item->created_at->format('d M Y') }}
-                        </p>
-                    </div>
-
-                    <span class="bg-gray-200 text-gray-700 text-xs px-4 py-1 rounded-full shadow-sm">
-                        -{{ $item->qty }} pcs
-                    </span>
-
+                <div>
+                    <p class="font-medium text-gray-800">
+                        {{ $item->consumable->name ?? '-' }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        {{ $item->created_at->format('d M Y') }}
+                    </p>
                 </div>
+
+                <span class="bg-gray-200 text-gray-700 text-xs px-4 py-1 rounded-full shadow-sm">
+                    -{{ $item->qty }} pcs
+                </span>
+
+            </div>
             @empty
-                <div class="py-6 text-gray-400 text-sm text-center">
-                    Belum ada data
-                </div>
+            <div class="py-6 text-gray-400 text-sm text-center">
+                Belum ada data
+            </div>
             @endforelse
 
         </div>

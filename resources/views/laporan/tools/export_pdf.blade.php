@@ -1,178 +1,179 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
+    <meta charset="utf-8">
 
-<style>
+    <style>
+        body {
+            font-family: DejaVu Sans;
+            font-size: 12px;
+        }
 
-body{
-    font-family: DejaVu Sans;
-    font-size:12px;
-}
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-h2{
-    text-align:center;
-    margin-bottom:20px;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+        th,
+        td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+        }
 
-th,td{
-    border:1px solid black;
-    padding:6px;
-    text-align:center;
-}
-
-th{
-    background:#f2f2f2;
-}
-
-</style>
+        th {
+            background: #f2f2f2;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<h2>
-@if($type=='peminjaman')
-Laporan Peminjaman Tools
-@else
-Laporan Pengembalian Tools
-@endif
-</h2>
+    <h2>
+        @if($type=='peminjaman')
+        Laporan Peminjaman Tools
+        @else
+        Laporan Pengembalian Tools
+        @endif
+    </h2>
 
-<p style="text-align:center;">
-Periode :
-{{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
-s/d
-{{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
-</p>
+    <p style="text-align:center;">
+        Periode :
+        {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
+        s/d
+        {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
+    </p>
 
-<table>
+    <table>
 
-<thead>
+        <thead>
 
-@if($type=='peminjaman')
+            @if($type=='peminjaman')
 
-<tr>
-<th>No</th>
-<th>Kode Transaksi</th>
-<th>Tgl Pinjam</th>
-<th>Karyawan</th>
-<th>Alat Pinjam</th>
-<th>No Seri</th>
-<th>Client</th>
-<th>Project</th>
-</tr>
+            <tr>
+                <th>No</th>
+                <th>Kode Transaksi</th>
+                <th>Tgl Pinjam</th>
+                <th>Karyawan</th>
+                <th>Alat Pinjam</th>
+                <th>No Seri</th>
+                <th>Client</th>
+                <th>Project</th>
+            </tr>
 
-@else
+            @else
 
-<tr>
-<th>No</th>
-<th>Kode Transaksi</th>
-<th>Tgl Kembali</th>
-<th>Karyawan</th>
-<th>Alat Dipinjam</th>
-<th>No Seri</th>
-<th>Kondisi</th>
-<th>Keterangan</th>
-</tr>
+            <tr>
+                <th>No</th>
+                <th>Kode Transaksi</th>
+                <th>Tgl Kembali</th>
+                <th>Karyawan</th>
+                <th>Alat Dipinjam</th>
+                <th>No Seri</th>
+                <th>Kondisi</th>
+                <th>Keterangan</th>
+            </tr>
 
-@endif
+            @endif
 
-</thead>
+        </thead>
 
-<tbody>
+        <tbody>
 
-@if($type=='peminjaman')
+            @if($type=='peminjaman')
 
-@foreach($data as $row)
+            @foreach($data as $row)
 
-<tr>
+            <tr>
 
-<td>{{ $loop->iteration }}</td>
+                <td>{{ $loop->iteration }}</td>
 
-<td>{{ $row->transaction_code }}</td>
+                <td>{{ $row->transaction_code }}</td>
 
-<td>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</td>
 
-<td>{{ $row->borrower_name }}</td>
+                <td>{{ $row->borrower_name }}</td>
 
-<td>
-@foreach($row->items as $item)
-{{ $item->toolkit->toolkit_name ?? '-' }}<br>
-@endforeach
-</td>
+                <td>
+                    @foreach($row->items as $item)
+                    {{ $item->toolkit->toolkit_name ?? '-' }}<br>
+                    @endforeach
+                </td>
 
-<td>
-@foreach($row->items as $item)
-{{ $item->serial->serial_number ?? '-' }}<br>
-@endforeach
-</td>
+                <td>
+                    @foreach($row->items as $item)
+                    {{ $item->serial->serial_number ?? '-' }}<br>
+                    @endforeach
+                </td>
 
-<td>{{ $row->client_name ?? '-' }}</td>
+                <td>{{ $row->client_name ?? '-' }}</td>
 
-<td>{{ $row->project ?? '-' }}</td>
+                <td>{{ $row->project ?? '-' }}</td>
 
-</tr>
+            </tr>
 
-@endforeach
+            @endforeach
 
 
-@else
+            @else
 
-@php
-$group = $data->groupBy('transaction_id');
-@endphp
+            @php
+            $group = $data->groupBy('transaction_id');
+            @endphp
 
-@foreach($group as $items)
+            @foreach($group as $items)
 
-<tr>
+            <tr>
 
-<td>{{ $loop->iteration }}</td>
+                <td>{{ $loop->iteration }}</td>
 
-<td>{{ $items->first()->transaction->transaction_code }}</td>
+                <td>{{ $items->first()->transaction->transaction_code }}</td>
 
-<td>{{ \Carbon\Carbon::parse($items->first()->return_date)->format('d M Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($items->first()->return_date)->format('d M Y') }}</td>
 
-<td>{{ $items->first()->transaction->borrower_name }}</td>
+                <td>{{ $items->first()->transaction->borrower_name }}</td>
 
-<td>
-@foreach($items as $item)
-{{ $item->toolkit->toolkit_name ?? '-' }}<br>
-@endforeach
-</td>
+                <td>
+                    @foreach($items as $item)
+                    {{ $item->toolkit->toolkit_name ?? '-' }}<br>
+                    @endforeach
+                </td>
 
-<td>
-@foreach($items as $item)
-{{ $item->serial->serial_number ?? '-' }}<br>
-@endforeach
-</td>
+                <td>
+                    @foreach($items as $item)
+                    {{ $item->serial->serial_number ?? '-' }}<br>
+                    @endforeach
+                </td>
 
-<td>
-@foreach($items as $item)
-{{ $item->return_condition ?? '-' }}<br>
-@endforeach
-</td>
+                <td>
+                    @foreach($items as $item)
+                    {{ $item->return_condition ?? '-' }}<br>
+                    @endforeach
+                </td>
 
-<td>
-@foreach($items as $item)
-{{ $item->return_note ?? '-' }}<br>
-@endforeach
-</td>
+                <td>
+                    @foreach($items as $item)
+                    {{ $item->return_note ?? '-' }}<br>
+                    @endforeach
+                </td>
 
-</tr>
+            </tr>
 
-@endforeach
+            @endforeach
 
-@endif
+            @endif
 
-</tbody>
+        </tbody>
 
-</table>
+    </table>
 
 </body>
+
 </html>

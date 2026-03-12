@@ -9,7 +9,7 @@
             <p class="text-sm text-gray-500 mt-1">Proses peminjaman alat dan kelola daftar tools</p>
         </div>
         <a href="{{ route('peminjaman.index') }}"
-           class="bg-[#E5E7EB] hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center shadow-sm">
+            class="bg-[#E5E7EB] hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center shadow-sm">
             <span class="mr-1">←</span> Kembali
         </a>
     </div>
@@ -18,11 +18,11 @@
         @csrf
         {{-- Main Card --}}
         <div class="bg-[#F9FAFB] rounded-3xl shadow-xl p-8 border border-gray-100 space-y-8">
-            
+
             <div>
                 {{-- Dihapus border-b dan pb-3 agar garis hilang --}}
                 <h3 class="text-lg font-bold text-gray-800 mb-6">Proses peminjaman Alat</h3>
-                
+
                 <div class="space-y-6">
                     {{-- ROW 1 --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -31,7 +31,7 @@
                                 Nama Peminjam <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="borrower_name" placeholder="Masukan nama peminjam" required
-                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                         </div>
 
                         <div>
@@ -39,9 +39,9 @@
                                 Tanggal <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="date" value="{{ date('Y-m-d') }}" required
-                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                         </div>
-                        
+
                         <div></div>
                     </div>
 
@@ -50,31 +50,31 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nama client</label>
                             <input type="text" name="client_name" placeholder="Masukan nama klien"
-                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
                             <input type="text" name="project" placeholder="Masukan Keterangan"
-                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
                             <input type="text" name="purpose" placeholder="Masukan Keperluan"
-                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             {{-- Section Daftar Alat --}}
             <div class="space-y-0 mt-10">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
                     <button type="button" id="openToolsBtn"
-                            class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
+                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                         + Pilih Tools
                     </button>
                 </div>
@@ -105,8 +105,8 @@
             {{-- Save Button Row --}}
             <div class="pt-8 border-t border-gray-200 flex justify-end">
                 <button type="submit"
-                        class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                    class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
+                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                     Save Transaksi
                 </button>
             </div>
@@ -116,32 +116,34 @@
 
 {{-- ================= MODAL TOOLS ================= --}}
 <div id="toolsModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
 
     <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
 
         {{-- Modal Header (Gradasi) --}}
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center text-white"
-             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
             <h3 class="text-lg font-bold">
                 Pilih Tools Tersedia
             </h3>
             <button type="button" id="closeToolsBtn"
-                    class="text-white/80 hover:text-white text-2xl transition">
+                class="text-white/80 hover:text-white text-2xl transition">
                 ✕
             </button>
         </div>
 
         <div class="p-6 flex-1 overflow-auto">
-            
+
             {{-- Search Input --}}
             <div class="mb-5">
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
                     </span>
                     <input type="text" id="searchTools" placeholder="Cari nama tools..."
-                           class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none transition text-sm">
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none transition text-sm">
                 </div>
             </div>
 
@@ -165,11 +167,11 @@
                             data-name="{{ strtolower($serial->toolkit->toolkit_name) }}">
                             <td class="py-3 px-4 text-center">
                                 <input type="checkbox"
-                                       class="tool-checkbox w-4 h-4 accent-[#1CA7B6] rounded border-gray-300"
-                                       value="{{ $serial->id }}"
-                                       data-name="{{ $serial->toolkit->toolkit_name }}"
-                                       data-serial="{{ $serial->serial_number }}"
-                                       data-image="{{ $serial->toolkit->image }}">
+                                    class="tool-checkbox w-4 h-4 accent-[#1CA7B6] rounded border-gray-300"
+                                    value="{{ $serial->id }}"
+                                    data-name="{{ $serial->toolkit->toolkit_name }}"
+                                    data-serial="{{ $serial->serial_number }}"
+                                    data-image="{{ $serial->toolkit->image }}">
                             </td>
                             <td class="py-3 px-4 font-medium text-gray-800">
                                 {{ $serial->toolkit->toolkit_name }}
@@ -181,7 +183,7 @@
                                 <img src="{{ $serial->toolkit->image 
                                     ? asset('storage/'.$serial->toolkit->image)
                                     : asset('images/no-image.png') }}"
-                                     class="w-10 h-10 object-contain mx-auto rounded-lg shadow-sm preview-image cursor-pointer hover:scale-110 transition">
+                                    class="w-10 h-10 object-contain mx-auto rounded-lg shadow-sm preview-image cursor-pointer hover:scale-110 transition">
                             </td>
                         </tr>
                         @endforeach
@@ -193,14 +195,16 @@
         {{-- Modal Footer --}}
         <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
             <button type="button" id="cancelToolsBtn"
-                    class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
+                class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                 Batal
             </button>
 
             <button type="button" id="btnAddTool"
-                    class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
-                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
+                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
                 Tambahkan
             </button>
         </div>
@@ -209,15 +213,15 @@
 
 {{-- ================= IMAGE PREVIEW MODAL ================= --}}
 <div id="imagePreviewModal"
-     class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[9999] p-4">
+    class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[9999] p-4">
 
     <div class="relative max-w-4xl w-full">
         <button id="closePreview"
-                class="absolute -top-10 right-0 text-white text-3xl hover:text-[#5FD0DF] transition">
+            class="absolute -top-10 right-0 text-white text-3xl hover:text-[#5FD0DF] transition">
             ✕
         </button>
         <img id="previewImage"
-             class="max-h-[85vh] max-w-full mx-auto rounded-xl shadow-2xl">
+            class="max-h-[85vh] max-w-full mx-auto rounded-xl shadow-2xl">
     </div>
 </div>
 
@@ -228,14 +232,24 @@
     .shadow-inner {
         box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
     }
+
     input::placeholder {
         color: #9CA3AF;
         font-weight: 400;
     }
+
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     #tableSelectedTools tr[id^="row-"] {
         animation: fadeIn 0.3s ease-out;
     }
@@ -243,117 +257,117 @@
 
 {{-- ================= SCRIPT ================= --}}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    // Elements
-    const toolsModal = document.getElementById('toolsModal');
-    const openToolsBtn = document.getElementById('openToolsBtn');
-    const closeToolsBtn = document.getElementById('closeToolsBtn');
-    const cancelToolsBtn = document.getElementById('cancelToolsBtn');
-    const btnAddTool = document.getElementById('btnAddTool');
-    const selectAllCheckbox = document.getElementById('selectAllTools');
+        // Elements
+        const toolsModal = document.getElementById('toolsModal');
+        const openToolsBtn = document.getElementById('openToolsBtn');
+        const closeToolsBtn = document.getElementById('closeToolsBtn');
+        const cancelToolsBtn = document.getElementById('cancelToolsBtn');
+        const btnAddTool = document.getElementById('btnAddTool');
+        const selectAllCheckbox = document.getElementById('selectAllTools');
 
-    const searchInput = document.getElementById('searchTools');
-    const modalTable = document.getElementById('toolsTable');
+        const searchInput = document.getElementById('searchTools');
+        const modalTable = document.getElementById('toolsTable');
 
-    const previewModal = document.getElementById('imagePreviewModal');
-    const previewImage = document.getElementById('previewImage');
-    const closePreview = document.getElementById('closePreview');
+        const previewModal = document.getElementById('imagePreviewModal');
+        const previewImage = document.getElementById('previewImage');
+        const closePreview = document.getElementById('closePreview');
 
-    // ===== MODAL FUNCTIONS =====
-    function openModal() {
-        toolsModal.classList.remove('hidden');
-        toolsModal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
+        // ===== MODAL FUNCTIONS =====
+        function openModal() {
+            toolsModal.classList.remove('hidden');
+            toolsModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
 
-    function closeModal() {
-        toolsModal.classList.add('hidden');
-        toolsModal.classList.remove('flex');
-        document.body.style.overflow = '';
-        // Reset checkbox & search
-        document.querySelectorAll('.tool-checkbox').forEach(cb => cb.checked = false);
-        if (selectAllCheckbox) selectAllCheckbox.checked = false;
-        if(searchInput) searchInput.value = '';
-        modalTable.querySelectorAll('tr').forEach(row => row.style.display = '');
-    }
+        function closeModal() {
+            toolsModal.classList.add('hidden');
+            toolsModal.classList.remove('flex');
+            document.body.style.overflow = '';
+            // Reset checkbox & search
+            document.querySelectorAll('.tool-checkbox').forEach(cb => cb.checked = false);
+            if (selectAllCheckbox) selectAllCheckbox.checked = false;
+            if (searchInput) searchInput.value = '';
+            modalTable.querySelectorAll('tr').forEach(row => row.style.display = '');
+        }
 
-    openToolsBtn?.addEventListener('click', openModal);
-    closeToolsBtn?.addEventListener('click', closeModal);
-    cancelToolsBtn?.addEventListener('click', closeModal);
+        openToolsBtn?.addEventListener('click', openModal);
+        closeToolsBtn?.addEventListener('click', closeModal);
+        cancelToolsBtn?.addEventListener('click', closeModal);
 
-    // Close modal on outside click
-    toolsModal?.addEventListener('click', function(e) {
-        if (e.target === toolsModal) closeModal();
-    });
+        // Close modal on outside click
+        toolsModal?.addEventListener('click', function(e) {
+            if (e.target === toolsModal) closeModal();
+        });
 
-    // ===== SELECT ALL =====
-    selectAllCheckbox?.addEventListener('change', function() {
-        const visibleCheckboxes = document.querySelectorAll('.tool-checkbox');
-        visibleCheckboxes.forEach(cb => {
-            if (cb.closest('tr').style.display !== 'none') {
-                cb.checked = this.checked;
+        // ===== SELECT ALL =====
+        selectAllCheckbox?.addEventListener('change', function() {
+            const visibleCheckboxes = document.querySelectorAll('.tool-checkbox');
+            visibleCheckboxes.forEach(cb => {
+                if (cb.closest('tr').style.display !== 'none') {
+                    cb.checked = this.checked;
+                }
+            });
+        });
+
+        // ===== LIVE SEARCH =====
+        searchInput?.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase().trim();
+
+            modalTable.querySelectorAll('tr').forEach(row => {
+                const name = row.dataset.name || '';
+                row.style.display = name.includes(keyword) ? '' : 'none';
+            });
+        });
+
+        // ===== ROW CLICK TOGGLE =====
+        modalTable?.addEventListener('click', function(e) {
+            const row = e.target.closest('tr');
+            if (!row) return;
+
+            if (e.target.type !== 'checkbox' && !e.target.classList.contains('preview-image')) {
+                const checkbox = row.querySelector('.tool-checkbox');
+                if (checkbox) checkbox.checked = !checkbox.checked;
             }
         });
-    });
 
-    // ===== LIVE SEARCH =====
-    searchInput?.addEventListener('input', function () {
-        const keyword = this.value.toLowerCase().trim();
+        // ===== TAMBAH TOOL KE TABEL UTAMA =====
+        btnAddTool?.addEventListener('click', function() {
+            const selected = document.querySelectorAll('.tool-checkbox:checked');
 
-        modalTable.querySelectorAll('tr').forEach(row => {
-            const name = row.dataset.name || '';
-            row.style.display = name.includes(keyword) ? '' : 'none';
-        });
-    });
+            if (selected.length === 0) {
+                alert('Pilih minimal satu tool');
+                return;
+            }
 
-    // ===== ROW CLICK TOGGLE =====
-    modalTable?.addEventListener('click', function(e) {
-        const row = e.target.closest('tr');
-        if (!row) return;
-        
-        if (e.target.type !== 'checkbox' && !e.target.classList.contains('preview-image')) {
-            const checkbox = row.querySelector('.tool-checkbox');
-            if (checkbox) checkbox.checked = !checkbox.checked;
-        }
-    });
+            const tableBody = document.getElementById('tableSelectedTools');
+            const emptyRow = document.getElementById('emptyRow');
 
-    // ===== TAMBAH TOOL KE TABEL UTAMA =====
-    btnAddTool?.addEventListener('click', function () {
-        const selected = document.querySelectorAll('.tool-checkbox:checked');
+            // Hapus placeholder "Belum ada tools"
+            if (emptyRow) {
+                emptyRow.remove();
+            }
 
-        if (selected.length === 0) {
-            alert('Pilih minimal satu tool');
-            return;
-        }
+            let addedCount = 0;
 
-        const tableBody = document.getElementById('tableSelectedTools');
-        const emptyRow = document.getElementById('emptyRow');
+            selected.forEach(checkbox => {
+                const id = checkbox.value;
+                const name = checkbox.dataset.name;
+                const serial = checkbox.dataset.serial;
+                const image = checkbox.dataset.image;
 
-        // Hapus placeholder "Belum ada tools"
-        if (emptyRow) {
-            emptyRow.remove();
-        }
+                // Cegah duplikat
+                if (document.getElementById('row-' + id)) return;
 
-        let addedCount = 0;
+                // Hitung nomor urut
+                const currentRows = tableBody.querySelectorAll('tr').length;
+                const rowCount = currentRows + 1;
 
-        selected.forEach(checkbox => {
-            const id = checkbox.value;
-            const name = checkbox.dataset.name;
-            const serial = checkbox.dataset.serial;
-            const image = checkbox.dataset.image;
+                const imagePath = image ? `/storage/${image}` : `/images/no-image.png`;
 
-            // Cegah duplikat
-            if (document.getElementById('row-' + id)) return;
-
-            // Hitung nomor urut
-            const currentRows = tableBody.querySelectorAll('tr').length;
-            const rowCount = currentRows + 1;
-
-            const imagePath = image ? `/storage/${image}` : `/images/no-image.png`;
-
-            // Template baris baru (Sesuai style tabel utama)
-            const rowHtml = `
+                // Template baris baru (Sesuai style tabel utama)
+                const rowHtml = `
                 <tr id="row-${id}" class="hover:bg-gray-50 transition">
                     <td class="text-center py-4 px-6 text-gray-600 row-number">${rowCount}</td>
                     <td class="text-center py-3 px-6">
@@ -374,91 +388,91 @@ document.addEventListener('DOMContentLoaded', function () {
                 </tr>
             `;
 
-            tableBody.insertAdjacentHTML('beforeend', rowHtml);
-            addedCount++;
+                tableBody.insertAdjacentHTML('beforeend', rowHtml);
+                addedCount++;
 
-            // Sembunyikan tool yang sudah dipilih di modal
-            checkbox.closest('tr').style.display = 'none';
-            checkbox.checked = false;
+                // Sembunyikan tool yang sudah dipilih di modal
+                checkbox.closest('tr').style.display = 'none';
+                checkbox.checked = false;
+            });
+
+            if (addedCount > 0) {
+                updateRowNumbers();
+            }
+
+            closeModal();
         });
 
-        if (addedCount > 0) {
+        // ===== REMOVE ROW =====
+        window.removeRow = function(btn) {
+            const row = btn.closest('tr');
+            const id = row.id.replace('row-', '');
+
+            // Tampilkan kembali di modal
+            const modalRow = document.querySelector(`.tool-checkbox[value="${id}"]`)?.closest('tr');
+            if (modalRow) modalRow.style.display = '';
+
+            row.remove();
             updateRowNumbers();
-        }
 
-        closeModal();
-    });
-
-    // ===== REMOVE ROW =====
-    window.removeRow = function(btn) {
-        const row = btn.closest('tr');
-        const id = row.id.replace('row-', '');
-        
-        // Tampilkan kembali di modal
-        const modalRow = document.querySelector(`.tool-checkbox[value="${id}"]`)?.closest('tr');
-        if (modalRow) modalRow.style.display = '';
-
-        row.remove();
-        updateRowNumbers();
-
-        // Tampilkan empty state jika tabel kosong
-        const tableBody = document.getElementById('tableSelectedTools');
-        if (tableBody.querySelectorAll('tr').length === 0) {
-            tableBody.innerHTML = `
+            // Tampilkan empty state jika tabel kosong
+            const tableBody = document.getElementById('tableSelectedTools');
+            if (tableBody.querySelectorAll('tr').length === 0) {
+                tableBody.innerHTML = `
                 <tr id="emptyRow">
                     <td colspan="5" class="py-12 text-center text-gray-400 italic text-sm">
                         Belum ada tools yang dipilih
                     </td>
                 </tr>
             `;
+            }
+        };
+
+        // ===== UPDATE ROW NUMBERS =====
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableSelectedTools tr[id^="row-"]');
+            rows.forEach((row, index) => {
+                const numCell = row.querySelector('.row-number');
+                if (numCell) numCell.textContent = index + 1;
+            });
         }
-    };
 
-    // ===== UPDATE ROW NUMBERS =====
-    function updateRowNumbers() {
-        const rows = document.querySelectorAll('#tableSelectedTools tr[id^="row-"]');
-        rows.forEach((row, index) => {
-            const numCell = row.querySelector('.row-number');
-            if (numCell) numCell.textContent = index + 1;
+        // ===== IMAGE PREVIEW =====
+        document.addEventListener('click', function(e) {
+            const img = e.target.closest('.preview-image');
+            if (!img) return;
+
+            previewImage.src = img.src;
+            previewModal.classList.remove('hidden');
+            previewModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
         });
-    }
 
-    // ===== IMAGE PREVIEW =====
-    document.addEventListener('click', function (e) {
-        const img = e.target.closest('.preview-image');
-        if (!img) return;
-
-        previewImage.src = img.src;
-        previewModal.classList.remove('hidden');
-        previewModal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    });
-
-    closePreview?.addEventListener('click', function () {
-        previewModal.classList.add('hidden');
-        previewModal.classList.remove('flex');
-        document.body.style.overflow = '';
-    });
-
-     previewModal?.addEventListener('click', function(e) {
-        if (e.target === previewModal) {
+        closePreview?.addEventListener('click', function() {
             previewModal.classList.add('hidden');
             previewModal.classList.remove('flex');
             document.body.style.overflow = '';
-        }
-    });
+        });
 
-    // ===== KEYBOARD SHORTCUTS =====
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            if (!previewModal.classList.contains('hidden')) {
+        previewModal?.addEventListener('click', function(e) {
+            if (e.target === previewModal) {
                 previewModal.classList.add('hidden');
                 previewModal.classList.remove('flex');
                 document.body.style.overflow = '';
-            } else if (!toolsModal.classList.contains('hidden')) {
-                closeModal();
             }
-        }
+        });
+
+        // ===== KEYBOARD SHORTCUTS =====
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (!previewModal.classList.contains('hidden')) {
+                    previewModal.classList.add('hidden');
+                    previewModal.classList.remove('flex');
+                    document.body.style.overflow = '';
+                } else if (!toolsModal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            }
+        });
     });
-});
 </script>

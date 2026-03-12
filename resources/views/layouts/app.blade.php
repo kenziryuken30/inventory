@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,15 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    
+
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
 
         /* Pastikan html dan body mengambil 100% tinggi layar */
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -25,13 +29,20 @@
         .sidebar-bg {
             background: url("{{ asset('images/siedbar.png') }}") no-repeat;
             background-position: center bottom;
-            background-size: 100% 100% !important; /* Memaksa gambar mengisi seluruh area sidebar */
+            background-size: 100% 100% !important;
+            /* Memaksa gambar mengisi seluruh area sidebar */
             background-color: #f0f7ff;
         }
 
         /* Menghilangkan scrollbar pada menu sidebar */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         .menu-item {
             transition: all 0.3s ease;
@@ -54,16 +65,16 @@
     <div class="relative flex min-h-screen w-full">
 
         <div
-    x-show="sidebarOpen"
-    x-transition.opacity
-    class="fixed inset-0 bg-black/40 z-40 lg:hidden"
-    @click="sidebarOpen = false">
-    </div>
+            x-show="sidebarOpen"
+            x-transition.opacity
+            class="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            @click="sidebarOpen = false">
+        </div>
 
-        <aside 
+        <aside
             :class="sidebarOpen ? 'translate-x-0 lg:w-64' : '-translate-x-full lg:translate-x-0 lg:w-20'"
             class="fixed left-0 top-0 h-screen z-50 flex flex-col shadow-2xl transition-all duration-300 transform sidebar-bg">
-            
+
             <div class="flex-none px-4 py-4 bg-[#D5EEFF]">
                 <div class="flex items-center gap-3 ml-2">
                     <img src="{{ asset('images/tecno.png') }}" class="w-10">
@@ -78,7 +89,7 @@
 
             <div class="flex-1 overflow-y-auto no-scrollbar py-6">
                 <ul class="space-y-2 text-sm px-4">
-                    
+
                     <li>
                         <a href="{{ route('dashboard') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-lg whitespace-nowrap">
                             <i class="ph ph-house text-xl"></i>
@@ -143,13 +154,10 @@
                 </form>
             </div>
 
-
-        </aside>
-
-<button
-@click="sidebarOpen = !sidebarOpen"
-:class="sidebarOpen ? 'left-[240px]' : 'left-[64px]'"
-class="fixed top-[50px] z-[60]
+            <button
+            @click="sidebarOpen = !sidebarOpen"
+            :class="sidebarOpen ? 'left-[240px]' : 'left-[64px]'"
+            class="fixed top-[50px] z-[60]
 bg-cyan-500 text-white
 w-8 h-8
 rounded-full shadow-lg
@@ -157,27 +165,31 @@ flex items-center justify-center
 border-2 border-white
 transition-all duration-300">
 
-<i class="ph ph-list text-sm"></i>
+            <i class="ph ph-list text-sm"></i>
 
-</button>
+        </button>
+        </aside>
 
-        <div :class="sidebarOpen ? 'lg:pl-[256px]' : 'lg:pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative pl-0">
 
-    <!-- background kiri -->
-    <img src="{{ asset('images/kiri.png') }}"
-         class="hidden lg:block fixed left-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-80">
 
-    <!-- background kanan -->
-    <img src="{{ asset('images/kana1.png') }}"
-         class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-80">
+        <div :class="sidebarOpen ? 'lg:pl-[256px]' : 'lg:pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative z-10 pl-0">
 
-    <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-        @yield('content')
-    </main>
+            <!-- background kiri -->
+            <img src="{{ asset('images/kiri.png') }}"
+                class="hidden lg:block fixed left-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-60">
 
-</div>
+            <!-- background kanan -->
+            <img src="{{ asset('images/kana1.png') }}"
+                class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-60">
+
+            <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+                @yield('content')
+            </main>
+
+        </div>
 
     </div>
 
 </body>
+
 </html>

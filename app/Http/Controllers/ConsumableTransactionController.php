@@ -28,7 +28,9 @@ class ConsumableTransactionController extends Controller
             ]);
         }
 
-        $transactions = $query->orderByDesc('date')->get();
+        $transactions = $query
+        ->orderByDesc('date')
+        ->paginate(10);
 
         return view('transaksi.index', compact('transactions'));
     }
