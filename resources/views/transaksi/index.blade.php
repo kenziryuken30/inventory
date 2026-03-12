@@ -99,7 +99,7 @@
                         <tr class="hover:bg-gray-50 transition">
 
                             <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                {{ $loop->iteration }}
+                                {{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}
                             </td>
 
                             <td class="py-4 px-6 font-bold text-[#1CA7B6]">
@@ -234,6 +234,10 @@
                 </tbody>
 
             </table>
+
+        <div class="mt-6 flex justify-center">
+            {{ $transactions->appends(request()->query())->links('pagination::tailwind') }}
+        </div>
 
         </div>
 

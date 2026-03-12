@@ -17,7 +17,7 @@ private function getData($request,$type)
 
     if ($type === 'pengembalian') {
 
-        $query = InvConsumableTransactionItem::with([
+        $query = InvConsumableTransactionItem::with([   
             'transaction',
             'consumable'
         ])
@@ -42,7 +42,7 @@ private function getData($request,$type)
 
         $query = InvConsumableTransaction::with([
             'items.consumable'
-        ]);
+        ])->where('is_confirm',1);
 
         if ($request->filled('start_date')) {
             $query->whereDate('date','>=',$request->start_date);
