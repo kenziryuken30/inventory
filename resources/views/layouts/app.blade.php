@@ -176,11 +176,11 @@ transition-all duration-300">
 
             <!-- background kiri -->
             <img src="{{ asset('images/kiri.png') }}"
-                class="hidden lg:block fixed left-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-60">
+                class="hidden lg:block fixed left-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-60">
 
             <!-- background kanan -->
             <img src="{{ asset('images/kana1.png') }}"
-                class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none z-0 opacity-60">
+                class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-60">
 
             <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
                 @yield('content')
