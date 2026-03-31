@@ -37,7 +37,7 @@ class ToolController extends Controller
         }
 
         return view('tools.index', [
-            'tools'      => $query->latest()->get(),
+            'tools'      => $query->latest()->paginate(5)->withQueryString(),
             'categories' => InvCategory::orderBy('category_name')->get(),
         ]);
     }

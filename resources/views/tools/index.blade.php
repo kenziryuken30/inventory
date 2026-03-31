@@ -289,6 +289,10 @@ md:justify-between md:items-center"
 
     </div>
 
+    <div class="mt-6 flex justify-center">
+        {{ $tools->links() }}
+    </div>
+
     {{-- ================= MODAL TAMBAH BARANG ================= --}}
     <div id="tambahBarangModal"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1000]">
