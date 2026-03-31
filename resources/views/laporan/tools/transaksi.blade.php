@@ -112,7 +112,7 @@
                         @forelse($data as $row)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                    {{ $loop->iteration }}
+                                    {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
                                 </td>
 
                                 <td class="py-4 px-6 font-bold text-[#1CA7B6]">
@@ -155,6 +155,8 @@
                 </table>
             </div>
         </div>
+
+
 
 
         {{-- MODAL DETAIL PEMINJAMAN --}}
@@ -276,7 +278,7 @@
                         @forelse($data as $row)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                    {{ $loop->iteration }}
+                                    {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
                                 </td>
 
                                 <td class="py-4 px-6 font-bold text-[#1CA7B6]">
@@ -326,6 +328,10 @@
         </div>
 
     @endif
+
+            <div class="mt-6 flex justify-center">
+    {{ $data->links() }}
+</div>
 
     <style>
         [x-cloak] { display: none !important; }
