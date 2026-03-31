@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto w-full px-6 py-4">
-    <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight mb-4">Data Tools</h2>
+    <h2 class="text-3xl font-bold text-[#0008fc] tracking-tight mb-4">Data Tools</h2>
 
     {{-- ALERT --}}
     @if (session('success'))
