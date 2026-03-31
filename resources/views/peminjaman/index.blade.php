@@ -167,8 +167,7 @@
     <div x-show="openReturn === '{{ $transaction->id }}'"
         x-cloak
         x-data="{ selected: [] }"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-        style="display: none;">
+        class="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-[1000] p-4">
 
         <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 

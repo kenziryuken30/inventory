@@ -60,9 +60,10 @@
     </style>
 </head>
 
-<body x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
+<body x-data="{ sidebarOpen: window.innerWidth >= 1024 }" x-init="$store.modal = {open: false}">
 
     <div class="relative flex min-h-screen w-full">
+
 
         <div
             x-show="sidebarOpen"
@@ -155,9 +156,9 @@
             </div>
 
             <button
-            @click="sidebarOpen = !sidebarOpen"
-            :class="sidebarOpen ? 'left-[240px]' : 'left-[64px]'"
-            class="fixed top-[50px] z-[60]
+                @click="sidebarOpen = !sidebarOpen"
+                :class="sidebarOpen ? 'left-[240px]' : 'left-[64px]'"
+                class="fixed top-[50px] z-[60]
 bg-cyan-500 text-white
 w-8 h-8
 rounded-full shadow-lg
@@ -165,9 +166,9 @@ flex items-center justify-center
 border-2 border-white
 transition-all duration-300">
 
-            <i class="ph ph-list text-sm"></i>
+                <i class="ph ph-list text-sm"></i>
 
-        </button>
+            </button>
         </aside>
 
 
@@ -185,6 +186,12 @@ transition-all duration-300">
             <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
                 @yield('content')
             </main>
+
+            <div
+                x-show="$store.modal.open"
+                x-transition.opacity
+                class="fixed inset-0 bg-black/30 backdrop-blur-md z-[999]">
+            </div>
 
         </div>
 

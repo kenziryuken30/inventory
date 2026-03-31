@@ -291,7 +291,7 @@ md:justify-between md:items-center"
 
     {{-- ================= MODAL TAMBAH BARANG ================= --}}
     <div id="tambahBarangModal"
-        class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1000]">
 
         <div class="w-11/12 max-w-xl
             bg-[#efefef]
