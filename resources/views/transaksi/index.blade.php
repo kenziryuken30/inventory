@@ -371,11 +371,8 @@
         <style>
             [x-cloak] { display: none !important; }
         </style>
-
-    </div>
-
         <div class="mt-6 flex justify-center">
-            {{ $transactions->appends(request()->query())->links('pagination::tailwind') }}
-        </div>
+            {{ $transactions->links() }}
+    </div>
 @endsection
 ```
