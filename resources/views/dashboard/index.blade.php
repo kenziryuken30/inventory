@@ -230,7 +230,7 @@
 
                     <div class="flex-shrink-0">
                         <span class="bg-red-50 text-red-600 text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-red-100 whitespace-nowrap">
-                            -{{ $item->qty }} pcs
+                            {{ $item->qty }} pcs
                         </span>
                     </div>
                 </div>
