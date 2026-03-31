@@ -14,7 +14,7 @@
                 </h1>
 
                 <p class="text-sm text-gray-500 mt-1">
-                    Kelola peminjaman dan pengembalian Consumable
+                    Kelola Transaksi dan pengembalian Consumable
                 </p>
             </div>
 
@@ -230,10 +230,6 @@
 
             </table>
 
-        <div class="mt-6 flex justify-center">
-            {{ $transactions->appends(request()->query())->links('pagination::tailwind') }}
-        </div>
-
         </div>
 
         {{-- ================= POPUP RETURN ================= --}}
@@ -378,5 +374,8 @@
 
     </div>
 
+        <div class="mt-6 flex justify-center">
+            {{ $transactions->appends(request()->query())->links('pagination::tailwind') }}
+        </div>
 @endsection
 ```

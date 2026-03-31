@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -11,9 +10,11 @@
                 <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Laporan Transaksi Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Rekap data pengeluaran dan pengembalian barang consumable</p>
             </div>
-            
+
             {{-- Tombol Kembali bisa ditambahkan di sini jika perlu, mengikuti contoh --}}
-            {{-- <a href="{{ url()->previous() }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition">← Kembali</a> --}}
+            {{-- <a href="{{ url()->previous() }}"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition">←
+                Kembali</a> --}}
         </div>
 
 
@@ -38,13 +39,14 @@
 
             <div>
                 <label class="text-white text-sm font-semibold block mb-1">Sampai Tanggal</label>
-                <input type="date" name="end_date" value="{{ request('end_date') }}" 
+                <input type="date" name="end_date" value="{{ request('end_date') }}"
                     class="px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:outline-none text-sm">
             </div>
 
             <div class="flex gap-2 items-end">
 
-                <button type="submit" class="bg-white text-[#1CA7B6] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 transition text-sm">
+                <button type="submit"
+                    class="bg-white text-[#1CA7B6] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 transition text-sm">
                     🔎 Filter
                 </button>
 
@@ -93,8 +95,8 @@
                 Total Item Diminta :
                 <span class="font-bold text-[#1CA7B6]">
                     {{ $type == 'pengeluaran'
-                        ? $data->getCollection()->flatMap->items->sum('qty')
-                        : $data->getCollection()->sum('qty_return') }}
+        ? $data->getCollection()->flatMap->items->sum('qty')
+        : $data->getCollection()->sum('qty_return') }}
                 </span>
             </div>
 
@@ -110,7 +112,7 @@
 
                     {{-- Header dengan Gradasi --}}
                     <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                         <tr>
                             <th class="py-4 px-6 font-semibold text-center">No</th>
                             <th class="py-4 px-6 font-semibold text-left">Kode</th>
@@ -133,7 +135,7 @@
                             <tr class="hover:bg-gray-50 transition">
 
                                 <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                    {{ $loop->iteration }}
+                                    {{ $data->firstItem() + $loop->index }}
                                 </td>
 
                                 {{-- ================= KODE ================= --}}
@@ -204,7 +206,12 @@
                             <tr>
                                 <td colspan="7" class="py-12 text-center text-gray-400">
                                     <div class="flex flex-col items-center gap-2">
-                                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                                            </path>
+                                        </svg>
                                         <span>Tidak ada data transaksi pada periode ini</span>
                                     </div>
                                 </td>
@@ -229,7 +236,7 @@
 
                         {{-- HEADER MODAL --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
-                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                             <div>
                                 <h3 class="text-lg font-bold">Detail Transaksi Consumable</h3>
                                 <p class="text-sm text-white/80">Informasi lengkap transaksi</p>
@@ -280,7 +287,7 @@
                                 <table class="w-full text-sm">
 
                                     <thead class="text-white text-xs uppercase tracking-wider"
-                                           style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                                         <tr>
                                             <th class="py-3 px-4 font-semibold text-left">NAMA CONSUMABLE</th>
                                             <th class="py-3 px-4 font-semibold text-center">QTY</th>
@@ -304,8 +311,8 @@
 
                         {{-- FOOTER --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
-                            <button @click="openDetail = null" 
-                                    class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
+                            <button @click="openDetail = null"
+                                class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
                                 Tutup
                             </button>
                         </div>
@@ -328,7 +335,7 @@
 
                         {{-- HEADER MODAL --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
-                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                             <div>
                                 <h3 class="text-lg font-bold">Detail Pengembalian Consumable</h3>
                             </div>
@@ -345,8 +352,10 @@
                                 </div>
 
                                 <div>
-                                    <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian</p>
-                                    <p class="text-gray-800">{{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}</p>
+                                    <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian
+                                    </p>
+                                    <p class="text-gray-800">
+                                        {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}</p>
                                 </div>
 
                                 <div>
@@ -371,8 +380,8 @@
 
                         {{-- FOOTER --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
-                            <button @click="openDetail = null" 
-                                    class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
+                            <button @click="openDetail = null"
+                                class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
                                 Tutup
                             </button>
                         </div>
@@ -384,9 +393,13 @@
         @endif
 
         <style>
-            [x-cloak] { display: none !important; }
+            [x-cloak] {
+                display: none !important;
+            }
         </style>
-
+        <div class="mt-6 flex justify-center">
+            {{ $data->links() }}
+        </div>
     </div>
 @endsection
 ```

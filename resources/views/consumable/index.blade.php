@@ -162,7 +162,6 @@
         </table>
     </div>
 
-    {{-- ... MODAL TAMBAH, PREVIEW, EDIT BIARKAN APA ADANYA ... --}}
 
     {{-- ================= MODAL TAMBAH ================= --}}
     <div x-show="add" x-cloak class="modal">

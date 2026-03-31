@@ -413,7 +413,7 @@
                     document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                     index++;
                 }
-
+                
                 selected.checked = false;
                 row.querySelector('.qty-input').value = 1;
             });
