@@ -287,6 +287,10 @@
                     <input type="text" name="serial_number" placeholder="No Seri"
                         class="tools-modal-input w-full bg-white border border-gray-300 rounded-xl px-5 py-3 shadow-[0_4px_10px_rgba(0,0,0,0.08)] focus:ring-2 focus:ring-cyan-500 focus:outline-none transition">
 
+                    @error('serial_number')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+
                     <input type="file" name="image"
                         class="tools-modal-file bg-[#e6e6e6] border border-gray-400 rounded-lg px-4 py-2 shadow-sm cursor-pointer">
                 </div>
@@ -839,6 +843,10 @@
     </style>
 
 
+    @php
+    $hasErrors = $errors->any();
+    @endphp
+
     {{-- ================= SCRIPT ================= --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -941,6 +949,20 @@
                     closeEdit();
                 }
             });
+
+            setTimeout(() => {
+                document.querySelectorAll('[class*="bg-green"], [class*="bg-red"]').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }, 3000);
+
+            const hasErrors = @json($errors->any());
+
+            if (hasErrors) {
+                const modal = document.getElementById('tambahBarangModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
 
         });
     </script>

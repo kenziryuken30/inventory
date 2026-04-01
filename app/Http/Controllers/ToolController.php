@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class ToolController extends Controller
 {
-   
+
     public function index(Request $request)
     {
         $query = InvSerialNumber::with([
@@ -23,10 +23,10 @@ class ToolController extends Controller
 
         if ($request->search) {
             $query->where(function ($q) use ($request) {
-                $q->     where('serial_number', 'like', '%' . $request->search . '%')
-                  ->orWhereHas('toolkit', function ($qt) use ($request) {
-                      $qt->where('toolkit_name', 'like', '%' . $request->search . '%');
-                  });
+                $q->where('serial_number', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('toolkit', function ($qt) use ($request) {
+                        $qt->where('toolkit_name', 'like', '%' . $request->search . '%');
+                    });
             });
         }
 
@@ -50,6 +50,8 @@ class ToolController extends Controller
             'category_id'   => 'required',
             'serial_number' => 'required|unique:inv_serial_number,serial_number',
             'image'         => 'nullable|image|max:2048',
+        ], [
+            'serial_number.unique' => 'Nomor seri sudah terdaftar!',
         ]);
 
         $imagePath = null;
@@ -82,40 +84,50 @@ class ToolController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $tool = InvSerialNumber::with('toolkit')->findOrFail($id);
+    {
+        $tool = InvSerialNumber::with('toolkit')->findOrFail($id);
 
-    // Update data toolkit
-    $tool->toolkit->update([
-        'toolkit_name' => $request->toolkit_name,
-        'category_id'  => $request->category_id,
-    ]);
+        $request->validate([
+            'toolkit_name'  => 'required|string|max:255',
+            'category_id'   => 'required',
+            'serial_number' => 'required|unique:inv_serial_number,serial_number,' . $id,
+        ], [
+            'serial_number.unique' => 'Nomor seri sudah digunakan!',
+        ]);
 
-    // Update serial
-    $tool->update([
-        'serial_number' => $request->serial_number,
-    ]);
+        // Update data toolkit
+        $tool->toolkit->update([
+            'toolkit_name' => $request->toolkit_name,
+            'category_id'  => $request->category_id,
+        ]);
 
-    // Update image jika ada
-    if ($request->hasFile('image')) {
+        // Update serial
+        $tool->update([
+            'serial_number' => $request->serial_number,
+        ]);
 
-        if ($tool->toolkit->image &&
-            Storage::disk('public')->exists($tool->toolkit->image)) {
+        // Update image jika ada
+        if ($request->hasFile('image')) {
 
-            Storage::disk('public')->delete($tool->toolkit->image);
+            if (
+                $tool->toolkit->image &&
+                Storage::disk('public')->exists($tool->toolkit->image)
+            ) {
+
+                Storage::disk('public')->delete($tool->toolkit->image);
+            }
+
+            $path = $request->file('image')
+                ->store('tools', 'public');
+
+            $tool->toolkit->update([
+                'image' => $path
+            ]);
         }
 
-        $path = $request->file('image')
-                        ->store('tools', 'public');
-
-        $tool->toolkit->update([
-            'image' => $path
-        ]);
+        return redirect()->route('tools.index')
+            ->with('success', 'Barang berhasil diupdate');
     }
-
-    return redirect()->route('tools.index')
-        ->with('success', 'Barang berhasil diupdate');
-}
 
 
     public function destroy($id)
@@ -141,27 +153,25 @@ class ToolController extends Controller
             ->with('success', 'Barang berhasil dihapus');
     }
 
-   public function finishMaintenance($id)
-{
-    $serial = InvSerialNumber::findOrFail($id);
+    public function finishMaintenance($id)
+    {
+        $serial = InvSerialNumber::findOrFail($id);
 
-    DB::transaction(function () use ($serial) {
+        DB::transaction(function () use ($serial) {
 
-        $serial->update([
-            'status' => 'TERSEDIA'
-        ]);
+            $serial->update([
+                'status' => 'TERSEDIA'
+            ]);
 
-        DB::table('inv_tool_condition_logs')->insert([
-            'serial_id'  => $serial->id,
-            'condition'  => 'baik',
-            'note'       => 'Maintenance selesai',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    });
+            DB::table('inv_tool_condition_logs')->insert([
+                'serial_id'  => $serial->id,
+                'condition'  => 'baik',
+                'notes'       => 'Maintenance selesai',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
 
-    return back()->with('success', 'Maintenance selesai');
-}
-
-
+        return back()->with('success', 'Maintenance selesai');
+    }
 }
