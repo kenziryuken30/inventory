@@ -281,7 +281,7 @@
                     <li x-data="{ open: false }">
                         <button @click="open = !open" class="menu-item w-full flex justify-between items-center px-4 py-3 rounded-lg">
                             <div class="flex items-center gap-4">
-                                <i class="ph ph-arrows-left-right text-2xl"></i>
+                                <i class="ph ph-shopping-cart text-2xl"></i>
                                 <span x-show="sidebarOpen">Transaksi</span>
                             </div>
                             <i x-show="sidebarOpen" class="ph ph-caret-down text-sm transition-transform" :class="open ? 'rotate-180' : ''"></i>
@@ -304,6 +304,13 @@
                             <li><a href="{{ route('laporan.tools.transaksi') }}" class="block px-4 py-2 rounded hover:bg-white/60 text-sm font-normal">Laporan Tools</a></li>
                             <li><a href="{{ route('laporan.consumable.transaksi') }}" class="block px-4 py-2 rounded hover:bg-white/60 text-sm font-normal">Laporan Consumable</a></li>
                         </ul>
+                    </li>
+
+                    <li>
+                        <a href="#" class="menu-item flex items-center gap-4 px-4 py-3 rounded-lg whitespace-nowrap">
+                            <i class="ph ph-squares-four text-2xl"></i>
+                            <span x-show="sidebarOpen">Kategory</span>
+                        </a>
                     </li>
 
                 </ul>
