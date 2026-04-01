@@ -10,11 +10,6 @@
                 <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Laporan Transaksi Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Rekap data pengeluaran dan pengembalian barang consumable</p>
             </div>
-
-            {{-- Tombol Kembali bisa ditambahkan di sini jika perlu, mengikuti contoh --}}
-            {{-- <a href="{{ url()->previous() }}"
-                class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition">←
-                Kembali</a> --}}
         </div>
 
 
@@ -51,20 +46,18 @@
                 </button>
 
                 <a href="{{ route('laporan.consumable.transaksi', ['type' => $type]) }}"
-                    class="bg-red-500 text-white px-4 py-2.5 rounded-xl shadow-sm hover:bg-red-600 transition text-sm font-semibold">
+                    class="bg-white/20 border border-white/40 text-white px-4 py-2.5 rounded-xl hover:bg-white/30 transition text-sm font-medium">
                     Reset
                 </a>
 
-                {{-- EXPORT PDF --}}
                 <a href="{{ route('laporan.consumable.export.pdf', request()->all()) }}"
-                    class="bg-gray-800 text-white px-4 py-2.5 rounded-xl shadow-sm hover:bg-gray-900 transition text-sm font-semibold">
-                    📄 PDF
+                    class="bg-white/20 border border-white/40 text-white px-4 py-2.5 rounded-xl hover:bg-white/30 transition text-sm font-medium">
+                    PDF
                 </a>
 
-                {{-- EXPORT EXCEL --}}
                 <a href="{{ route('laporan.consumable.export.excel', request()->all()) }}"
-                    class="bg-green-600 text-white px-4 py-2.5 rounded-xl shadow-sm hover:bg-green-700 transition text-sm font-semibold">
-                    📊 Excel
+                    class="bg-white/20 border border-white/40 text-white px-4 py-2.5 rounded-xl hover:bg-white/30 transition text-sm font-medium">
+                    Excel
                 </a>
 
             </div>
@@ -72,7 +65,7 @@
 
 
         {{-- ================= TOGGLE ================= --}}
-        <div class="flex items-center gap-3 mb-6">
+        <div class="flex items-center gap-4 mb-6">
 
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
 
@@ -87,9 +80,9 @@
                 </a>
             </div>
 
-            <div class="px-4 py-2 bg-white rounded-xl shadow text-sm font-medium text-gray-700">
+            <div class="text-sm text-gray-500">
                 Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $totalTransaksi }}</span>
-            </div>  
+            </div>
 
         </div>
 
@@ -101,7 +94,6 @@
 
                 <table class="min-w-full text-sm text-gray-700">
 
-                    {{-- Header dengan Gradasi --}}
                     <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                         <tr>
@@ -129,7 +121,6 @@
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
 
-                                {{-- ================= KODE ================= --}}
                                 <td class="py-4 px-6 font-bold text-[#1CA7B6]">
                                     @if($type == 'pengeluaran')
                                         {{ $row->transaction_code }}
@@ -138,7 +129,6 @@
                                     @endif
                                 </td>
 
-                                {{-- ================= TANGGAL ================= --}}
                                 <td class="py-4 px-6 text-gray-700">
                                     @if($type == 'pengeluaran')
                                         {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
@@ -147,7 +137,6 @@
                                     @endif
                                 </td>
 
-                                {{-- ================= BORROWER ================= --}}
                                 <td class="py-4 px-6 text-gray-700">
                                     @if($type == 'pengeluaran')
                                         {{ $row->borrower_name }}
@@ -156,7 +145,6 @@
                                     @endif
                                 </td>
 
-                                {{-- ================= CONSUMABLE ================= --}}
                                 <td class="py-4 px-6 text-gray-700">
                                     @if($type == 'pengeluaran')
                                         @foreach($row->items as $item)
@@ -167,9 +155,7 @@
                                     @endif
                                 </td>
 
-                                {{-- ================= JUMLAH ================= --}}
                                 <td class="py-4 px-6 text-center font-bold text-[#1CA7B6]">
-
                                     @if($type == 'pengeluaran')
                                         {{ $row->items->sum('qty') }}
                                     @else
@@ -177,7 +163,6 @@
                                     @endif
                                 </td>
 
-                                {{-- ================= DETAIL ================= --}}
                                 @if($type == 'pengeluaran')
                                     <td class="py-4 px-6 text-center">
                                         <button @click="openDetail = {{ $row->id }}"
@@ -225,7 +210,6 @@
 
                     <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
-                        {{-- HEADER MODAL --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                             <div>
@@ -236,7 +220,6 @@
                         </div>
 
                         <div class="p-6 overflow-auto flex-1 bg-gray-50">
-                            {{-- INFO GRID --}}
                             <div class="grid grid-cols-2 gap-6 text-sm mb-6">
 
                                 <div>
@@ -273,7 +256,6 @@
 
                             </div>
 
-                            {{-- TABLE ITEM --}}
                             <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                                 <table class="w-full text-sm">
 
@@ -300,7 +282,6 @@
                             </div>
                         </div>
 
-                        {{-- FOOTER --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
@@ -324,7 +305,6 @@
 
                     <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
-                        {{-- HEADER MODAL --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                             <div>
@@ -334,7 +314,6 @@
                         </div>
 
                         <div class="p-6 overflow-auto flex-1 bg-gray-50">
-                            {{-- INFO --}}
                             <div class="grid grid-cols-2 gap-6 text-sm mb-4">
 
                                 <div>
@@ -343,8 +322,7 @@
                                 </div>
 
                                 <div>
-                                    <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian
-                                    </p>
+                                    <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian</p>
                                     <p class="text-gray-800">
                                         {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}</p>
                                 </div>
@@ -369,7 +347,6 @@
                             </div>
                         </div>
 
-                        {{-- FOOTER --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
@@ -393,4 +370,3 @@
         </div>
     </div>
 @endsection
-```
