@@ -244,8 +244,6 @@
                     </table>
                 </div>
             </div>
-
-            {{-- FOOTER --}}
             <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                 <button @click="openDetail = null"
                     class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
@@ -256,7 +254,6 @@
         </div>
     </div>
     @endforeach
-
 
     {{-- ========================= --}}
     {{-- TABEL PENGEMBALIAN --}}

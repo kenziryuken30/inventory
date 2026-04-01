@@ -12,13 +12,17 @@
     {{-- ALERT --}}
     @if (session('success'))
     <div class="mb-4 px-4 py-3 rounded-lg bg-green-50 text-green-700 border border-green-200 flex items-center gap-2">
-        <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         {{ session('success') }}
     </div>
     @endif
     @if (session('error'))
     <div class="mb-4 px-4 py-3 rounded-lg bg-red-50 text-red-700 border border-red-200 flex items-center gap-2">
-        <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         {{ session('error') }}
     </div>
     @endif
@@ -32,7 +36,9 @@
                 class="tools-header-form">
 
                 <div class="tools-search-wrap relative">
-                    <svg class="tools-search-icon absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="tools-search-icon absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
 
                     <input type="text"
                         name="search"
@@ -73,7 +79,9 @@
             <button type="button"
                 id="openTambahBarang"
                 class="tools-add-btn">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
                 Tambah Barang
             </button>
 
@@ -160,13 +168,12 @@
                                         class="tools-icon-btn tools-icon-done"
                                         title="Selesai Maintenance">
                                         <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </button>
                                 </form>
                                 @endif
 
-                                {{-- Tombol Edit dengan Icon Pensil saja --}}
                                 <button type="button"
                                     class="editBtn tools-icon-btn tools-icon-edit"
                                     data-id="{{ $tool->id }}"
@@ -176,10 +183,22 @@
                                     data-image="{{ $tool->toolkit->image }}"
                                     title="Edit Barang">
                                     <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
                                     </svg>
                                 </button>
 
+                                @if (strtolower($tool->status) == 'dipinjam')
+                                <button
+                                    type="button"
+                                    onclick="alert('Barang sedang dipinjam, tidak bisa dihapus!')"
+                                    class="tools-icon-btn tools-icon-delete opacity-40 cursor-not-allowed"
+                                    title="Barang sedang dipinjam">
+                                    <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M14.74 9l-.346 9m-4.788 0L9.26 9" />
+                                    </svg>
+                                </button>
+                                @else
                                 <form action="{{ route('tools.destroy', $tool->id) }}"
                                     method="POST"
                                     onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
@@ -189,10 +208,12 @@
                                         class="tools-icon-btn tools-icon-delete"
                                         title="Hapus Barang">
                                         <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-7 0h8l-1 13a2 2 0 01-2 2H11a2 2 0 01-2-2L8 7z" />
                                         </svg>
                                     </button>
                                 </form>
+                                @endif
 
                             </div>
                         </td>
@@ -329,7 +350,6 @@
         </div>
     </div>
 
-    {{-- ================= IMAGE PREVIEW ================= --}}
     <div id="imagePreviewModal"
         class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[999]">
         <div class="relative">
@@ -338,21 +358,15 @@
         </div>
     </div>
 
-
-    {{-- ================= GOOGLE FONT ================= --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    {{-- ================= STYLE ================= --}}
     <style>
         .max-w-7xl {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
-        /* ============================
-           JUDUL HALAMAN
-        =========================== */
         .tools-page-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 26px;
@@ -372,9 +386,6 @@
             line-height: 1.4;
         }
 
-        /* ===========================
-           HEADER BAR
-        =========================== */
         .tools-header-bar {
             background: linear-gradient(180deg, #5fd0df 0%, #22a8b8 100%);
             padding: 0;
@@ -397,7 +408,9 @@
             min-width: 0;
         }
 
-        .tools-search-wrap { flex: 0 0 280px; }
+        .tools-search-wrap {
+            flex: 0 0 280px;
+        }
 
         .tools-search-input {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -420,9 +433,14 @@
             box-shadow: 0 2px 12px rgba(255, 255, 255, 0.3);
         }
 
-        .tools-search-input::placeholder { color: #9ca3af; font-weight: 400; }
+        .tools-search-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
 
-        .tools-filter-wrap { flex: 0 0 180px; }
+        .tools-filter-wrap {
+            flex: 0 0 180px;
+        }
 
         .tools-filter-select {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -474,11 +492,10 @@
             transform: translateY(-1px);
         }
 
-        .tools-add-btn svg { flex-shrink: 0; }
+        .tools-add-btn svg {
+            flex-shrink: 0;
+        }
 
-        /* ===========================
-           TABLE — THEAD
-        =========================== */
         .tools-thead-row {
             background: linear-gradient(180deg, #5fd0df 0%, #1ca7b6 100%);
         }
@@ -496,23 +513,45 @@
             line-height: 1;
         }
 
-        .tools-th-foto     { width: 80px;  text-align: center; }
-        .tools-th-nama     { text-align: left;  padding-left: 24px; }
-        .tools-th-kategori { text-align: center; }
-        .tools-th-seri     { text-align: center; }
-        .tools-th-status   { text-align: center; }
-        .tools-th-kondisi  { text-align: center; }
-        .tools-th-aksi     { width: 110px; text-align: center; }
+        .tools-th-foto {
+            width: 80px;
+            text-align: center;
+        }
 
-        /* ===========================
-           TABLE — BODY
-        =========================== */
+        .tools-th-nama {
+            text-align: left;
+            padding-left: 24px;
+        }
+
+        .tools-th-kategori {
+            text-align: center;
+        }
+
+        .tools-th-seri {
+            text-align: center;
+        }
+
+        .tools-th-status {
+            text-align: center;
+        }
+
+        .tools-th-kondisi {
+            text-align: center;
+        }
+
+        .tools-th-aksi {
+            width: 110px;
+            text-align: center;
+        }
+
         .tools-row {
             background: #ffffff;
             transition: background 0.15s ease;
         }
 
-        .tools-row:hover { background: #f0fafa; }
+        .tools-row:hover {
+            background: #f0fafa;
+        }
 
         .tools-row td {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -546,9 +585,6 @@
             vertical-align: middle;
         }
 
-        /* ===========================
-           IMAGE
-        =========================== */
         .tools-img {
             width: 46px;
             height: 46px;
@@ -564,9 +600,6 @@
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
         }
 
-        /* ===========================
-           BADGES
-        =========================== */
         .tools-badge {
             font-family: 'Plus Jakarta Sans', sans-serif;
             display: inline-flex;
@@ -581,7 +614,9 @@
             transition: transform 0.15s ease;
         }
 
-        .tools-badge:hover { transform: scale(1.05); }
+        .tools-badge:hover {
+            transform: scale(1.05);
+        }
 
         .tools-badge-category {
             background: #f1f5f9;
@@ -592,17 +627,39 @@
             font-weight: 500;
         }
 
-        .tools-badge-tersedia { background: #dcfce7; color: #15803d; }
-        .tools-badge-dipinjam { background: #dbeafe; color: #1d4ed8; }
-        .tools-badge-tidak    { background: #fef3c7; color: #92400e; }
+        .tools-badge-tersedia {
+            background: #dcfce7;
+            color: #15803d;
+        }
 
-        .tools-kondisi-baik  { border: 1.5px solid #4ade80; color: #15803d; background: #f0fdf4; }
-        .tools-kondisi-rusak { border: 1.5px solid #f87171; color: #b91c1c; background: #fef2f2; }
-        .tools-kondisi-maint { border: 1.5px solid #a1a1aa; color: #52525b; background: #f4f4f5; }
+        .tools-badge-dipinjam {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
 
-        /* ===========================
-           ACTION ICON BUTTONS — SVG
-        =========================== */
+        .tools-badge-tidak {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .tools-kondisi-baik {
+            border: 1.5px solid #4ade80;
+            color: #15803d;
+            background: #f0fdf4;
+        }
+
+        .tools-kondisi-rusak {
+            border: 1.5px solid #f87171;
+            color: #b91c1c;
+            background: #fef2f2;
+        }
+
+        .tools-kondisi-maint {
+            border: 1.5px solid #a1a1aa;
+            color: #52525b;
+            background: #f4f4f5;
+        }
+
         .tools-icon-btn {
             display: inline-flex;
             align-items: center;
@@ -620,7 +677,6 @@
             display: block;
         }
 
-        /* — Selesai Maintenance — */
         .tools-icon-done {
             color: #22c55e;
             background: #f0fdf4;
@@ -632,7 +688,6 @@
             transform: scale(1.1);
         }
 
-        /* — Edit — */
         .tools-icon-edit {
             color: #6b7280;
             background: #f9fafb;
@@ -644,7 +699,6 @@
             transform: scale(1.1);
         }
 
-        /* — Hapus — */
         .tools-icon-delete {
             color: #6b7280;
             background: #f9fafb;
@@ -656,9 +710,6 @@
             transform: scale(1.1);
         }
 
-        /* ===========================
-           MODAL
-        =========================== */
         .tools-modal-box {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: linear-gradient(180deg, #f7f7f7 0%, #eeeeee 100%) !important;
@@ -667,8 +718,15 @@
         }
 
         @keyframes toolsModalIn {
-            from { opacity: 0; transform: translateY(-14px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(-14px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .tools-modal-title {
@@ -678,8 +736,13 @@
             color: #1CA7B6;
         }
 
-        .tools-modal-close { transition: transform 0.15s ease; }
-        .tools-modal-close:hover { transform: scale(1.2); }
+        .tools-modal-close {
+            transition: transform 0.15s ease;
+        }
+
+        .tools-modal-close:hover {
+            transform: scale(1.2);
+        }
 
         .tools-modal-input {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -691,10 +754,13 @@
 
         .tools-modal-input:focus {
             border-color: #3fb2c8 !important;
-            box-shadow: 0 0 0 3px rgba(63,178,200,0.15) !important;
+            box-shadow: 0 0 0 3px rgba(63, 178, 200, 0.15) !important;
         }
 
-        .tools-modal-input::placeholder { font-weight: 400; color: #9ca3af; }
+        .tools-modal-input::placeholder {
+            font-weight: 400;
+            color: #9ca3af;
+        }
 
         .tools-modal-file {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -709,7 +775,10 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-        .tools-modal-btn-cancel:hover { background: #c5c5c5 !important; }
+
+        .tools-modal-btn-cancel:hover {
+            background: #c5c5c5 !important;
+        }
 
         .tools-modal-btn-submit {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -718,25 +787,33 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-        .tools-modal-btn-submit:hover { background: #cbcbcb !important; }
 
-        /* ===========================
-           SHADOW & SCROLLBAR
-        =========================== */
-        .tools-shadow { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); }
+        .tools-modal-btn-submit:hover {
+            background: #cbcbcb !important;
+        }
+
+        .tools-shadow {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
 
         .overflow-x-auto {
             scrollbar-width: thin;
             scrollbar-color: #cbd5e1 transparent;
         }
 
-        .overflow-x-auto::-webkit-scrollbar { height: 5px; }
-        .overflow-x-auto::-webkit-scrollbar-track { background: transparent; }
-        .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+        .overflow-x-auto::-webkit-scrollbar {
+            height: 5px;
+        }
 
-        /* ===========================
-           RESPONSIVE
-        =========================== */
+        .overflow-x-auto::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+
         @media (max-width: 767px) {
             .tools-header-inner {
                 flex-direction: column;
@@ -751,9 +828,13 @@
             }
 
             .tools-search-wrap,
-            .tools-filter-wrap { flex: 1 1 100%; }
+            .tools-filter-wrap {
+                flex: 1 1 100%;
+            }
 
-            .tools-add-btn { width: 100%; }
+            .tools-add-btn {
+                width: 100%;
+            }
         }
     </style>
 

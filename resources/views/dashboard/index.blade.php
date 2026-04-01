@@ -103,7 +103,7 @@
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
             bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
-                <p class="text-[11px] sm:text-sm opacity-90 leading-tight">Total Barang</p>
+                <p class="text-[11px] sm:text-sm opacity-90 leading-tight">Total Tools</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight">{{ $totalBarang }}</p>
                 <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">Semua item dalam inventory</p>
             </div>
@@ -119,9 +119,9 @@
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
             bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
-                <p class="text-[11px] sm:text-sm opacity-90 leading-tight">Alat Tersedia</p>
+                <p class="text-[11px] sm:text-sm opacity-90 leading-tight">Tools Tersedia</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight">{{ $alatTersedia }}</p>
-                <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari {{ $totalBarang }} total alat</p>
+                <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari {{ $totalBarang }} total tools</p>
             </div>
             <div class="ml-2 sm:ml-3 md:ml-4 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-12 lg:h-12 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -134,9 +134,9 @@
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
             bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
-                <p class="text-[11px] sm:text-sm opacity-90 leading-tight">Alat Di Pinjam</p>
+                <p class="text-[11px] sm:text-sm opacity-90 leading-tight">Tools Di Pinjam</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight">{{ $alatDipinjam }}</p>
-                <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari {{ $totalBarang }} total alat</p>
+                <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari {{ $totalBarang }} total tools</p>
             </div>
             <div class="ml-2 sm:ml-3 md:ml-4 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-12 lg:h-12 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
