@@ -58,7 +58,7 @@ class ReportConsumableController extends Controller
         $query->latest();
 
         return $isExport
-            ? $query->get() 
+            ? $query->get()
             : $query->paginate(10)->withQueryString();
     }
 
@@ -67,9 +67,24 @@ class ReportConsumableController extends Controller
     {
         $type = $request->get('type', 'pengeluaran');
 
+        $allData = $this->getData($request, $type, true);
+
         $data = $this->getData($request, $type);
 
-        return view('laporan.consumable.transaksi', compact('data', 'type'));
+        if ($type == 'pengeluaran') {
+            $totalItems = $allData->flatMap->items->sum('qty');
+        } else {
+            $totalItems = $allData->sum('qty_return');
+        }
+
+        $totalTransaksi = $allData->count();
+
+        return view('laporan.consumable.transaksi', compact(
+            'data',
+            'type',
+            'totalItems',
+            'totalTransaksi'
+        ));
     }
 
 

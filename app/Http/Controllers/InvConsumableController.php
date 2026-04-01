@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\InvConsumable;
 use App\Models\InvCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+
 
 class InvConsumableController extends Controller
 {
@@ -13,7 +15,7 @@ class InvConsumableController extends Controller
     {
         $consumables = InvConsumable::with('category')
             ->when($request->search, function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->search.'%');
+                $q->where('name', 'like', '%' . $request->search . '%');
             })
             ->latest()
             ->get();
@@ -23,7 +25,7 @@ class InvConsumableController extends Controller
         return view('consumable.index', compact('consumables', 'categories'));
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required',
@@ -65,7 +67,7 @@ class InvConsumableController extends Controller
             if ($item->image) {
                 Storage::disk('public')->delete($item->image);
             }
-            $data['image'] = $request->file('image')->store('consumables','public');
+            $data['image'] = $request->file('image')->store('consumables', 'public');
         }
 
         $item->update($data);
@@ -84,5 +86,18 @@ class InvConsumableController extends Controller
         $item->delete();
 
         return back();
+    }
+
+    public function restock(Request $request, $id)
+    {
+        $request->validate([
+            'qty' => 'required|integer|min:1'
+        ]);
+
+        $item = InvConsumable::findOrFail($id);
+        $item->stock += $request->qty;
+        $item->save();
+
+        return back()->with('success', 'Stok berhasil ditambah');
     }
 }

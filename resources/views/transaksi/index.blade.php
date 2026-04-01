@@ -37,7 +37,7 @@
             <div class="p-4 rounded-2xl shadow-md flex flex-wrap items-center gap-3"
                  style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
 
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Cari alat atau karyawan..."
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Cari Barang atau Karyawan..."
                     class="flex-1 min-w-[200px] bg-white border-0 rounded-xl shadow-inner px-4 py-2.5 text-sm focus:ring-2 focus:ring-white focus:outline-none">
 
                 <span class="text-white font-semibold text-sm">Tanggal</span>
@@ -81,7 +81,7 @@
                         <th class="py-4 px-6 font-semibold text-left">Consumable</th>
                         <th class="py-4 px-6 font-semibold text-center">Minta</th>
                         <th class="py-4 px-6 font-semibold text-center">Kembali</th>
-                        <th class="py-4 px-6 font-semibold text-center">Sisa</th>
+                        <th class="py-4 px-6 font-semibold text-center">Terpakai</th>
                         <th class="py-4 px-6 font-semibold text-center">Aksi</th>
 
                     </tr>

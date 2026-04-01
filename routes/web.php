@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/consumable', [InvConsumableController::class, 'store']);
     Route::put('/consumable/{id}', [InvConsumableController::class, 'update']);
     Route::delete('/consumable/{id}', [InvConsumableController::class, 'destroy']);
+    Route::post('/consumable/{id}/restock', [InvConsumableController::class, 'restock']);
     
     // Transaksi Consumable
     Route::prefix('transaksi')->name('transaksi.')->group(function () {
@@ -103,3 +104,5 @@ Route::get('/laporan/tools/export-pdf',
 Route::get('/laporan/tools/export-excel',
     [ReportToolController::class,'exportExcel'])
     ->name('laporan.tools.export.excel');
+
+    

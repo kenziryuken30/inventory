@@ -9,6 +9,9 @@ class InvConsumable extends Model
 {
     protected $table = 'inv_consumables';
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     protected $fillable = [
         'name',
         'category_id',

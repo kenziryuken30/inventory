@@ -26,8 +26,8 @@
             <input type="hidden" name="type" value="{{ $type }}">
 
             <div class="flex-1 min-w-[200px]">
-                <label class="text-white text-sm font-semibold block mb-1">Nama Peminjam</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peminjam..."
+                <label class="text-white text-sm font-semibold block mb-1">Nama Peminta</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama Peminta..."
                     class="w-full px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:ring-2 focus:ring-white focus:outline-none text-sm">
             </div>
 
@@ -88,17 +88,8 @@
             </div>
 
             <div class="px-4 py-2 bg-white rounded-xl shadow text-sm font-medium text-gray-700">
-                Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $data->count() }}</span>
-            </div>
-
-            <div class="px-4 py-2 bg-white rounded-xl shadow text-sm font-medium text-gray-700">
-                Total Item Diminta :
-                <span class="font-bold text-[#1CA7B6]">
-                    {{ $type == 'pengeluaran'
-        ? $data->getCollection()->flatMap->items->sum('qty')
-        : $data->getCollection()->sum('qty_return') }}
-                </span>
-            </div>
+                Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $totalTransaksi }}</span>
+            </div>  
 
         </div>
 
