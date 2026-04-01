@@ -32,11 +32,11 @@
 
     {{-- ================= FILTER ================= --}}
     <form method="GET" action="{{ route('peminjaman.index') }}"
-        class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-center"
+        class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-center min-h-[80px]"
         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
 
         <div class="relative flex-1 min-w-[200px]">
-            <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Masukan nama peminjam"
+            <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Masukan nama peminjam atau barang"
                 class="w-full bg-white border-0 rounded-xl px-4 py-2.5 pr-8 text-sm shadow-inner focus:ring-2 focus:ring-white focus:outline-none">
 
             {{-- Tombol X Langsung Reset --}}
@@ -73,13 +73,13 @@
             <thead>
                 <tr class="text-white text-xs uppercase tracking-wider"
                     style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                    <th class="py-4 px-6 font-semibold text-center">NO</th>
-                    <th class="py-4 px-6 font-semibold text-left">KODE</th>
-                    <th class="py-4 px-6 font-semibold text-left">TGL PINJAM</th>
-                    <th class="py-4 px-6 font-semibold text-left">KARYAWAN</th>
+                    <th class="py-4 px-6 font-semibold text-center" style="width: 50px;">NO</th>
+                    <th class="py-4 px-6 font-semibold text-left" style="width: 120px;">KODE</th>
+                    <th class="py-4 px-6 font-semibold text-left" style="width: 150px;">TGL PINJAM</th>
+                    <th class="py-4 px-6 font-semibold text-left" style="width: 200px;">KARYAWAN</th>
                     <th class="py-4 px-6 font-semibold text-left">NAMA TOOLS</th>
-                    <th class="py-4 px-6 font-semibold text-left">NO SERI</th>
-                    <th class="py-4 px-6 font-semibold text-center">AKSI</th>
+                    <th class="py-4 px-6 font-semibold text-left" style="width: 150px;">NO SERI</th>
+                    <th class="py-4 px-6 font-semibold text-center" style="width: 180px;">AKSI</th>
                 </tr>
             </thead>
 
@@ -207,7 +207,7 @@
                             {{-- HEADER TABEL GRADASI --}}
                             <thead class="text-white text-xs uppercase tracking-wider"
                                 style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                                <tr>
+                                <tr class="text-white text-xs uppercase tracking-wider" style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                                     <th class="py-3 px-4 text-center w-16 font-semibold">Pilih</th>
                                     <th class="py-3 px-4 text-left font-semibold">Nama Alat</th>
                                     <th class="py-3 px-4 text-left font-semibold">No Seri</th>
@@ -219,29 +219,37 @@
                                 @foreach ($transaction->items->whereNull('return_date') as $item)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-4 py-3 text-center">
-                                        <input type="checkbox" class="w-4 h-4 accent-[#1CA7B6] rounded border-gray-300"
-                                            x-model="selected" value="{{ $item->id }}" name="items[{{ $item->id }}][id]">
+                                        <input type="checkbox"
+                                            class="w-4 h-4 accent-[#1CA7B6]"
+                                            x-model="selected"
+                                            value="{{ $item->id }}"
+                                            name="items[{{ $item->id }}][id]">
                                     </td>
+
+                                    {{-- ✅ FIX DI SINI --}}
                                     <td class="px-4 py-3 font-medium text-gray-800">
-                                        {{ $item->toolkit->toolkit_name }}
+                                        {{ $item->toolkit->toolkit_name ?? '-' }}
                                     </td>
+
+                                    {{-- ✅ FIX DI SINI --}}
                                     <td class="px-4 py-3 text-gray-500 font-mono text-xs">
-                                        {{ $item->serial->serial_number }}
+                                        {{ $item->serial->serial_number ?? '-' }}
                                     </td>
+
                                     <td class="px-4 py-3">
                                         <select name="items[{{ $item->id }}][condition]"
-                                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none"
-                                            :disabled="!selected.includes('{{ $item->id }}')"
-                                            :class="!selected.includes('{{ $item->id }}') ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700'">
+                                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                                            :disabled="!selected.includes('{{ $item->id }}')">
                                             <option value="BAIK">Baik</option>
                                             <option value="MAINTENANCE">Butuh Perbaikan</option>
                                             <option value="RUSAK">Rusak</option>
                                         </select>
                                     </td>
+
                                     <td class="px-4 py-3">
-                                        <input type="text" name="items[{{ $item->id }}][note]"
-                                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none"
-                                            placeholder="Keterangan..."
+                                        <input type="text"
+                                            name="items[{{ $item->id }}][note]"
+                                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
                                             :disabled="!selected.includes('{{ $item->id }}')">
                                     </td>
                                 </tr>

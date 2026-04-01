@@ -101,8 +101,8 @@ Route::get('/laporan/tools/export-pdf',
     [ReportToolController::class,'exportPDF'])
     ->name('laporan.tools.export.pdf');
 
-Route::get('/laporan/tools/export-excel',
-    [ReportToolController::class,'exportExcel'])
+
+Route::get('/laporan/tools/export/excel', [ReportToolController::class, 'exportExcel'])
     ->name('laporan.tools.export.excel');
 
     

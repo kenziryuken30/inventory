@@ -259,6 +259,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
+        let selectedTools = new Set();
+
         // Elements
         const toolsModal = document.getElementById('toolsModal');
         const openToolsBtn = document.getElementById('openToolsBtn');
@@ -279,6 +281,16 @@
             toolsModal.classList.remove('hidden');
             toolsModal.classList.add('flex');
             document.body.style.overflow = 'hidden';
+
+            // 🔥 Hide yang sudah dipilih
+            document.querySelectorAll('.tool-checkbox').forEach(cb => {
+                const row = cb.closest('tr');
+                if (selectedTools.has(cb.value)) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+            });
         }
 
         function closeModal() {
@@ -289,7 +301,16 @@
             document.querySelectorAll('.tool-checkbox').forEach(cb => cb.checked = false);
             if (selectAllCheckbox) selectAllCheckbox.checked = false;
             if (searchInput) searchInput.value = '';
-            modalTable.querySelectorAll('tr').forEach(row => row.style.display = '');
+            modalTable.querySelectorAll('tr').forEach(row => {
+                const checkbox = row.querySelector('.tool-checkbox');
+                if (!checkbox) return;
+
+                if (selectedTools.has(checkbox.value)) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+            });
         }
 
         openToolsBtn?.addEventListener('click', openModal);
@@ -316,8 +337,20 @@
             const keyword = this.value.toLowerCase().trim();
 
             modalTable.querySelectorAll('tr').forEach(row => {
+                const checkbox = row.querySelector('.tool-checkbox');
+                if (!checkbox) return;
+
                 const name = row.dataset.name || '';
-                row.style.display = name.includes(keyword) ? '' : 'none';
+                const id = checkbox.value;
+
+                // 🔥 cek 2 kondisi: search + sudah dipilih
+                if (selectedTools.has(id)) {
+                    row.style.display = 'none';
+                } else if (name.includes(keyword)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
 
@@ -353,6 +386,9 @@
 
             selected.forEach(checkbox => {
                 const id = checkbox.value;
+
+                selectedTools.add(id);
+
                 const name = checkbox.dataset.name;
                 const serial = checkbox.dataset.serial;
                 const image = checkbox.dataset.image;
@@ -405,8 +441,14 @@
 
         // ===== REMOVE ROW =====
         window.removeRow = function(btn) {
+
+            if (!confirm('Yakin ingin menghapus tool ini?')) {
+                return; // batal hapus
+            }
+
             const row = btn.closest('tr');
             const id = row.id.replace('row-', '');
+            selectedTools.delete(id);
 
             // Tampilkan kembali di modal
             const modalRow = document.querySelector(`.tool-checkbox[value="${id}"]`)?.closest('tr');
@@ -415,16 +457,16 @@
             row.remove();
             updateRowNumbers();
 
-            // Tampilkan empty state jika tabel kosong
+            // Empty state kalau kosong
             const tableBody = document.getElementById('tableSelectedTools');
             if (tableBody.querySelectorAll('tr').length === 0) {
                 tableBody.innerHTML = `
-                <tr id="emptyRow">
-                    <td colspan="5" class="py-12 text-center text-gray-400 italic text-sm">
-                        Belum ada tools yang dipilih
-                    </td>
-                </tr>
-            `;
+        <tr id="emptyRow">
+            <td colspan="5" class="py-12 text-center text-gray-400 italic text-sm">
+                Belum ada tools yang dipilih
+            </td>
+        </tr>
+        `;
             }
         };
 
