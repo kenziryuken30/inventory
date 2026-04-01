@@ -307,7 +307,7 @@
                     </li>
 
                     <li>
-                        <a href="#" class="menu-item flex items-center gap-4 px-4 py-3 rounded-lg whitespace-nowrap">
+                        <a href="{{ route('categories.index') }}" class="menu-item flex items-center gap-4 px-4 py-3 rounded-lg whitespace-nowrap">
                             <i class="ph ph-squares-four text-2xl"></i>
                             <span x-show="sidebarOpen">Kategory</span>
                         </a>

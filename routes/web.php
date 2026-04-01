@@ -107,10 +107,10 @@ Route::get('/laporan/tools/export/excel', [ReportToolController::class, 'exportE
     ->name('laporan.tools.export.excel');
 
 Route::prefix('categories')->name('categories.')->group(function () {
-    Route::get('/', [InvCategoryController::class, 'index'])->name('index');
-    Route::get('/create', [InvCategoryController::class, 'create'])->name('create');
-    Route::post('/', [InvCategoryController::class, 'store'])->name('store');
-    Route::get('/{category}/edit', [InvCategoryController::class, 'edit'])->name('edit');
-    Route::put('/{category}', [InvCategoryController::class, 'update'])->name('update');
-    Route::delete('/{category}', [InvCategoryController::class, 'destroy'])->name('destroy');
-});
+        Route::get('/', [InvCategoryController::class, 'index'])->name('index');
+        Route::get('/create', [InvCategoryController::class, 'create'])->name('create');
+        Route::post('/', [InvCategoryController::class, 'store'])->name('store');
+        Route::get('/{category}/edit', [InvCategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category}', [InvCategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [InvCategoryController::class, 'destroy'])->name('destroy');
+    });
