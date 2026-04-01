@@ -14,6 +14,21 @@
         </a>
     </div>
 
+    <div id="notifWrap" class="hidden mb-5">
+        <div id="notifBox"
+            class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+            <div id="notifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+            <p id="notifText" class="text-sm font-medium"></p>
+            <button id="notifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
+        </div>
+    </div>
+
+
     <form method="POST" action="{{ route('peminjaman.store') }}" id="formPeminjaman">
         @csrf
         {{-- Main Card --}}
@@ -275,6 +290,45 @@
         const previewModal = document.getElementById('imagePreviewModal');
         const previewImage = document.getElementById('previewImage');
         const closePreview = document.getElementById('closePreview');
+
+         // ===== NOTIF SYSTEM =====
+            const notifWrap = document.getElementById('notifWrap');
+            const notifBox = document.getElementById('notifBox');
+            const notifIcon = document.getElementById('notifIcon');
+            const notifText = document.getElementById('notifText');
+            const notifBar = document.getElementById('notifBar');
+            const notifClose = document.getElementById('notifClose');
+            let notifTimer = null;
+
+            function showNotif(message, type) {
+                if (notifTimer) clearTimeout(notifTimer);
+                notifWrap.classList.remove('hidden', 'hiding');
+
+                if (type === 'success') {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#34d399';
+                } else {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                    notifBar.style.background = '#f87171';
+                }
+
+                notifText.textContent = message;
+                notifBar.style.transition = 'none';
+                notifBar.style.width = '100%';
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        notifBar.style.transition = 'width 3.5s linear';
+                        notifBar.style.width = '0%';
+                    });
+                });
+
+                notifTimer = setTimeout(() => hideNotif(), 3500);
+            }
 
         // ===== MODAL FUNCTIONS =====
         function openModal() {
