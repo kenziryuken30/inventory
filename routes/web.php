@@ -9,6 +9,7 @@ use App\Http\Controllers\ToolTransactionController;
 use App\Http\Controllers\ConsumableTransactionController;
 use App\Http\Controllers\ReportToolController;
 use App\Http\Controllers\ReportConsumableController;
+use App\Http\Controllers\InvCategoryController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -105,4 +106,11 @@ Route::get('/laporan/tools/export-pdf',
 Route::get('/laporan/tools/export/excel', [ReportToolController::class, 'exportExcel'])
     ->name('laporan.tools.export.excel');
 
-    
+Route::prefix('categories')->name('categories.')->group(function () {
+    Route::get('/', [InvCategoryController::class, 'index'])->name('index');
+    Route::get('/create', [InvCategoryController::class, 'create'])->name('create');
+    Route::post('/', [InvCategoryController::class, 'store'])->name('store');
+    Route::get('/{category}/edit', [InvCategoryController::class, 'edit'])->name('edit');
+    Route::put('/{category}', [InvCategoryController::class, 'update'])->name('update');
+    Route::delete('/{category}', [InvCategoryController::class, 'destroy'])->name('destroy');
+});
