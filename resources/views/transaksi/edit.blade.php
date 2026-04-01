@@ -16,18 +16,20 @@
         </a>
     </div>
 
-    {{-- ================= ALERT ================= --}}
-    @if(session('success'))
-        <div class="mb-4 bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-sm">
-            {{ session('success') }}
+    {{-- ================= NOTIF TOAST ================= --}}
+    <div id="notifWrap" class="hidden mb-5">
+        <div id="notifBox"
+            class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+            <div id="notifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+            <p id="notifText" class="text-sm font-medium"></p>
+            <button id="notifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
         </div>
-    @endif
-
-    @if(session('error'))
-        <div class="mb-4 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm">
-            {{ session('error') }}
-        </div>
-    @endif
+    </div>
 
     {{-- ================= PANEL BESAR ================= --}}
     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 space-y-8">
@@ -289,57 +291,177 @@
         </div>
     </div>
 
+    <style>
+        /* NOTIF */
+        #notifWrap {
+            animation: notifSlideIn 0.3s ease-out;
+        }
+        @keyframes notifSlideIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #notifWrap.hiding {
+            animation: notifSlideOut 0.25s ease-in forwards;
+        }
+        @keyframes notifSlideOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-12px); }
+        }
+        #notifBar {
+            transition: width 3.5s linear;
+        }
+
+        /* TOMBOL HAPUS STATE */
+        .btn-delete-confirm {
+            background: #EF4444 !important;
+            color: white !important;
+            animation: btnShake 0.3s ease-in-out;
+        }
+        @keyframes btnShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+    </style>
 
     {{-- ================= SCRIPT ================= --}}
     <script>
-        let index = {{ $transaction->items->count() }};
-
-        /* ================= UPDATE QTY ================= */
-        function updateQty(input) {
-            const row = input.closest('tr');
-            const qty = parseInt(input.value);
-
-            if (qty <= 0 || isNaN(qty)) {
-                alert("Qty tidak valid");
-                input.value = 1;
-                return;
-            }
-            
-            // Update hidden input for form submission
-            // Pastikan mencari class hidden-qty di dalam row yang sama
-            const hiddenQty = row.querySelector('.hidden-qty');
-            if(hiddenQty) {
-                hiddenQty.value = qty;
-            }
-        }
-
-        /* ================= REMOVE ROW ================= */
-        function removeRow(btn) {
-            const row = btn.closest('tr');
-            const id = row.dataset.id;
-
-            row.remove();
-
-            // Uncheck di modal jika ada
-            const popupCheckbox = document.querySelector(`.pick-consumable[data-id="${id}"]`);
-            if (popupCheckbox) {
-                popupCheckbox.checked = false;
-            }
-
-            refreshNo();
-        }
-
-        function refreshNo() {
-            document.querySelectorAll('#tableConsumables tbody tr')
-                .forEach((row, i) => {
-                    // Cari elemen .no di dalam row
-                    const noTd = row.querySelector('.no');
-                    if(noTd) noTd.innerText = i + 1;
-                });
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
 
+            let index = {{ $transaction->items->count() }};
+            const deleteTimers = {};
+
+            // ================= NOTIF SYSTEM =================
+            const notifWrap = document.getElementById('notifWrap');
+            const notifBox = document.getElementById('notifBox');
+            const notifIcon = document.getElementById('notifIcon');
+            const notifText = document.getElementById('notifText');
+            const notifBar = document.getElementById('notifBar');
+            const notifClose = document.getElementById('notifClose');
+            let notifTimer = null;
+
+            window.showNotif = function (message, type) {
+                if (notifTimer) clearTimeout(notifTimer);
+                notifWrap.classList.remove('hidden', 'hiding');
+
+                if (type === 'success') {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#34d399';
+                } else {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                    notifBar.style.background = '#f87171';
+                }
+
+                notifText.textContent = message;
+                notifBar.style.transition = 'none';
+                notifBar.style.width = '100%';
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        notifBar.style.transition = 'width 3.5s linear';
+                        notifBar.style.width = '0%';
+                    });
+                });
+
+                notifTimer = setTimeout(() => hideNotif(), 3500);
+            };
+
+            function hideNotif() {
+                notifWrap.classList.add('hiding');
+                setTimeout(() => {
+                    notifWrap.classList.add('hidden');
+                    notifWrap.classList.remove('hiding');
+                }, 250);
+            }
+
+            notifClose.addEventListener('click', () => {
+                if (notifTimer) clearTimeout(notifTimer);
+                hideNotif();
+            });
+
+            @if(session('success'))
+                window.showNotif('{{ session("success") }}', 'success');
+            @endif
+            @if(session('error'))
+                window.showNotif('{{ session("error") }}', 'error');
+            @endif
+
+
+            // ================= REFRESH NO =================
+            function refreshNo() {
+                document.querySelectorAll('#tableConsumables tbody tr')
+                    .forEach((row, i) => {
+                        const noTd = row.querySelector('.no');
+                        if(noTd) noTd.innerText = i + 1;
+                    });
+            }
+
+            // ================= UPDATE QTY =================
+            window.updateQty = function (input) {
+                const row = input.closest('tr');
+                const qty = parseInt(input.value);
+
+                if (qty <= 0 || isNaN(qty)) {
+                    window.showNotif("Jumlah tidak valid", "error");
+                    input.value = 1;
+                    return;
+                }
+                
+                const hiddenQty = row.querySelector('.hidden-qty');
+                if(hiddenQty) {
+                    hiddenQty.value = qty;
+                }
+            };
+
+            // ================= REMOVE ROW (2-STEP) =================
+            window.removeRow = function (btn) {
+                const row = btn.closest('tr');
+                const rowId = row.dataset.id;
+
+                // Kalo tombol sudah dalam state konfirmasi → hapus beneran
+                if (btn.dataset.confirming === 'true') {
+                    const itemName = row.querySelector('td:nth-child(3)').textContent.trim();
+
+                    if (deleteTimers[rowId]) {
+                        clearTimeout(deleteTimers[rowId]);
+                        delete deleteTimers[rowId];
+                    }
+
+                    row.remove();
+
+                    // Uncheck di modal jika ada
+                    const popupCheckbox = document.querySelector(`.pick-consumable[data-id="${rowId}"]`);
+                    if (popupCheckbox) {
+                        popupCheckbox.checked = false;
+                    }
+
+                    refreshNo();
+                    window.showNotif(itemName + " berhasil dihapus", "success");
+                    return;
+                }
+
+                // Klik pertama → masuk state konfirmasi
+                btn.dataset.confirming = 'true';
+                btn.classList.add('btn-delete-confirm');
+                btn.textContent = 'Yakin?';
+
+                // Reset setelah 3 detik kalo ga di-klik lagi
+                deleteTimers[rowId] = setTimeout(() => {
+                    if (btn && btn.isConnected) {
+                        btn.dataset.confirming = 'false';
+                        btn.classList.remove('btn-delete-confirm');
+                        btn.textContent = 'Hapus';
+                    }
+                    delete deleteTimers[rowId];
+                }, 3000);
+            };
+
+
+            // ================= MODAL LOGIC =================
             const modal = document.getElementById('consumableModal');
             const openBtn = document.getElementById('openConsumableBtn');
             const closeBtn = document.getElementById('closeConsumableBtn');
@@ -347,7 +469,7 @@
             const addBtn = document.getElementById('btnAddConsumable');
             const searchInput = document.getElementById('searchConsumableModal');
 
-            // ================= OPEN MODAL =================
+            // OPEN MODAL
             if (openBtn && modal) {
                 openBtn.addEventListener('click', function () {
                     modal.classList.remove('hidden');
@@ -355,7 +477,7 @@
                 });
             }
 
-            // ================= CLOSE MODAL =================
+            // CLOSE MODAL
             function closeModal() {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
@@ -370,7 +492,7 @@
                 if (e.target === modal) closeModal();
             });
 
-            // ================= SEARCH =================
+            // SEARCH
             if (searchInput) {
                 searchInput.addEventListener('keyup', function () {
                     let keyword = this.value.toLowerCase();
@@ -381,14 +503,17 @@
                 });
             }
 
-            // ================= ADD CONSUMABLE =================
+            // ADD CONSUMABLE
             addBtn.addEventListener('click', function () {
                 const selectedItems = document.querySelectorAll('.pick-consumable:checked');
 
                 if (selectedItems.length === 0) {
-                    alert("Pilih minimal 1 consumable");
+                    window.showNotif("Pilih minimal 1 consumable", "error");
                     return;
                 }
+
+                let addedCount = 0;
+                let updatedCount = 0;
 
                 selectedItems.forEach(selected => {
                     const rowPopup = selected.closest('tr');
@@ -399,20 +524,23 @@
                     const qty = parseInt(rowPopup.querySelector('.qty-input').value);
 
                     if (qty > stock) {
-                        alert(`Stock ${name} hanya ${stock}`);
+                        window.showNotif("Stock " + name + " hanya tersedia " + stock, "error");
+                        return;
+                    }
+
+                    if (qty <= 0 || isNaN(qty)) {
+                        window.showNotif("Jumlah untuk " + name + " tidak valid", "error");
                         return;
                     }
 
                     const exist = document.querySelector(`#tableConsumables tr[data-id="${id}"]`);
 
                     if (exist) {
-                        // Update qty jika sudah ada
                         exist.querySelector('.qty-input-main').value = qty;
                         const hiddenQtyExist = exist.querySelector('.hidden-qty');
                         if(hiddenQtyExist) hiddenQtyExist.value = qty;
+                        updatedCount++;
                     } else {
-                        // Tambah baris baru
-                        // PERBAIKAN: Pastikan hidden inputs punya name yang benar
                         const html = `
                         <tr data-id="${id}" class="hover:bg-gray-50 transition align-middle border-b border-gray-100">
                             <td class="text-center py-4 px-4 text-gray-600 no font-medium"></td>
@@ -437,6 +565,7 @@
 
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
+                        addedCount++;
                     }
 
                     selected.checked = false; 
@@ -445,6 +574,14 @@
 
                 refreshNo();
                 closeModal();
+
+                if (addedCount > 0 && updatedCount === 0) {
+                    window.showNotif(addedCount + " consumable berhasil ditambahkan", "success");
+                } else if (addedCount > 0 && updatedCount > 0) {
+                    window.showNotif(addedCount + " consumable ditambahkan, " + updatedCount + " diperbarui", "success");
+                } else if (updatedCount > 0 && addedCount === 0) {
+                    window.showNotif(updatedCount + " consumable berhasil diperbarui", "success");
+                }
             });
 
         });

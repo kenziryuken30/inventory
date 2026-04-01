@@ -1,9 +1,9 @@
-
 @extends('layouts.app')
 
 @section('content')
 
-    <div class="relative max-w-7xl mx-auto pb-40" x-data="{ openReturn: null }">
+    <div class="relative max-w-7xl mx-auto pb-40" x-data="{ openReturn: null, deleteConfirm: false, deleteId: null, deleteCode: '' }">
+
 
         {{-- HEADER --}}
         <div class="flex justify-between items-center mb-6">
@@ -30,7 +30,21 @@
 
         </div>
 
-
+        {{-- ================= NOTIF TOAST ================= --}}
+        <div id="notifWrap" class="hidden mb-4">
+            <div id="notifBox"
+                class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+                <div id="notifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+                <p id="notifText" class="text-sm font-medium"></p>
+                <button id="notifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+                <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
+            </div>
+        </div>
+        
         {{-- FILTER --}}
         <form method="GET" action="{{ route('transaksi.index') }}" class="mb-6">
 
@@ -172,15 +186,11 @@
                                             Edit
                                         </a>
 
-                                        <form action="{{ route('transaksi.destroy', $trx->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold text-xs transition">
-                                                Hapus
-                                            </button>
-
-                                        </form>
+                                        <button type="button"
+                                            @click="deleteId = '{{ $trx->id }}'; deleteCode = '{{ $trx->transaction_code }}'; deleteConfirm = true"
+                                            class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold text-xs transition">
+                                            Hapus
+                                        </button>
 
                                         <form action="{{ route('transaksi.confirm', $trx->id) }}" method="POST">
                                             @csrf
@@ -232,6 +242,57 @@
 
         </div>
 
+        {{-- ================= MODAL KONFIRMASI HAPUS ================= --}}
+        <div x-show="deleteConfirm" x-cloak
+            @click.self="deleteConfirm = false"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[1002] p-4">
+
+            <div x-show="deleteConfirm"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-90"
+                class="bg-white w-full max-w-sm rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 text-center"
+                style="font-family: 'Plus Jakarta Sans', sans-serif;">
+
+                <div class="flex justify-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Transaksi?</h3>
+                <p class="text-sm text-gray-500 mb-1">Anda yakin ingin menghapus transaksi</p>
+                <p class="text-sm font-bold text-[#1CA7B6] mb-6" x-text="deleteCode"></p>
+
+                <div class="flex gap-3">
+                    <button @click="deleteConfirm = false"
+                        class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition">
+                        Batal
+                    </button>
+                    <form method="POST" :action="'{{ route('transaksi.index') }}/' + deleteId" class="flex-1">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="w-full px-4 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition">
+                            Ya, Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         {{-- ================= POPUP RETURN ================= --}}
         @foreach($transactions as $trx)
             @if($trx->is_confirm)
@@ -239,8 +300,7 @@
                 <div x-show="openReturn === '{{ $trx->id }}'" 
                      x-cloak 
                      x-data="{ selected: null }"
-                     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                     style="display: none;">
+                     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
 
                     <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -368,11 +428,96 @@
             @endif
         @endforeach
 
-        <style>
-            [x-cloak] { display: none !important; }
-        </style>
         <div class="mt-6 flex justify-center">
             {{ $transactions->links() }}
+        </div>
+
     </div>
+
+    <style>
+        [x-cloak] { display: none !important; }
+
+        #notifWrap {
+            animation: notifSlideIn 0.3s ease-out;
+        }
+        @keyframes notifSlideIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #notifWrap.hiding {
+            animation: notifSlideOut 0.25s ease-in forwards;
+        }
+        @keyframes notifSlideOut {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-12px); }
+        }
+        #notifBar {
+            transition: width 3.5s linear;
+        }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const notifWrap = document.getElementById('notifWrap');
+        const notifBox = document.getElementById('notifBox');
+        const notifIcon = document.getElementById('notifIcon');
+        const notifText = document.getElementById('notifText');
+        const notifBar = document.getElementById('notifBar');
+        const notifClose = document.getElementById('notifClose');
+        let notifTimer = null;
+
+        function showNotif(message, type) {
+            if (notifTimer) clearTimeout(notifTimer);
+            notifWrap.classList.remove('hidden', 'hiding');
+
+            if (type === 'success') {
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                notifBar.style.background = '#34d399';
+            } else {
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                notifBar.style.background = '#f87171';
+            }
+
+            notifText.textContent = message;
+            notifBar.style.transition = 'none';
+            notifBar.style.width = '100%';
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    notifBar.style.transition = 'width 3.5s linear';
+                    notifBar.style.width = '0%';
+                });
+            });
+
+            notifTimer = setTimeout(() => hideNotif(), 3500);
+        }
+
+        function hideNotif() {
+            notifWrap.classList.add('hiding');
+            setTimeout(() => {
+                notifWrap.classList.add('hidden');
+                notifWrap.classList.remove('hiding');
+            }, 250);
+        }
+
+        notifClose.addEventListener('click', () => {
+            if (notifTimer) clearTimeout(notifTimer);
+            hideNotif();
+        });
+
+        @if(session('success'))
+            showNotif('{{ session("success") }}', 'success');
+        @endif
+        @if(session('error'))
+            showNotif('{{ session("error") }}', 'error');
+        @endif
+
+    });
+    </script>
+
 @endsection
-```

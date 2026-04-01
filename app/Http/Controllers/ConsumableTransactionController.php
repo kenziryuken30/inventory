@@ -29,8 +29,8 @@ class ConsumableTransactionController extends Controller
         }
 
         $transactions = $query
-        ->orderByDesc('date')
-        ->paginate(10);
+            ->orderByDesc('date')
+            ->paginate(10);
 
         return view('transaksi.index', compact('transactions'));
     }
@@ -89,7 +89,7 @@ class ConsumableTransactionController extends Controller
         });
 
         return redirect()->route('transaksi.index')
-            ->with('success', 'Transaksi berhasil');
+            ->with('success', 'Permintaan consumable berhasil ditambahkan');
     }
 
     public function returnFull($id)
@@ -97,7 +97,7 @@ class ConsumableTransactionController extends Controller
         $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
         if ($trx->is_confirm) {
-            return back()->with('error', 'Barang sudah dikembalikan sebelumnya');
+            return back()->with('error', 'Transaksi ini sudah dikonfirmasi sebelumnya');
         }
 
         DB::transaction(function () use ($trx) {
@@ -111,7 +111,7 @@ class ConsumableTransactionController extends Controller
             ]);
         });
 
-        return back()->with('success', 'Return berhasil');
+        return back()->with('success', 'Semua consumable berhasil dikembalikan');
     }
 
     public function edit($id)
@@ -196,7 +196,7 @@ class ConsumableTransactionController extends Controller
             $trx->delete();
         });
 
-        return back()->with('success', 'Transaksi dihapus');
+        return back()->with('success', 'Anda telah menghapus transaksi');
     }
 
     public function returnItem(Request $request, $id)
@@ -236,7 +236,7 @@ class ConsumableTransactionController extends Controller
             }
         });
 
-        return back()->with('success', 'Return berhasil');
+        return back()->with('success', 'Pengembalian consumable berhasil diproses');
     }
 
     public function returnProcess(Request $request, $id)
@@ -283,7 +283,7 @@ class ConsumableTransactionController extends Controller
         });
 
         return redirect()->route('transaksi.index')
-            ->with('success', 'Return berhasil');
+            ->with('success', 'Pengembalian consumable berhasil diproses');
     }
 
     public function updateItem(Request $request, $id)
@@ -298,7 +298,7 @@ class ConsumableTransactionController extends Controller
             'qty' => $request->qty
         ]);
 
-        return back()->with('success', 'Qty berhasil diupdate');
+        return back()->with('success', 'Jumlah consumable berhasil diupdate');
     }
 
     public function destroyItem($id)
@@ -307,7 +307,7 @@ class ConsumableTransactionController extends Controller
 
         $item->delete();
 
-        return back()->with('success', 'Item berhasil dihapus');
+        return back()->with('success', 'Item consumable berhasil dihapus');
     }
 
     public function confirm($id)
@@ -390,7 +390,7 @@ class ConsumableTransactionController extends Controller
 
         return redirect()
             ->route('transaksi.index')
-            ->with('success', 'Barang berhasil dikembalikan');
+            ->with('success', 'Consumable berhasil dikembalikan');
     }
 
     public function storeItem(Request $request, $id)
@@ -417,6 +417,6 @@ class ConsumableTransactionController extends Controller
             $consumable->decrement('stock', $request->qty);
         });
 
-        return back()->with('success', 'Consumable berhasil ditambahkan');
+        return back()->with('success', 'Consumable berhasil ditambahkan ke transaksi');
     }
 }

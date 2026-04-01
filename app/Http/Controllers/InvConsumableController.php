@@ -72,7 +72,7 @@ class InvConsumableController extends Controller
 
         $item->update($data);
 
-        return back();
+        return back()->with('success', 'Consumable berhasil diupdate');
     }
 
     public function destroy($id)
@@ -85,7 +85,7 @@ class InvConsumableController extends Controller
 
         $item->delete();
 
-        return back();
+        return back()->with('success', 'Anda telah menghapus barang');
     }
 
     public function restock(Request $request, $id)
