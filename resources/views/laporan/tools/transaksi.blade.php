@@ -85,7 +85,7 @@
             </a>
         </div>
 
-        <div class="px-4 py-2 bg-white rounded-xl shadow text-sm font-medium text-gray-700">
+        <div class="px-4 py-2 shadow text-sm font-medium">
             Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $data->count() }}</span>
         </div>
 
