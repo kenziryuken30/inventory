@@ -269,6 +269,7 @@
 
             <img src="{{ asset('images/kana1.png') }}"
                 class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-60">
+                
 
             <main class="px-3 py-2 sm:px-5 sm:py-3 lg:px-8 lg:pt-3 lg:pb-8">
                 @yield('content')

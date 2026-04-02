@@ -166,7 +166,7 @@ class ToolController extends Controller
             DB::table('inv_tool_condition_logs')->insert([
                 'serial_id'  => $serial->id,
                 'condition'  => 'baik',
-                'notes'       => 'Maintenance selesai',
+                'note'       => 'Maintenance selesai',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
