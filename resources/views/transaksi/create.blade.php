@@ -44,7 +44,6 @@
                         {{-- ROW 1 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                            {{-- Script simpan data employee (aman dari konflik quote HTML) --}}
                             <script>window.empData = @json($employees);</script>
 
                             {{-- Search Employee (Autocomplete) --}}
@@ -72,7 +71,6 @@
                                 <input type="hidden" name="employee_id" :value="selectedId">
                                 <input type="hidden" name="borrower_name" :value="selected">
 
-                                {{-- List hasil pencarian --}}
                                 <div x-show="show && !selected && search.length > 0" x-transition x-cloak
                                     class="absolute z-50 mt-1 w-full bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
 
@@ -140,22 +138,20 @@
                         </button>
                     </div>
 
-                    {{-- Container Tabel (Tanpa Border Kotak, hanya shadow) --}}
                     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
                         <table class="w-full text-sm" id="tableConsumables">
                             <thead>
                                 <tr class="text-white text-xs uppercase tracking-wider"
                                     style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                                    <th class="py-3 px-4 font-semibold text-center w-12">NO</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-16">FOTO</th>
                                     <th class="py-3 px-4 font-semibold text-left">NAMA CONSUMABLE</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-24">JUMLAH</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-24">STOCK</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-32">JUMLAH</th>
                                     <th class="py-3 px-4 font-semibold text-center w-20">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-50">
                                 <tr id="emptyRow">
-                                    <td colspan="5" class="py-10 text-center text-gray-400 italic text-sm">
+                                    <td colspan="4" class="py-10 text-center text-gray-400 italic text-sm">
                                         Belum ada consumable yang dipilih
                                     </td>
                                 </tr>
@@ -183,7 +179,6 @@
             <div @click.away="openModal = false"
                 class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
 
-                {{-- MODAL HEADER --}}
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center text-white"
                     style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                     <h3 class="text-lg font-bold">Consumable Tersedia</h3>
@@ -192,7 +187,6 @@
                 </div>
 
                 <div class="p-6 flex-1 overflow-auto">
-                    {{-- SEARCH INPUT --}}
                     <div class="mb-5">
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -206,7 +200,6 @@
                         </div>
                     </div>
 
-                    {{-- TABLE MODAL --}}
                     <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                         <table id="popupTable" class="w-full text-sm">
                             <thead class="sticky top-0 bg-gray-50">
@@ -263,7 +256,7 @@
                         Batal
                     </button>
 
-                    <button type="button" id="btnAddConsumable" @click="openModal = false"
+                    <button type="button" id="btnAddConsumable"
                         class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,13 +302,11 @@
     </div>
 
     <style>
-        /* Hilangkan garis border pada tabel utama */
         #tableConsumables th,
         #tableConsumables td {
             border: none !important;
         }
 
-        /* Styling shadow dalam input search */
         .shadow-inner {
             box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
         }
@@ -325,21 +316,13 @@
             font-weight: 400;
         }
 
-        /* NOTIF */
         #notifWrap {
             animation: notifSlideIn 0.4s ease-out;
         }
 
         @keyframes notifSlideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(-40px); }
+            to   { opacity: 1; transform: translateX(0); }
         }
 
         #notifWrap.hiding {
@@ -347,15 +330,8 @@
         }
 
         @keyframes notifSlideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateX(60px);
-            }
+            from { opacity: 1; transform: translateX(0); }
+            to   { opacity: 0; transform: translateX(60px); }
         }
 
         #notifBar {
@@ -447,7 +423,6 @@
             // ===== VALIDATION SAVE =====
             btnSave.addEventListener('click', function () {
                 const employeeId = form.querySelector('input[name="employee_id"]');
-
                 const items = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
 
                 if (!employeeId.value) {
@@ -475,6 +450,10 @@
                 const rows = document.querySelectorAll('#popupTable tbody tr.cons-row');
 
                 rows.forEach(row => {
+                    if (row.dataset.added === 'true') {
+                        row.style.display = 'none';
+                        return;
+                    }
                     const nameText = row.dataset.name;
                     row.style.display = nameText.includes(keyword) ? '' : 'none';
                 });
@@ -490,16 +469,7 @@
                 });
             });
 
-            // ===== LOGIC TAMBAH ITEM =====
-            let index = 0;
-
-            function refreshNo() {
-                const rows = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
-                rows.forEach((row, i) => {
-                    row.querySelector('.no-col').innerText = i + 1;
-                });
-            }
-
+            // ===== LOGIC QTY =====
             window.updateQty = function (input) {
                 const row = input.closest('tr');
                 const qty = parseInt(input.value);
@@ -519,7 +489,7 @@
 
             window.removeRow = function (btn) {
                 const row = btn.closest('tr');
-                const itemName = row.querySelector('td:nth-child(3)').textContent.trim();
+                const itemName = row.querySelector('.item-name').textContent.trim();
 
                 rowToDelete = row;
                 deleteItemNameModal.textContent = itemName;
@@ -542,20 +512,32 @@
 
             document.getElementById('confirmDeleteItem').addEventListener('click', function () {
                 if (rowToDelete) {
-                    const itemName = rowToDelete.querySelector('td:nth-child(3)').textContent.trim();
+                    const itemName = rowToDelete.querySelector('.item-name').textContent.trim();
+                    const rowId = rowToDelete.dataset.id;
 
                     rowToDelete.remove();
+
+                    // MUNCULKAN KEMBALI DI MODAL
+                    const modalCheckbox = document.querySelector(`.pick-consumable[data-id="${rowId}"]`);
+                    if (modalCheckbox) {
+                        const modalRow = modalCheckbox.closest('tr');
+                        delete modalRow.dataset.added;
+                        modalRow.style.display = '';
+                    }
 
                     const tbody = document.querySelector('#tableConsumables tbody');
                     if (tbody.querySelectorAll('tr:not(#emptyRow)').length === 0) {
                         tbody.innerHTML = `
                                 <tr id="emptyRow">
-                                    <td colspan="5" class="py-10 text-center text-gray-400 italic text-sm">
+                                    <td colspan="4" class="py-10 text-center text-gray-400 italic text-sm">
                                         Belum ada consumable yang dipilih
                                     </td>
                                 </tr>`;
                     } else {
-                        refreshNo();
+                        const rows = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
+                        rows.forEach((row, i) => {
+                            row.querySelector('.no-col').innerText = i + 1;
+                        });
                     }
 
                     showNotif(itemName + " berhasil dihapus", "success");
@@ -565,22 +547,50 @@
 
 
             // ===== BUTTON TAMBAH DARI MODAL =====
+            let index = 0;
+
             btnAddConsumable.addEventListener('click', function () {
 
                 const selectedItems = document.querySelectorAll('.pick-consumable:checked');
                 if (selectedItems.length === 0) {
                     showNotif("Pilih minimal 1 consumable", "error");
-                    return;
+                    return; 
                 }
 
+                let hasError = false;
+
+                // ================= TAHAP 1: CEK VALIDASI SEMUA DULU =================
+                selectedItems.forEach(selected => {
+                    const row = selected.closest('tr');
+                    const name = selected.dataset.name;
+                    const stock = parseInt(selected.dataset.stock);
+                    const qty = parseInt(row.querySelector('.qty-input').value);
+
+                    if (qty > stock) {
+                        showNotif("Stock " + name + " hanya tersedia " + stock, "error");
+                        hasError = true;
+                    } else if (qty <= 0 || isNaN(qty)) {
+                        showNotif("Jumlah untuk " + name + " tidak valid", "error");
+                        hasError = true;
+                    }
+                });
+
+                // KALAU ADA SALAH SATU YANG ERROR, LANGSUNG STOP! JANGAN MASUKKAN APAPUN KE HALAMAN
+                if (hasError) {
+                    return; 
+                }
+
+                // ================= TAHAP 2: PROSES TAMBAH (BARU JALAN KALAU SEMUA SUDAH BENER) =================
                 const emptyRow = document.getElementById('emptyRow');
                 if (emptyRow) emptyRow.remove();
 
                 let addedCount = 0;
                 let updatedCount = 0;
 
-                selectedItems.forEach(selected => {
+                const existingRows = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
+                let startNo = existingRows.length;
 
+                selectedItems.forEach(selected => {
                     const row = selected.closest('tr');
                     const id = selected.dataset.id;
                     const name = selected.dataset.name;
@@ -588,36 +598,29 @@
                     const image = row.querySelector('img').src;
                     const qty = parseInt(row.querySelector('.qty-input').value);
 
-                    if (qty > stock) {
-                        showNotif("Stock " + name + " hanya tersedia " + stock, "error");
-                        return;
-                    }
-
-                    if (qty <= 0 || isNaN(qty)) {
-                        showNotif("Jumlah untuk " + name + " tidak valid", "error");
-                        return;
-                    }
-
                     const exist = document.querySelector(`#tableConsumables tr[data-id="${id}"]`);
                     if (exist) {
                         exist.querySelector('.qty-input-main').value = qty;
                         exist.querySelector('.hidden-qty').value = qty;
                         updatedCount++;
                     } else {
+                        startNo++;
                         const html = `
                                 <tr data-id="${id}" class="hover:bg-gray-50 transition">
-                                    <td class="text-center py-3 px-4 text-gray-600 no-col font-medium w-12">1</td>
-                                    <td class="text-center py-3 px-4 w-16">
-                                        <img src="${image}"
-                                            class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto">
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[10px] font-bold text-gray-500 bg-gray-100 rounded-md no-col">${startNo}</span>
+                                            <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm flex-shrink-0">
+                                            <span class="font-semibold text-gray-800 item-name">${name}</span>
+                                        </div>
                                     </td>
-                                    <td class="py-3 px-4 font-semibold text-gray-800">${name}</td>
-                                    <td class="text-center py-3 px-4 w-24">
+                                    <td class="text-center py-3 px-4 font-medium text-blue-600">${stock}</td>
+                                    <td class="text-center py-3 px-4 w-32">
                                         <input type="number"
                                             value="${qty}"
                                             min="1"
                                             onchange="updateQty(this)"
-                                            class="w-16 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none">
+                                            class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none">
                                     </td>
                                     <td class="text-center py-3 px-4 w-20">
                                         <button type="button"
@@ -636,13 +639,20 @@
                         addedCount++;
                     }
 
+                    // HAPUS DARI MODAL KARENA SUDAH BERHASIL MASUK DAFTAR
+                    row.dataset.added = 'true';
+                    row.style.display = 'none';
                     selected.checked = false;
                     row.querySelector('.qty-input').value = 1;
                 });
 
                 if (selectAllCheckbox) selectAllCheckbox.checked = false;
 
-                refreshNo();
+                // TUTUP MODAL KARENA SEMUA SUDAH BERHASIL
+                const root = document.querySelector('[x-data]');
+                if (root && window.Alpine) {
+                    Alpine.$data(root).openModal = false;
+                }
 
                 if (addedCount > 0 && updatedCount === 0) {
                     showNotif(addedCount + " consumable berhasil ditambahkan", "success");
@@ -662,4 +672,4 @@
 
         });
     </script>
-@endsection
+@endsection     
