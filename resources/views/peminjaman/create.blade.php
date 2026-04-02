@@ -40,100 +40,112 @@
 
                 <div class="space-y-6">
                     {{-- ROW 1 --}}
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Nama Peminjam <span class="text-red-500">*</span>
-                            </label>
-                            <select name="employee_id" required
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                    <div class="space-y-6">
 
-                                <option value="">-- Pilih Karyawan --</option>
+                        <!-- Nama Peminjam -->
+                        <!-- BARIS ATAS -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                @foreach($employees as $emp)
-                                <option value="{{ $emp->id }}">
-                                    {{ $emp->full_name }}
-                                </option>
-                                @endforeach
-
-                            </select>
+                            <!-- Nama Peminjam -->
                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Nama Peminjam <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="employee_name"
+                                        class="w-full px-4 py-2 border rounded-lg"
+                                        placeholder="Cari nama karyawan...">
+
+                                    <input type="hidden" name="employee_id" id="employee_id">
+
+                                    <div id="employee_suggestions"
+                                        class="absolute left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-md mt-1 max-h-48 overflow-y-auto hidden z-50">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tanggal -->
+                            <div class="justify-self-start">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Tanggal <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="date" value="{{ date('Y-m-d') }}" required
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                    class="w-52 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
                             </div>
 
-                            <div></div>
                         </div>
 
-                        {{-- ROW 2 --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                        <!-- BARIS BAWAH -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+
+                            <!-- Nama Client -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama client</label>
-                                <input type="text" name="client_name" placeholder="Masukan nama klien"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                <input type="text" name="client_name"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
                             </div>
 
+                            <!-- Proyek -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
-                                <input type="text" name="project" placeholder="Masukan Keterangan"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                <input type="text" name="project"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
                             </div>
 
+                            <!-- Keperluan -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
-                                <input type="text" name="purpose" placeholder="Masukan Keperluan"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                                <input type="text" name="purpose"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
                             </div>
+
                         </div>
                     </div>
-                </div>
 
-                {{-- Section Daftar Alat --}}
-                <div class="space-y-0 mt-10">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
-                        <button type="button" id="openToolsBtn"
-                            class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
+                    {{-- Section Daftar Alat --}}
+                    <div class="space-y-0 mt-10">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
+                            <button type="button" id="openToolsBtn"
+                                class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
+                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                + Pilih Tools
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-white text-xs uppercase tracking-wider"
+                                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                        <th class="py-4 px-6 font-semibold text-center">No</th>
+                                        <th class="py-4 px-6 font-semibold text-center">Foto</th>
+                                        <th class="py-4 px-6 font-semibold text-left">Nama Tool</th>
+                                        <th class="py-4 px-6 font-semibold text-center">No Seri</th>
+                                        <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableSelectedTools" class="divide-y divide-gray-100 text-sm">
+                                    <tr id="emptyRow">
+                                        <td colspan="5" class="py-12 text-center text-gray-400 italic">
+                                            Belum ada tools yang dipilih
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- Save Button Row --}}
+                    <div class="pt-8 border-t border-gray-200 flex justify-end">
+                        <button type="submit"
+                            class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                            + Pilih Tools
+                            Save Transaksi
                         </button>
                     </div>
-
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="text-white text-xs uppercase tracking-wider"
-                                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                                    <th class="py-4 px-6 font-semibold text-center">No</th>
-                                    <th class="py-4 px-6 font-semibold text-center">Foto</th>
-                                    <th class="py-4 px-6 font-semibold text-left">Nama Tool</th>
-                                    <th class="py-4 px-6 font-semibold text-center">No Seri</th>
-                                    <th class="py-4 px-6 font-semibold text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableSelectedTools" class="divide-y divide-gray-100 text-sm">
-                                <tr id="emptyRow">
-                                    <td colspan="5" class="py-12 text-center text-gray-400 italic">
-                                        Belum ada tools yang dipilih
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
-
-                {{-- Save Button Row --}}
-                <div class="pt-8 border-t border-gray-200 flex justify-end">
-                    <button type="submit"
-                        class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                        Save Transaksi
-                    </button>
-                </div>
-            </div>
     </form>
 </div>
 
@@ -298,6 +310,56 @@
         const previewModal = document.getElementById('imagePreviewModal');
         const previewImage = document.getElementById('previewImage');
         const closePreview = document.getElementById('closePreview');
+
+        // ===== AUTOCOMPLETE EMPLOYEE FIX =====
+        const employees = @json($employees);
+
+        const inputEmp = document.getElementById('employee_name');
+        const hiddenEmp = document.getElementById('employee_id');
+        const box = document.getElementById('employee_suggestions');
+
+        inputEmp.addEventListener('input', function() {
+            let value = this.value.toLowerCase();
+            box.innerHTML = '';
+
+            if (!value) {
+                box.classList.add('hidden');
+                hiddenEmp.value = '';
+                return;
+            }
+
+            let filtered = employees.filter(emp =>
+                emp.full_name.toLowerCase().includes(value)
+            );
+
+            if (filtered.length === 0) {
+                box.classList.add('hidden');
+                return;
+            }
+
+            box.classList.remove('hidden');
+
+            filtered.forEach(emp => {
+                let item = document.createElement('div');
+                item.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm";
+                item.innerText = emp.full_name;
+
+                item.addEventListener('click', function() {
+                    inputEmp.value = emp.full_name;
+                    hiddenEmp.value = emp.id;
+                    box.classList.add('hidden');
+                });
+
+                box.appendChild(item);
+            });
+        });
+
+        // klik luar
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#employee_name')) {
+                box.classList.add('hidden');
+            }
+        });
 
         // ===== NOTIF SYSTEM =====
         const notifWrap = document.getElementById('notifWrap');
