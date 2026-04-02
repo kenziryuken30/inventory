@@ -22,10 +22,7 @@ class InvCategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
-    public function create()
-    {
-        return view('categories.create');
-    }
+    
 
     public function store(Request $request)
     {
@@ -60,10 +57,6 @@ class InvCategoryController extends Controller
         }
     }
 
-    public function edit(InvCategory $category)
-    {
-        return view('categories.edit', compact('category'));
-    }
 
     public function update(Request $request, InvCategory $category)
     {
