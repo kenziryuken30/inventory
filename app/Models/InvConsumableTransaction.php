@@ -14,6 +14,7 @@ class InvConsumableTransaction extends Model
         'id',
         'transaction_code',
         'borrower_name',
+        'employee_id',
         'client',
         'project',
         'purpose',
@@ -43,5 +44,9 @@ class InvConsumableTransaction extends Model
     public function consumable()
     {
         return $this->belongsTo(InvConsumable::class, 'consumable_id');
+    }
+    public function employee()
+    {
+        return $this->belongsTo(InvEmployee::class, 'employee_id', 'id');
     }
 }

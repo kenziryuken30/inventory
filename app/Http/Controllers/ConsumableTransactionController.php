@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\InvConsumable;
 use App\Models\InvConsumableTransaction;
 use App\Models\InvConsumableTransactionItem;
-
-
+use App\Models\InvEmployee;
 
 class ConsumableTransactionController extends Controller
 {
@@ -39,13 +38,14 @@ class ConsumableTransactionController extends Controller
     {
         return view('transaksi.create', [
             'consumables' => InvConsumable::all(),
+            'employees' => InvEmployee::where('is_exit', 1)->orderBy('full_name')->pluck('full_name', 'id'), 
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'borrower_name' => 'required',
+            'employee_id' => 'required|exists:inv_employee,id', // <-- DIUBAH
             'date' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.consumable_id' => 'required',
@@ -60,9 +60,12 @@ class ConsumableTransactionController extends Controller
                 $transactionCode = $letters . $numbers;
             } while (InvConsumableTransaction::where('transaction_code', $transactionCode)->exists());
 
+            $employee = InvEmployee::find($request->employee_id); 
+
             $trx = InvConsumableTransaction::create([
                 'transaction_code' => $transactionCode,
-                'borrower_name' => $request->borrower_name,
+                'employee_id' => $employee->id,               // <-- DITAMBAH
+                'borrower_name' => $employee->full_name,      // <-- DIUBAH (otomatis keisi nama employee)
                 'client' => $request->client,
                 'project' => $request->project,
                 'purpose' => $request->purpose,
@@ -126,11 +129,11 @@ class ConsumableTransactionController extends Controller
         return view('transaksi.edit', compact('transaction', 'consumables'));
     }
 
-
     public function update(Request $request, $id)
     {
         $request->validate([
-            'borrower_name' => 'required',
+            'employee_id' => 'nullable|exists:inv_employee,id', // <-- DITAMBAH (nullable biar halaman edit lama ga error)
+            'borrower_name' => 'nullable',                       // <-- DIUBAH
             'date' => 'required|date',
             'items' => 'required|array|min:1',
         ]);
@@ -140,8 +143,6 @@ class ConsumableTransactionController extends Controller
             $trx = InvConsumableTransaction::with('items')
                 ->findOrFail($id);
 
-            // --- FIX DI BAGIAN INI ---
-            // Hanya kembalikan stok kalau transaksi SUDAH di-confirm
             if ($trx->is_confirm) {
                 foreach ($trx->items as $item) {
                     $sisa = $item->qty - ($item->qty_return ?? 0);
@@ -151,12 +152,18 @@ class ConsumableTransactionController extends Controller
                     }
                 }
             }
-            // -------------------------
 
             $trx->items()->delete();
 
+            // <-- LOGIC BARU: Pilih nama berdasarkan ada/tidaknya employee_id
+            $borrowerName = $request->borrower_name;
+            if ($request->employee_id) {
+                $borrowerName = InvEmployee::find($request->employee_id)->full_name;
+            }
+
             $trx->update([
-                'borrower_name' => $request->borrower_name,
+                'employee_id' => $request->employee_id, // <-- DITAMBAH
+                'borrower_name' => $borrowerName,       // <-- DIUBAH
                 'client' => $request->client,
                 'project' => $request->project,
                 'purpose' => $request->purpose,
@@ -176,10 +183,9 @@ class ConsumableTransactionController extends Controller
                 InvConsumableTransactionItem::create([
                     'transaction_id' => $trx->id,
                     'consumable_id' => $item['consumable_id'],
-                    'qty' => $item->qty,
+                    'qty' => $item['qty'],
                 ]);
 
-                // Hanya kurangi stok kalau transaksi statusnya sudah confirm
                 if ($trx->is_confirm) {
                     $consumable->decrement('stock', $item['qty']);
                 }
@@ -190,7 +196,6 @@ class ConsumableTransactionController extends Controller
             ->with('success', 'Transaksi berhasil diupdate');
     }
 
-
     public function destroy($id)
     {
         DB::transaction(function () use ($id) {
@@ -200,10 +205,8 @@ class ConsumableTransactionController extends Controller
 
             if ($trx->is_confirm) {
                 foreach ($trx->items as $item) {
-                    // Hitung sisa barang yang belum dikembalikan
                     $sisa = $item->qty - ($item->qty_return ?? 0);
 
-                    // Kalau masih ada sisa yang belum dikembalikan, kembalikan stoknya
                     if ($sisa > 0) {
                         InvConsumable::where('id', $item->consumable_id)
                             ->increment('stock', $sisa);

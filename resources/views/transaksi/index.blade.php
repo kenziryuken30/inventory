@@ -41,7 +41,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
-                <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
+                <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
             </div>
         </div>
         
@@ -434,29 +434,29 @@
 
     </div>
 
-    <style>
+        <style>
         [x-cloak] { display: none !important; }
 
         #notifWrap {
-            animation: notifSlideIn 0.3s ease-out;
+            animation: notifSlideIn 0.4s ease-out;
         }
         @keyframes notifSlideIn {
-            from { opacity: 0; transform: translateY(-12px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateX(-40px); }
+            to   { opacity: 1; transform: translateX(0); }
         }
         #notifWrap.hiding {
-            animation: notifSlideOut 0.25s ease-in forwards;
+            animation: notifSlideOut 0.35s ease-in forwards;
         }
         @keyframes notifSlideOut {
-            from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(-12px); }
+            from { opacity: 1; transform: translateX(0); }
+            to   { opacity: 0; transform: translateX(60px); }
         }
         #notifBar {
             transition: width 3.5s linear;
         }
     </style>
 
-    <script>
+        <script>
     document.addEventListener('DOMContentLoaded', function() {
 
         const notifWrap = document.getElementById('notifWrap');
@@ -484,15 +484,18 @@
             }
 
             notifText.textContent = message;
+            
+            // --- YANG DIUBAH DI SINI ---
             notifBar.style.transition = 'none';
-            notifBar.style.width = '100%';
+            notifBar.style.width = '0%';
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     notifBar.style.transition = 'width 3.5s linear';
-                    notifBar.style.width = '0%';
+                    notifBar.style.width = '100%';
                 });
             });
+            // ---------------------------
 
             notifTimer = setTimeout(() => hideNotif(), 3500);
         }

@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_consumable_categories', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->timestamps();
-    });
-
+        Schema::table('inv_consumable_transactions', function (Blueprint $table) {
+            $table->string('employee_id', 15)->nullable()->after('borrower_name');
+        });
     }
 
     /**
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_consumable_categories');
+        Schema::table('inv_consumable_transactions', function (Blueprint $table) {
+            $table->dropColumn('employee_id');
+        });
     }
 };
