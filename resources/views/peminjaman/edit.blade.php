@@ -16,34 +16,32 @@
         </a>
     </div>
 
-    {{-- ================= ALERT ================= --}}
-    @if(session('success'))
-    <div class="mb-4 bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-sm">
-        {{ session('success') }}
+    {{-- ================= NOTIF TOAST ================= --}}
+    <div id="notifWrap" class="hidden mb-5">
+        <div id="notifBox"
+            class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+            <div id="notifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+            <p id="notifText" class="text-sm font-medium"></p>
+            <button id="notifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+        </div>
     </div>
-    @endif
-
-    @if(session('error'))
-    <div class="mb-4 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm">
-        {{ session('error') }}
-    </div>
-    @endif
-
 
     {{-- ================= PANEL BESAR ================= --}}
     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 space-y-8">
 
-        {{-- ================= FORM UPDATE (GRID 3 KOLOM + WARNA BARU) ================= --}}
+        {{-- ================= FORM UPDATE ================= --}}
         <form id="updateForm"
             action="{{ route('peminjaman.update', $transaction->id) }}"
             method="POST">
             @csrf
             @method('PUT')
 
-            {{-- Grid Utama: 3 Kolom --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                {{-- === BARIS 1 === --}}
 
                 {{-- Kolom 1: Nama Peminjam --}}
                 <div>
@@ -63,13 +61,11 @@
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
-                {{-- Kolom 3: KOSONG (Untuk mendorong Keperluan ke bawah) --}}
+                {{-- Kolom 3: Spacer --}}
                 <div class="hidden md:block">
                     <label class="block text-sm font-bold text-gray-700 mb-2">&nbsp;</label>
                     <div class="w-full px-4 py-2.5">&nbsp;</div>
                 </div>
-
-                {{-- === BARIS 2 === --}}
 
                 {{-- Kolom 1: Nama Client --}}
                 <div>
@@ -89,7 +85,7 @@
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
-                {{-- Kolom 3: Keperluan (Sejajar Proyek) --}}
+                {{-- Kolom 3: Keperluan --}}
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Keperluan</label>
                     <input type="text"
@@ -118,7 +114,7 @@
             </div>
 
             <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm" id="tableTools">
                     <thead>
                         <tr class="text-white text-xs uppercase tracking-wider"
                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
@@ -131,8 +127,8 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-100">
                         @forelse ($transaction->items as $item)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="text-center py-4 px-4 text-gray-600">
+                        <tr data-id="{{ $item->id }}" data-name="{{ $item->toolkit->toolkit_name ?? '-' }}" class="hover:bg-gray-50 transition">
+                            <td class="text-center py-4 px-4 text-gray-600 no font-medium">
                                 {{ $loop->iteration }}
                             </td>
 
@@ -156,18 +152,20 @@
                             </td>
 
                             <td class="text-center py-4 px-4">
+                                {{-- Form tersembunyi untuk DELETE --}}
                                 <form action="{{ route('peminjaman.item.destroy', $item->id) }}"
                                     method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus item ini?')"
-                                    class="inline">
+                                    id="deleteForm_{{ $item->id }}"
+                                    class="hidden">
                                     @csrf
                                     @method('DELETE')
-
-                                    <button type="submit"
-                                        class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold text-xs transition shadow-sm">
-                                        Hapus
-                                    </button>
                                 </form>
+
+                                <button type="button"
+                                    onclick="openDeleteModal({{ $item->id }})"
+                                    class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold text-xs transition shadow-sm">
+                                    Hapus
+                                </button>
                             </td>
                         </tr>
                         @empty
@@ -262,7 +260,7 @@
                                     </td>
 
                                     <td class="py-3 px-4 text-center">
-                                        <img src="{{ $serial->toolkit->image 
+                                        <img src="{{ $serial->toolkit->image
                                             ? asset('storage/'.$serial->toolkit->image)
                                             : asset('images/no-image.png') }}"
                                             class="w-10 h-10 object-contain mx-auto rounded shadow-sm border">
@@ -286,7 +284,7 @@
 
                     <div class="flex justify-end gap-3 pt-6 mt-4 bg-transparent">
                         <button type="button"
-                            onclick="document.getElementById('toolsModal').classList.add('hidden'); document.getElementById('toolsModal').classList.remove('flex');"
+                            id="btnCancelToolsModal"
                             class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
                             Batal
                         </button>
@@ -307,6 +305,54 @@
     </div>
 
 
+    {{-- ================= MODAL HAPUS ITEM ================= --}}
+    <div id="deleteItemModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[10002] p-3 sm:p-4">
+        <div class="w-[calc(100%-1.5rem)] sm:w-11/12 max-w-sm bg-white rounded-2xl shadow-2xl p-5 sm:p-6 text-center">
+            <div class="flex justify-center mb-4">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-100 flex items-center justify-center">
+                    <svg class="w-7 h-7 sm:w-8 sm:h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                </div>
+            </div>
+
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Item?</h3>
+            <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
+            <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#1CA7B6] mb-5"></p>
+
+            <div class="flex gap-3">
+                <button id="cancelDeleteItem" class="flex-1 px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-xs sm:text-sm font-semibold hover:bg-[#c5c5c5] transition">
+                    Batal
+                </button>
+                <button id="confirmDeleteItem" class="flex-1 px-5 py-2.5 bg-red-500 text-white rounded-xl text-xs sm:text-sm font-semibold hover:bg-red-600 transition">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- ================= STYLE NOTIF ================= --}}
+    <style>
+        #notifWrap {
+            animation: notifSlideIn 0.4s ease-out;
+        }
+        @keyframes notifSlideIn {
+            from { opacity: 0; transform: translateX(-40px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        #notifWrap.hiding {
+            animation: notifSlideOut 0.35s ease-in forwards;
+        }
+        @keyframes notifSlideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to   { opacity: 0; transform: translateX(60px); }
+        }
+        #notifBar {
+            transition: width 3.5s linear;
+        }
+    </style>
+
     {{-- ================= SCRIPT ================= --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -314,9 +360,109 @@
             const modal = document.getElementById('toolsModal');
             const openBtn = document.getElementById('openToolsBtn');
             const closeBtns = document.querySelectorAll('#closeToolsBtn');
+            const cancelToolsBtn = document.getElementById('btnCancelToolsModal');
             const searchInput = document.getElementById('searchToolsModal');
 
-            // ================= OPEN MODAL =================
+            // ================= NOTIF SYSTEM =================
+            const notifWrap = document.getElementById('notifWrap');
+            const notifBox = document.getElementById('notifBox');
+            const notifIcon = document.getElementById('notifIcon');
+            const notifText = document.getElementById('notifText');
+            const notifBar = document.getElementById('notifBar');
+            const notifClose = document.getElementById('notifClose');
+            let notifTimer = null;
+
+            window.showNotif = function(message, type) {
+                if (notifTimer) clearTimeout(notifTimer);
+                notifWrap.classList.remove('hidden', 'hiding');
+
+                if (type === 'success') {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#34d399';
+                } else {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                    notifBar.style.background = '#f87171';
+                }
+
+                notifText.textContent = message;
+                notifBar.style.transition = 'none';
+                notifBar.style.width = '0%';
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        notifBar.style.transition = 'width 3.5s linear';
+                        notifBar.style.width = '100%';
+                    });
+                });
+
+                notifTimer = setTimeout(() => hideNotif(), 3500);
+            };
+
+            function hideNotif() {
+                notifWrap.classList.add('hiding');
+                setTimeout(() => {
+                    notifWrap.classList.add('hidden');
+                    notifWrap.classList.remove('hiding');
+                }, 250);
+            }
+
+            notifClose.addEventListener('click', () => {
+                if (notifTimer) clearTimeout(notifTimer);
+                hideNotif();
+            });
+
+            @if(session('success'))
+                window.showNotif('{{ session("success") }}', 'success');
+            @endif
+            @if(session('error'))
+                window.showNotif('{{ session("error") }}', 'error');
+            @endif
+
+
+            // ================= MODAL HAPUS ITEM =================
+            const deleteItemModal = document.getElementById('deleteItemModal');
+            const deleteItemNameModal = document.getElementById('deleteItemNameModal');
+            let pendingDeleteId = null;
+
+            window.openDeleteModal = function(itemId) {
+                const row = document.querySelector(`#tableTools tr[data-id="${itemId}"]`);
+                if (!row) return;
+
+                pendingDeleteId = itemId;
+                deleteItemNameModal.textContent = row.dataset.name;
+
+                deleteItemModal.classList.remove('hidden');
+                deleteItemModal.classList.add('flex');
+            };
+
+            function closeDeleteItemModal() {
+                deleteItemModal.classList.add('hidden');
+                deleteItemModal.classList.remove('flex');
+                pendingDeleteId = null;
+            }
+
+            document.getElementById('cancelDeleteItem').addEventListener('click', closeDeleteItemModal);
+
+            deleteItemModal.addEventListener('click', function(e) {
+                if (e.target === deleteItemModal) closeDeleteItemModal();
+            });
+
+            document.getElementById('confirmDeleteItem').addEventListener('click', function() {
+                if (pendingDeleteId) {
+                    const form = document.getElementById('deleteForm_' + pendingDeleteId);
+                    if (form) {
+                        form.submit();
+                    }
+                }
+                closeDeleteItemModal();
+            });
+
+
+            // ================= MODAL TOOLS =================
             if (openBtn && modal) {
                 openBtn.addEventListener('click', function() {
                     modal.classList.remove('hidden');
@@ -324,12 +470,10 @@
                 });
             }
 
-            // ================= CLOSE MODAL =================
-            function closeModal() {
+            function closeToolsModal() {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
 
-                // reset search
                 if (searchInput) {
                     searchInput.value = '';
                     document.querySelectorAll('#toolsTableBody tr').forEach(row => {
@@ -339,33 +483,36 @@
             }
 
             closeBtns.forEach(btn => {
-                btn.addEventListener('click', closeModal);
+                btn.addEventListener('click', closeToolsModal);
             });
 
-            // Close modal when clicking outside
+            if (cancelToolsBtn) {
+                cancelToolsBtn.addEventListener('click', closeToolsModal);
+            }
+
             modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeModal();
-                }
+                if (e.target === modal) closeToolsModal();
             });
 
             // ================= LIVE SEARCH =================
             if (searchInput) {
                 searchInput.addEventListener('keyup', function() {
-
                     let keyword = this.value.toLowerCase();
-
                     document.querySelectorAll('#toolsTableBody tr').forEach(function(row) {
-
                         let text = row.innerText.toLowerCase();
-
                         row.style.display = text.includes(keyword) ? '' : 'none';
-
                     });
-
                 });
             }
 
+            // ================= ESC KEY =================
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeToolsModal();
+                    closeDeleteItemModal();
+                }
+            });
+
         });
     </script>
-    @endsection
+@endsection
