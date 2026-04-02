@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\InvToolConditionLog;
+use App\Models\InvEmployee;
 
 
 class ToolTransactionController extends Controller
@@ -32,7 +33,9 @@ class ToolTransactionController extends Controller
             $query->where(function ($q) use ($search) {
 
                 // 🔍 Cari nama peminjam
-                $q->where('borrower_name', 'like', "%$search%")
+                $q->whereHas('employee', function ($q2) use ($search) {
+                    $q2->where('full_name', 'like', "%$search%");
+                })
 
                     // 🔍 Cari nama tools (YANG BELUM DIKEMBALIKAN)
                     ->orWhereHas('items', function ($q2) use ($search) {
@@ -74,13 +77,15 @@ class ToolTransactionController extends Controller
             ->where('status', 'TERSEDIA')
             ->get();
 
-        return view('peminjaman.create', compact('serials'));
+            $employees = InvEmployee::all();
+
+        return view('peminjaman.create', compact('serials', 'employees'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'borrower_name' => 'required|string',
+            'employee_id' => 'required|exists:inv_employee,id',
             'serial_ids'    => 'required|array|min:1'
         ]);
 
@@ -94,9 +99,12 @@ class ToolTransactionController extends Controller
             } while (ToolTransaction::where('transaction_code', $transactionCode)->exists());
 
             // Simpan transaksi
+            $employee = InvEmployee::findOrFail($request->employee_id);
+
             $transaction = ToolTransaction::create([
                 'transaction_code' => $transactionCode,
-                'borrower_name'    => $request->borrower_name,
+                'employee_id'      => $request->employee_id,
+                'borrower_name'    => $employee->full_name,
                 'client_name'      => $request->client_name,
                 'project'          => $request->project,
                 'purpose'          => $request->purpose,
@@ -152,7 +160,7 @@ class ToolTransactionController extends Controller
 
         // Validasi form basic
         $request->validate([
-            'borrower_name' => 'required|string|max:255',
+            'employee_id' => 'required|exists:inv_employee,id',
             'date' => 'required|date',
             'client_name' => 'nullable|string|max:255',
             'project' => 'nullable|string|max:255',
@@ -165,12 +173,15 @@ class ToolTransactionController extends Controller
         }
 
         // Update data utama transaksi
+        $employee = InvEmployee::findOrFail($request->employee_id);
+
         $transaction->update([
-            'borrower_name' => $request->borrower_name,
-            'date' => $request->date,
-            'client_name' => $request->client_name,
-            'project' => $request->project,
-            'purpose' => $request->purpose,
+            'employee_id'   => $request->employee_id,
+            'borrower_name' => $employee->full_name,
+            'date'          => $request->date,
+            'client_name'   => $request->client_name,
+            'project'       => $request->project,
+            'purpose'       => $request->purpose,
         ]);
 
         return redirect('/peminjaman')

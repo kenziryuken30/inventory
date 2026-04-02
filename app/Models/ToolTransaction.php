@@ -1,8 +1,9 @@
-<?php 
+<?php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\InvEmployee;
 
 class ToolTransaction extends Model
 {
@@ -15,7 +16,8 @@ class ToolTransaction extends Model
         'project',
         'purpose',
         'date',
-        'is_confirm'
+        'is_confirm',
+        'employee_id'
     ];
 
     protected $casts = [
@@ -28,5 +30,10 @@ class ToolTransaction extends Model
     public function items()
     {
         return $this->hasMany(ToolTransactionItem::class, 'transaction_id', 'id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(InvEmployee::class, 'employee_id');
     }
 }

@@ -45,87 +45,95 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Nama Peminjam <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="borrower_name" placeholder="Masukan nama peminjam" required
+                            <select name="employee_id" required
                                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+
+                                <option value="">-- Pilih Karyawan --</option>
+
+                                @foreach($employees as $emp)
+                                <option value="{{ $emp->id }}">
+                                    {{ $emp->full_name }}
+                                </option>
+                                @endforeach
+
+                            </select>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Tanggal <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" name="date" value="{{ date('Y-m-d') }}" required
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                            </div>
+
+                            <div></div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Tanggal <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" name="date" value="{{ date('Y-m-d') }}" required
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
-                        </div>
+                        {{-- ROW 2 --}}
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama client</label>
+                                <input type="text" name="client_name" placeholder="Masukan nama klien"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                            </div>
 
-                        <div></div>
-                    </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
+                                <input type="text" name="project" placeholder="Masukan Keterangan"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                            </div>
 
-                    {{-- ROW 2 --}}
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama client</label>
-                            <input type="text" name="client_name" placeholder="Masukan nama klien"
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
-                            <input type="text" name="project" placeholder="Masukan Keterangan"
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
-                            <input type="text" name="purpose" placeholder="Masukan Keperluan"
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
+                                <input type="text" name="purpose" placeholder="Masukan Keperluan"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Section Daftar Alat --}}
-            <div class="space-y-0 mt-10">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
-                    <button type="button" id="openToolsBtn"
-                        class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
+                {{-- Section Daftar Alat --}}
+                <div class="space-y-0 mt-10">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
+                        <button type="button" id="openToolsBtn"
+                            class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
+                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            + Pilih Tools
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-white text-xs uppercase tracking-wider"
+                                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                    <th class="py-4 px-6 font-semibold text-center">No</th>
+                                    <th class="py-4 px-6 font-semibold text-center">Foto</th>
+                                    <th class="py-4 px-6 font-semibold text-left">Nama Tool</th>
+                                    <th class="py-4 px-6 font-semibold text-center">No Seri</th>
+                                    <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableSelectedTools" class="divide-y divide-gray-100 text-sm">
+                                <tr id="emptyRow">
+                                    <td colspan="5" class="py-12 text-center text-gray-400 italic">
+                                        Belum ada tools yang dipilih
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Save Button Row --}}
+                <div class="pt-8 border-t border-gray-200 flex justify-end">
+                    <button type="submit"
+                        class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                        + Pilih Tools
+                        Save Transaksi
                     </button>
                 </div>
-
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="text-white text-xs uppercase tracking-wider"
-                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                                <th class="py-4 px-6 font-semibold text-center">No</th>
-                                <th class="py-4 px-6 font-semibold text-center">Foto</th>
-                                <th class="py-4 px-6 font-semibold text-left">Nama Tool</th>
-                                <th class="py-4 px-6 font-semibold text-center">No Seri</th>
-                                <th class="py-4 px-6 font-semibold text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableSelectedTools" class="divide-y divide-gray-100 text-sm">
-                            <tr id="emptyRow">
-                                <td colspan="5" class="py-12 text-center text-gray-400 italic">
-                                    Belum ada tools yang dipilih
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-
-            {{-- Save Button Row --}}
-            <div class="pt-8 border-t border-gray-200 flex justify-end">
-                <button type="submit"
-                    class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                    Save Transaksi
-                </button>
-            </div>
-        </div>
     </form>
 </div>
 
@@ -291,44 +299,44 @@
         const previewImage = document.getElementById('previewImage');
         const closePreview = document.getElementById('closePreview');
 
-         // ===== NOTIF SYSTEM =====
-            const notifWrap = document.getElementById('notifWrap');
-            const notifBox = document.getElementById('notifBox');
-            const notifIcon = document.getElementById('notifIcon');
-            const notifText = document.getElementById('notifText');
-            const notifBar = document.getElementById('notifBar');
-            const notifClose = document.getElementById('notifClose');
-            let notifTimer = null;
+        // ===== NOTIF SYSTEM =====
+        const notifWrap = document.getElementById('notifWrap');
+        const notifBox = document.getElementById('notifBox');
+        const notifIcon = document.getElementById('notifIcon');
+        const notifText = document.getElementById('notifText');
+        const notifBar = document.getElementById('notifBar');
+        const notifClose = document.getElementById('notifClose');
+        let notifTimer = null;
 
-            function showNotif(message, type) {
-                if (notifTimer) clearTimeout(notifTimer);
-                notifWrap.classList.remove('hidden', 'hiding');
+        function showNotif(message, type) {
+            if (notifTimer) clearTimeout(notifTimer);
+            notifWrap.classList.remove('hidden', 'hiding');
 
-                if (type === 'success') {
-                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                    notifBar.style.background = '#34d399';
-                } else {
-                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
-                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
-                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
-                    notifBar.style.background = '#f87171';
-                }
-
-                notifText.textContent = message;
-                notifBar.style.transition = 'none';
-                notifBar.style.width = '100%';
-
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        notifBar.style.transition = 'width 3.5s linear';
-                        notifBar.style.width = '0%';
-                    });
-                });
-
-                notifTimer = setTimeout(() => hideNotif(), 3500);
+            if (type === 'success') {
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                notifBar.style.background = '#34d399';
+            } else {
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                notifBar.style.background = '#f87171';
             }
+
+            notifText.textContent = message;
+            notifBar.style.transition = 'none';
+            notifBar.style.width = '100%';
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    notifBar.style.transition = 'width 3.5s linear';
+                    notifBar.style.width = '0%';
+                });
+            });
+
+            notifTimer = setTimeout(() => hideNotif(), 3500);
+        }
 
         // ===== MODAL FUNCTIONS =====
         function openModal() {
