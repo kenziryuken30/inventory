@@ -17,18 +17,7 @@
         </a>
     </div>
 
-    {{-- ================= FLASH MESSAGE ================= --}}
-    @if (session('success'))
-    <div class="mb-4 bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-sm">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    @if (session('error'))
-    <div class="mb-4 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm">
-        {{ session('error') }}
-    </div>
-    @endif
+    <div id="toastContainer" class="fixed top-5 right-5 z-[9999] space-y-3"></div>
 
     {{-- ================= FILTER ================= --}}
     <form method="GET" action="{{ route('peminjaman.index') }}"
@@ -289,3 +278,85 @@
 </style>
 @endpush
 @endsection
+<script>
+function showNotif(message, type = 'success', duration = 3000) {
+
+    const container = document.getElementById('toastContainer');
+
+    const toast = document.createElement('div');
+    toast.className = `
+        flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg border
+        transform transition-all duration-500 ease
+        opacity-0 translate-x-10
+        ${type === 'success'
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+            : 'bg-red-50 border-red-200 text-red-800'}
+    `;
+
+    const icon = document.createElement('div');
+    icon.className = `w-8 h-8 flex items-center justify-center rounded-full ${
+        type === 'success' ? 'bg-emerald-100' : 'bg-red-100'
+    }`;
+
+    icon.innerHTML = type === 'success'
+        ? `<svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+        </svg>`
+        : `<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>`;
+
+    const text = document.createElement('p');
+    text.className = "text-sm font-medium";
+    text.textContent = message;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '✕';
+    closeBtn.className = "ml-auto text-sm opacity-50 hover:opacity-100";
+    closeBtn.onclick = () => removeToast(toast);
+
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    toast.appendChild(closeBtn);
+
+    container.appendChild(toast);
+
+    // animasi masuk
+    setTimeout(() => {
+        toast.classList.remove('opacity-0', 'translate-x-10');
+    }, 100);
+
+    // 🔥 AUTO HILANG (setTimeout utama)
+    let timer = setTimeout(() => {
+        removeToast(toast);
+    }, duration);
+
+    // pause saat hover
+    toast.addEventListener('mouseenter', () => clearTimeout(timer));
+
+    // lanjut lagi saat keluar
+    toast.addEventListener('mouseleave', () => {
+        timer = setTimeout(() => removeToast(toast), 1500);
+    });
+}
+
+function removeToast(toast) {
+    toast.classList.add('opacity-0', 'translate-x-10');
+    setTimeout(() => toast.remove(), 400);
+}
+</script>
+@if(session('success'))
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    showNotif("{{ session('success') }}", "success", 3000);
+});
+</script>
+@endif
+
+@if(session('error'))
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    showNotif("{{ session('error') }}", "error", 4000);
+});
+</script>
+@endif
