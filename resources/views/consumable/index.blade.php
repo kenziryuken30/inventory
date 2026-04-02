@@ -6,7 +6,8 @@
 
         {{-- ================= HEADER ================= --}}
         <div class="mb-4 sm:mb-6">
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#1CA7B6] tracking-wide leading-tight">
+            <!-- Warna judul disamakan dengan Tools (Biru Gelap) -->
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#0e7490] tracking-wide leading-tight">
                 Data Consumable
             </h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">
@@ -31,7 +32,8 @@
 
         {{-- ================= SEARCH + TAMBAH ================= --}}
         <div class="mb-4 sm:mb-5">
-            <div class="bg-gradient-to-b from-[#7ED6DF] to-[#1CA7B6] p-3 sm:p-4 rounded-2xl shadow-lg">
+            <!-- Gradient disamakan dengan Tools: from-[#7FC4FF] to-[#5EA6FF] -->
+            <div class="bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] p-3 sm:p-4 rounded-2xl shadow-lg">
                 <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center">
                     <div class="relative flex-1 w-full sm:w-auto">
                         <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -53,8 +55,9 @@
                             @endif
                         </form>
                     </div>
+                    <!-- Teks tombol disamakan dengan Tools: text-gray-700 -->
                     <button type="button" id="openTambahConsumable"
-                        class="w-full sm:w-auto px-5 py-2.5 text-sm bg-white text-[#1CA7B6] font-semibold rounded-xl shadow hover:bg-gray-100 transition whitespace-nowrap">
+                        class="w-full sm:w-auto px-5 py-2.5 text-sm bg-white text-gray-700 font-semibold rounded-xl shadow hover:bg-gray-50 transition whitespace-nowrap">
                         + Tambah Consumable
                     </button>
                 </div>
@@ -65,13 +68,13 @@
         <div class="rounded-2xl shadow-lg overflow-x-auto bg-white border border-gray-100">
             <table class="w-full text-sm min-w-[620px]">
                 <thead>
-                    <tr class="text-white text-xs uppercase tracking-wider"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center align-middle">Foto</th>
-                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-left align-middle">Nama Barang</th>
-                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center align-middle">Kategori</th>
-                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center align-middle">Stok</th>
-                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center align-middle">Aksi</th>
+                    <!-- Gradient & Warna Teks disamakan dengan Tools -->
+                    <tr class="bg-gradient-to-r from-[#7FC4FF] to-[#5EA6FF]">
+                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap align-middle">Foto</th>
+                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap pl-4 sm:pl-6 align-middle">Nama Barang</th>
+                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell align-middle">Kategori</th>
+                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap align-middle">Stok</th>
+                        <th class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap align-middle">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 text-sm">
@@ -162,7 +165,7 @@
 
                     <div
                         class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                        <h2 class="text-base sm:text-lg font-bold text-[#1CA7B6]">Tambah Consumable</h2>
+                        <h2 class="text-base sm:text-lg font-bold text-[#0e7490]">Tambah Consumable</h2>
                         <button type="button" id="closeTambahConsumable"
                             class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                     </div>
@@ -207,7 +210,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-b from-[#5FD0DF] to-[#1CA7B6] text-white rounded-xl text-sm font-semibold shadow-lg shadow-cyan-200/40 hover:opacity-90 hover:-translate-y-0.5 transition">
+                            class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">
                             Simpan
                         </button>
                     </div>
@@ -227,7 +230,7 @@
 
                     <div
                         class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                        <h2 class="text-base sm:text-lg font-bold text-[#1CA7B6]">Edit Consumable</h2>
+                        <h2 class="text-base sm:text-lg font-bold text-[#0e7490]">Edit Consumable</h2>
                         <button type="button" id="closeEditConsumable"
                             class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                     </div>
@@ -269,7 +272,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-b from-[#5FD0DF] to-[#1CA7B6] text-white rounded-xl text-sm font-semibold shadow-lg shadow-cyan-200/40 hover:opacity-90 hover:-translate-y-0.5 transition">
+                            class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">
                             Update
                         </button>
                     </div>
@@ -287,7 +290,7 @@
                     @csrf
 
                     <div class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200">
-                        <h2 class="text-base sm:text-lg font-bold text-[#1CA7B6]">Tambah Stok</h2>
+                        <h2 class="text-base sm:text-lg font-bold text-[#0e7490]">Tambah Stok</h2>
                         <button type="button" id="closeRestockConsumable"
                             class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                     </div>
@@ -307,7 +310,7 @@
                             Batal
                         </button>
                         <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-b from-[#5FD0DF] to-[#1CA7B6] text-white rounded-xl text-sm font-semibold shadow-lg shadow-cyan-200/40 hover:opacity-90 hover:-translate-y-0.5 transition">
+                            class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">
                             Tambah
                         </button>
                     </div>
@@ -538,3 +541,4 @@
     </script>
 
 @endsection
+```
