@@ -140,10 +140,18 @@ class ConsumableTransactionController extends Controller
             $trx = InvConsumableTransaction::with('items')
                 ->findOrFail($id);
 
-            foreach ($trx->items as $item) {
-                InvConsumable::where('id', $item->consumable_id)
-                    ->increment('stock', $item->qty);
+            // --- FIX DI BAGIAN INI ---
+            // Hanya kembalikan stok kalau transaksi SUDAH di-confirm
+            if ($trx->is_confirm) {
+                foreach ($trx->items as $item) {
+                    $sisa = $item->qty - ($item->qty_return ?? 0);
+                    if ($sisa > 0) {
+                        InvConsumable::where('id', $item->consumable_id)
+                            ->increment('stock', $sisa);
+                    }
+                }
             }
+            // -------------------------
 
             $trx->items()->delete();
 
@@ -168,10 +176,13 @@ class ConsumableTransactionController extends Controller
                 InvConsumableTransactionItem::create([
                     'transaction_id' => $trx->id,
                     'consumable_id' => $item['consumable_id'],
-                    'qty' => $item['qty'],
+                    'qty' => $item->qty,
                 ]);
 
-                $consumable->decrement('stock', $item['qty']);
+                // Hanya kurangi stok kalau transaksi statusnya sudah confirm
+                if ($trx->is_confirm) {
+                    $consumable->decrement('stock', $item['qty']);
+                }
             }
         });
 
@@ -187,9 +198,17 @@ class ConsumableTransactionController extends Controller
             $trx = InvConsumableTransaction::with('items')
                 ->findOrFail($id);
 
-            foreach ($trx->items as $item) {
-                InvConsumable::where('id', $item->consumable_id)
-                    ->increment('stock', $item->qty);
+            if ($trx->is_confirm) {
+                foreach ($trx->items as $item) {
+                    // Hitung sisa barang yang belum dikembalikan
+                    $sisa = $item->qty - ($item->qty_return ?? 0);
+
+                    // Kalau masih ada sisa yang belum dikembalikan, kembalikan stoknya
+                    if ($sisa > 0) {
+                        InvConsumable::where('id', $item->consumable_id)
+                            ->increment('stock', $sisa);
+                    }
+                }
             }
 
             $trx->items()->delete();
