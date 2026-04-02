@@ -1,115 +1,291 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6" x-data="{ openCreate:false, openEdit:false, editData:{} }">
 
-    {{-- HEADER --}}
-    <div class="flex justify-between items-start mb-4">
-        <div>
-            <h1 class="text-2xl font-bold text-teal-600">Kategori</h1>
-            <p class="text-gray-500 text-sm">Daftar dan Input Kategori</p>
+    <div class="px-8 pt-6 pb-10">
+
+        {{-- ================= HEADER ================= --}}
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-[#1CA7B6] tracking-wide">Kategori</h1>
+                <p class="text-sm text-gray-500 mt-1">Daftar dan Input Kategori</p>
+            </div>
+            <button type="button" id="openTambahKategori"
+                class="px-5 py-2.5 text-sm bg-[#1CA7B6] hover:bg-[#178a97] text-white font-semibold rounded-xl shadow-md shadow-[#1CA7B6]/25 transition whitespace-nowrap">
+                + Tambah Kategori
+            </button>
         </div>
 
-        <button @click="openCreate = true"
-            class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg shadow">
-            + Tambah Kategori
-        </button>
-    </div>
+        {{-- ================= NOTIF TOAST ================= --}}
+        <div id="notifWrap" class="hidden mb-5">
+            <div id="notifBox"
+                class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+                <div id="notifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+                <p id="notifText" class="text-sm font-medium"></p>
+                <button id="notifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
+            </div>
+        </div>
 
-    {{-- TABLE --}}
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden border">
-        <table class="w-full text-sm text-center">
-            <thead class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white">
-                <tr>
-                    <th class="py-3">NO</th>
-                    <th>KATEGORI</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($categories as $cat)
-                <tr class="border-b">
-                    <td class="py-3">{{ $loop->iteration }}</td>
-                    <td>{{ $cat->category_name }}</td>
-                    <td class="flex justify-center gap-3 py-3">
+        {{-- ================= TABEL ================= --}}
+        <div class="rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-100">
 
-                        {{-- EDIT --}}
-                        <button 
-                            @click="openEdit=true; editData={id:'{{ $cat->id }}', name:'{{ $cat->category_name }}'}"
-                            class="text-blue-500">
-                            ✏️
-                        </button>
+            <table class="w-full text-sm" style="table-layout: fixed;">
 
-                        {{-- DELETE --}}
-                        <form action="{{ route('categories.destroy', $cat->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button onclick="return confirm('Yakin hapus?')" class="text-red-500">
-                                🗑️
-                            </button>
-                        </form>
+                <thead>
+                    <tr class="text-white text-xs uppercase tracking-wider"
+                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        <th class="py-3 px-4 text-center" style="width: 12%;">No</th>
+                        <th class="py-3 px-4 text-center" style="width: 56%;">Kategori</th>
+                        <th class="py-3 px-4 text-center" style="width: 32%;">Aksi</th>
+                    </tr>
+                </thead>
 
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                <tbody class="text-gray-700 text-sm">
 
-    {{-- ================= MODAL CREATE ================= --}}
-    <div x-show="openCreate" class="fixed inset-0 bg-black/50 flex items-center justify-center">
+                    @forelse($categories as $cat)
 
-        <div class="bg-white rounded-xl p-6 w-96 shadow-xl">
-            <h2 class="text-lg font-bold mb-4">Tambah Kategori</h2>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <td class="py-3.5 px-4 text-center font-medium text-gray-600">{{ $loop->iteration }}</td>
+                            <td class="py-3.5 px-4 font-medium text-gray-800 text-center">{{ $cat->category_name }}</td>
+                            <td class="py-3.5 px-4 text-center">
+                                <div class="flex justify-center gap-3">
+                                    <button type="button"
+                                        class="editKategoriBtn p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition"
+                                        data-id="{{ $cat->id }}" data-name="{{ $cat->category_name }}" title="Edit">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
+                                        </svg>
+                                    </button>
+                                    <button type="button"
+                                        class="deleteKategoriBtn p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                                        data-id="{{ $cat->id }}" data-name="{{ $cat->category_name }}" title="Hapus">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="py-10 text-center text-gray-400">
+                                <div class="flex flex-col items-center gap-2">
+                                    <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-2.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                                        </path>
+                                    </svg>
+                                    <span>Belum ada kategori</span>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
 
-            <form action="{{ route('categories.store') }}" method="POST">
-                @csrf
+                </tbody>
+            </table>
+        </div>
 
-                <input type="text" name="category_name"
-                       class="w-full border rounded-lg px-3 py-2 mb-3"
-                       placeholder="Nama kategori">
 
-                <div class="flex justify-end gap-2">
-                    <button type="button" @click="openCreate=false"
-                        class="px-3 py-1 bg-gray-300 rounded">
-                        Batal
-                    </button>
+        {{-- ================= MODAL TAMBAH ================= --}}
+        <div id="tambahKategoriModal"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1000]">
+            <div class="kategori-modal-box w-11/12 max-w-md bg-[#efefef] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+                <form method="POST" action="{{ route('categories.store') }}">
+                    @csrf
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="kategori-modal-title text-lg font-semibold">Tambah Kategori</h2>
+                        <button type="button" id="closeTambahKategori"
+                            class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
+                    </div>
+                    <input name="category_name" placeholder="Nama Kategori" class="kategori-input" required>
+                    <div class="flex justify-end gap-3 mt-5">
+                        <button type="button" id="cancelTambahKategori" class="kategori-btn-cancel">Batal</button>
+                        <button type="submit" class="kategori-btn-submit">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-                    <button class="px-3 py-1 bg-teal-500 text-white rounded">
-                        Simpan
-                    </button>
+        {{-- ================= MODAL EDIT ================= --}}
+        <div id="editKategoriModal"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1000]">
+            <div class="kategori-modal-box w-11/12 max-w-md bg-[#efefef] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+                <form id="editKategoriForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="kategori-modal-title text-lg font-semibold">Edit Kategori</h2>
+                        <button type="button" id="closeEditKategori"
+                            class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
+                    </div>
+                    <input name="category_name" id="editKategoriName" placeholder="Nama Kategori" class="kategori-input" required>
+                    <div class="flex justify-end gap-3 mt-5">
+                        <button type="button" id="cancelEditKategori" class="kategori-btn-cancel">Batal</button>
+                        <button type="submit" class="kategori-btn-submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- ================= MODAL HAPUS ================= --}}
+        <div id="deleteKategoriModal"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1001]">
+            <div class="kategori-modal-box w-11/12 max-w-sm bg-white rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 text-center">
+                <div class="flex justify-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                    </div>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- ================= MODAL EDIT ================= --}}
-    <div x-show="openEdit" class="fixed inset-0 bg-black/50 flex items-center justify-center">
-
-        <div class="bg-white rounded-xl p-6 w-96 shadow-xl">
-            <h2 class="text-lg font-bold mb-4">Edit Kategori</h2>
-
-            <form :action="'/categories/' + editData.id" method="POST">
-                @csrf
-                @method('PUT')
-
-                <input type="text" name="category_name"
-                       x-model="editData.name"
-                       class="w-full border rounded-lg px-3 py-2 mb-3">
-
-                <div class="flex justify-end gap-2">
-                    <button type="button" @click="openEdit=false"
-                        class="px-3 py-1 bg-gray-300 rounded">
-                        Batal
-                    </button>
-
-                    <button class="px-3 py-1 bg-teal-500 text-white rounded">
-                        Update
-                    </button>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Kategori?</h3>
+                <p class="text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
+                <p id="deleteKategoriName" class="text-sm font-semibold text-gray-800 mb-6"></p>
+                <div class="flex gap-3">
+                    <button id="cancelDeleteKategori"
+                        class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition">Batal</button>
+                    <form id="deleteKategoriForm" method="POST" class="flex-1">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="w-full px-4 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition">Ya, Hapus</button>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
+
     </div>
 
-</div>
+    {{-- ================= STYLE ================= --}}
+    <style>
+        #notifWrap { animation: notifSlideIn 0.3s ease-out; }
+        @keyframes notifSlideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+        #notifWrap.hiding { animation: notifSlideOut 0.25s ease-in forwards; }
+        @keyframes notifSlideOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-12px); } }
+        #notifBar { transition: width 3.5s linear; }
+
+        .kategori-modal-box {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #f7f7f7 0%, #eeeeee 100%) !important;
+            border-radius: 22px !important;
+            animation: katModalIn 0.22s ease-out;
+        }
+        @keyframes katModalIn { from { opacity:0; transform:translateY(-14px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        .kategori-modal-title { font-weight: 700; color: #1CA7B6; }
+        .kategori-input {
+            width: 100%; margin-bottom: .75rem; padding: .65rem .9rem;
+            border: 1px solid #ccc; border-radius: .7rem; font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .kategori-input:focus { outline: none; border-color: #3fb2c8; box-shadow: 0 0 0 3px rgba(63,178,200,0.15); }
+        .kategori-input::placeholder { color: #9ca3af; }
+        .kategori-btn-cancel {
+            padding: .6rem 1.2rem; background: #dcdcdc; color: #374151;
+            border-radius: .75rem; font-weight: 600; font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .kategori-btn-cancel:hover { background: #c5c5c5; }
+        .kategori-btn-submit {
+            padding: .6rem 1.2rem; background: linear-gradient(180deg, #5FD0DF, #1CA7B6);
+            color: white; border-radius: .75rem; font-weight: 600; font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
+            border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(28,167,182,0.3);
+        }
+        .kategori-btn-submit:hover { opacity: .9; transform: translateY(-1px); }
+    </style>
+
+    {{-- ================= SCRIPT ================= --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const notifWrap = document.getElementById('notifWrap');
+            const notifBox = document.getElementById('notifBox');
+            const notifIcon = document.getElementById('notifIcon');
+            const notifText = document.getElementById('notifText');
+            const notifBar = document.getElementById('notifBar');
+            const notifClose = document.getElementById('notifClose');
+            let notifTimer = null;
+
+            function showNotif(message, type) {
+                if (notifTimer) clearTimeout(notifTimer);
+                notifWrap.classList.remove('hidden', 'hiding');
+                if (type === 'success') {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#34d399';
+                } else {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                    notifBar.style.background = '#f87171';
+                }
+                notifText.textContent = message;
+                notifBar.style.transition = 'none';
+                notifBar.style.width = '100%';
+                requestAnimationFrame(() => { requestAnimationFrame(() => { notifBar.style.transition = 'width 3.5s linear'; notifBar.style.width = '0%'; }); });
+                notifTimer = setTimeout(() => hideNotif(), 3500);
+            }
+            function hideNotif() {
+                notifWrap.classList.add('hiding');
+                setTimeout(() => { notifWrap.classList.add('hidden'); notifWrap.classList.remove('hiding'); }, 250);
+            }
+            notifClose.addEventListener('click', () => { if (notifTimer) clearTimeout(notifTimer); hideNotif(); });
+
+            @if(session('success'))
+                showNotif('{{ session("success") }}', 'success');
+            @endif
+            @if(session('error'))
+                showNotif('{{ session("error") }}', 'error');
+            @endif
+
+            function openModal(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+            function closeModal(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+
+            const tambahModal = document.getElementById('tambahKategoriModal');
+            document.getElementById('openTambahKategori')?.addEventListener('click', () => openModal(tambahModal));
+            document.getElementById('closeTambahKategori')?.addEventListener('click', () => closeModal(tambahModal));
+            document.getElementById('cancelTambahKategori')?.addEventListener('click', () => closeModal(tambahModal));
+            tambahModal?.addEventListener('click', e => { if (e.target === tambahModal) closeModal(tambahModal); });
+
+            const editModal = document.getElementById('editKategoriModal');
+            const editForm = document.getElementById('editKategoriForm');
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.editKategoriBtn');
+                if (!btn) return;
+                document.getElementById('editKategoriName').value = btn.dataset.name;
+                editForm.action = '/categories/' + btn.dataset.id;
+                openModal(editModal);
+            });
+            document.getElementById('closeEditKategori')?.addEventListener('click', () => closeModal(editModal));
+            document.getElementById('cancelEditKategori')?.addEventListener('click', () => closeModal(editModal));
+            editModal?.addEventListener('click', e => { if (e.target === editModal) closeModal(editModal); });
+
+            const deleteModal = document.getElementById('deleteKategoriModal');
+            const deleteForm = document.getElementById('deleteKategoriForm');
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.deleteKategoriBtn');
+                if (!btn) return;
+                document.getElementById('deleteKategoriName').textContent = btn.dataset.name;
+                deleteForm.action = '/categories/' + btn.dataset.id;
+                openModal(deleteModal);
+            });
+            document.getElementById('cancelDeleteKategori')?.addEventListener('click', () => closeModal(deleteModal));
+            deleteModal?.addEventListener('click', e => { if (e.target === deleteModal) closeModal(deleteModal); });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') { closeModal(tambahModal); closeModal(editModal); closeModal(deleteModal); }
+            });
+        });
+    </script>
+
 @endsection
