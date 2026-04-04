@@ -41,23 +41,41 @@
             <div class="flex gap-2 items-end">
 
                 <button type="submit"
-                    class="bg-white text-[#1CA7B6] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 transition text-sm">
+                    class="bg-white text-[#5EA6FF] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-300 text-sm hover:-translate-y-0.5">
                     🔎 Filter
                 </button>
 
+                {{-- RESET --}}
                 <a href="{{ route('laporan.consumable.transaksi', ['type' => $type]) }}"
-                    class="bg-white/20 border border-white/40 text-white px-4 py-2.5 rounded-xl hover:bg-white/30 transition text-sm font-medium">
-                    Reset
+                    class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                    style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white; box-shadow: 0 4px 15px rgba(168,85,247,0.35);">
+                    <span class="relative z-10 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:-rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+                        Reset
+                    </span>
+                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
 
+                {{-- PDF --}}
                 <a href="{{ route('laporan.consumable.export.pdf', request()->all()) }}"
-                    class="bg-white/20 border border-white/40 text-white px-4 py-2.5 rounded-xl hover:bg-white/30 transition text-sm font-medium">
-                    PDF
+                    class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                    style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white; box-shadow: 0 4px 15px rgba(225,29,72,0.35);">
+                    <span class="relative z-10 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm3-7h6v1.5H9V13zm0 3h6v1.5H9V16zm0-6h3v1.5H9V10z"/></svg>
+                        PDF
+                    </span>
+                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
 
+                {{-- EXCEL --}}
                 <a href="{{ route('laporan.consumable.export.excel', request()->all()) }}"
-                    class="bg-white/20 border border-white/40 text-white px-4 py-2.5 rounded-xl hover:bg-white/30 transition text-sm font-medium">
-                    Excel
+                    class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                    style="background: linear-gradient(135deg, #34D399, #059669); color: white; box-shadow: 0 4px 15px rgba(5,150,105,0.35);">
+                    <span class="relative z-10 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h3v1.5H8V14zm0 3h3v1.5H8V17zm5-6h3v1.5h-3V11zm0 3h3v1.5h-3V14zm0 3h3v1.5h-3V17z"/></svg>
+                        Excel
+                    </span>
+                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
 
             </div>
@@ -79,7 +97,6 @@
                     📥 Pengembalian
                 </a>
             </div>
-
             <div class="text-sm text-gray-500">
                 Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $totalTransaksi }}</span>
             </div>
@@ -165,9 +182,16 @@
 
                                 @if($type == 'pengeluaran')
                                     <td class="py-4 px-6 text-center">
+                                        {{-- ✅ BUTTON DETAIL YANG SUDAH DIPERBAIKI WARNYA --}}
                                         <button @click="openDetail = {{ $row->id }}"
-                                            class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-semibold text-xs transition shadow-sm">
-                                            👁 Detail
+                                            class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                            style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
+                                            <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                            <span class="relative z-10">Detail</span>
+                                            <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                                         </button>
                                     </td>
                                 @else
@@ -282,10 +306,13 @@
                             </div>
                         </div>
 
+                        {{-- ✅ BUTTON TUTUP YANG SUDAH DIPERBAIKI --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
-                                class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
-                                Tutup
+                                class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
+                                <span class="relative z-10">Tutup</span>
+                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                             </button>
                         </div>
 
@@ -347,10 +374,13 @@
                             </div>
                         </div>
 
+                        {{-- ✅ BUTTON TUTUP YANG SUDAH DIPERBAIKI --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
-                                class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
-                                Tutup
+                                class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
+                                <span class="relative z-10">Tutup</span>
+                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                             </button>
                         </div>
 
