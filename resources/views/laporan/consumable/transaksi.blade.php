@@ -16,7 +16,7 @@
         {{-- ================= FILTER ================= --}}
         <form method="GET" action="{{ route('laporan.consumable.transaksi') }}"
             class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-end"
-            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
             <input type="hidden" name="type" value="{{ $type }}">
 
@@ -95,7 +95,7 @@
                 <table class="min-w-full text-sm text-gray-700">
 
                     <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <tr>
                             <th class="py-4 px-6 font-semibold text-center">No</th>
                             <th class="py-4 px-6 font-semibold text-left">Kode</th>

@@ -152,37 +152,37 @@ class ToolTransactionController extends Controller
         return view('peminjaman.edit', compact('transaction', 'serials'));
     }
 
-    public function update(Request $request, $id)
+        public function update(Request $request, $id)
     {
         $transaction = ToolTransaction::with('items')->findOrFail($id);
 
-        // Validasi form basic
+        // Validasi form basic (SESUAIKAN DENGAN NAME DI BLADE)
         $request->validate([
-            'employee_id' => 'required|exists:inv_employee,id',
-            'date' => 'required|date',
-            'client_name' => 'nullable|string|max:255',
-            'project' => 'nullable|string|max:255',
-            'purpose' => 'nullable|string|max:255',
+            'borrower_name' => 'required|string|max:255',
+            'date'          => 'required|date',
+            'client_name'   => 'nullable|string|max:255',
+            'project'       => 'nullable|string|max:255',
+            'purpose'       => 'nullable|string|max:255',
         ]);
 
         // Cek apakah ada tools
         if ($transaction->items->count() === 0) {
-            return back()->with('error', 'Belum pilih tools!');
+            return redirect()
+                ->route('peminjaman.index')
+                ->with('error', 'Tidak bisa menyimpan, belum ada tools yang dipilih!');
         }
 
         // Update data utama transaksi
-        $employee = InvEmployee::findOrFail($request->employee_id);
-
         $transaction->update([
-            'employee_id'   => $request->employee_id,
-            'borrower_name' => $employee->full_name,
+            'borrower_name' => $request->borrower_name,
             'date'          => $request->date,
             'client_name'   => $request->client_name,
             'project'       => $request->project,
             'purpose'       => $request->purpose,
         ]);
 
-        return redirect('/peminjaman')
+        return redirect()
+            ->route('peminjaman.index')
             ->with('success', 'Transaksi berhasil diupdate');
     }
 
