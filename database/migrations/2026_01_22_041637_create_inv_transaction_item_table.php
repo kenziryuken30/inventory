@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('transaction_id'); 
             $table->string('toolkit_id',20);
             $table->string('serial_id',20);
-            $table->enum('status',['Dipinjam','Tersedia']);
+            $table->enum('status',['PENDING','DIPINJAM','TERSEDIA'])->default('PENDING');
             $table->timestamps();
         });
 

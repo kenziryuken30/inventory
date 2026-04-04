@@ -36,8 +36,20 @@ class ToolController extends Controller
             });
         }
 
+        $tools = $query->latest()->paginate(5)->withQueryString();
+
+        foreach ($tools as $tool) {
+            $tool->isPending = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
+                ->where('status', 'PENDING')
+                ->exists();
+
+            $tool->isDipinjam = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
+                ->where('status', 'DIPINJAM')
+                ->exists();
+        }
+
         return view('tools.index', [
-            'tools'      => $query->latest()->paginate(5)->withQueryString(),
+            'tools'      => $tools,
             'categories' => InvCategory::orderBy('category_name')->get(),
         ]);
     }

@@ -127,12 +127,10 @@ class ToolTransactionController extends Controller
                     'transaction_id' => $transaction->id,
                     'toolkit_id'     => $serial->toolkit_id,
                     'serial_id'      => $serial->id,
-                    'status'         => 'Dipinjam',
+                    'status'         => 'PENDING',
                 ]);
 
-                $serial->update([
-                    'status' => 'DIPINJAM'
-                ]);
+                
             }
         });
 
@@ -221,13 +219,10 @@ class ToolTransactionController extends Controller
                     'transaction_id' => $transaction->id,
                     'toolkit_id'     => $serial->toolkit_id,
                     'serial_id'      => $serial->id,
-                    'status'         => 'DIPINJAM',
+                    'status'         => 'PENDING',
                 ]);
 
-                // 🔥 Update status serial jadi dipinjam
-                $serial->update([
-                    'status' => 'DIPINJAM'
-                ]);
+                
             }
         });
 

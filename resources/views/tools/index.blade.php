@@ -105,6 +105,7 @@
                 <tbody class="divide-y divide-gray-100">
 
                     @forelse ($tools as $tool)
+
                     @php $condition = $tool->latestCondition->condition ?? 'baik'; @endphp
 
                     <tr class="hover:bg-cyan-50 transition h-[60px] sm:h-[70px]">
@@ -135,12 +136,18 @@
 
                         {{-- STATUS --}}
                         <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle">
-                            @if (strtolower($tool->status) == 'dipinjam')
-                            <span class="inline-block px-2.5 sm:px-3.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-blue-100 text-blue-700 whitespace-nowrap">Dipinjam</span>
-                            @elseif (strtolower($tool->status) == 'tersedia')
-                            <span class="inline-block px-2.5 sm:px-3.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-green-100 text-green-700 whitespace-nowrap">Tersedia</span>
+                            @php
+                            $status = trim(strtolower($tool->status));
+                            @endphp
+
+                            @if ($tool->isDipinjam)
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">Dipinjam</span>
+
+                            @elseif ($tool->isPending)
+                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs">Pending</span>
+
                             @else
-                            <span class="inline-block px-2.5 sm:px-3.5 py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">Tidak Tersedia</span>
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">Tersedia</span>
                             @endif
                         </td>
 
@@ -195,13 +202,13 @@
                                 </button>
                                 @else
                                 <form action="{{ route('tools.destroy', $tool->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
+                                    class="deleteForm">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" title="Hapus Barang"
                                         class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600 hover:scale-110 transition flex items-center justify-center">
                                         <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                            <path stroke-linecap="round" stroke-linejoin="round"d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 
                                             .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                         </svg>
                                     </button>
@@ -353,25 +360,104 @@
         </div>
     </div>
 
+    <!-- MODAL DELETE -->
+    <div id="deleteModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[10001]">
+
+        <div class="bg-white rounded-2xl shadow-xl p-6 w-[350px] text-center">
+
+            <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                🗑️
+            </div>
+
+            <h2 class="text-lg font-bold mb-2">Hapus Barang?</h2>
+            <p class="text-sm text-gray-500 mb-5">
+                Data akan dihapus permanen
+            </p>
+
+            <div class="flex gap-3">
+                <button id="cancelDelete"
+                    class="flex-1 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+                    Batal
+                </button>
+
+                <button id="confirmDelete"
+                    class="flex-1 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+                    Ya, Hapus
+                </button>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 <style>
     /* ★ NOTIF ANIMASI — cuma ini yang perlu custom ★ */
-    #notifWrap { animation: notifSlideIn 0.3s ease-out; }
-    @keyframes notifSlideIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
-    #notifWrap.hiding { animation: notifSlideOut 0.25s ease-in forwards; }
-    @keyframes notifSlideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
-    #notifBar { transition: width 3.5s linear; }
+    #notifWrap {
+        animation: notifSlideIn 0.3s ease-out;
+    }
+
+    @keyframes notifSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #notifWrap.hiding {
+        animation: notifSlideOut 0.25s ease-in forwards;
+    }
+
+    @keyframes notifSlideOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+    }
+
+    #notifBar {
+        transition: width 3.5s linear;
+    }
 
     /* ★ GAMBAR — hover scale doang ★ */
-    .tools-img { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .tools-img:hover { transform: scale(1.1); box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+    .tools-img {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tools-img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
 
     /* ★ SCROLLBAR TABEL ★ */
-    .overflow-x-auto { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
-    .overflow-x-auto::-webkit-scrollbar { height: 5px; }
-    .overflow-x-auto::-webkit-scrollbar-track { background: transparent; }
-    .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    .overflow-x-auto {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 999px;
+    }
 </style>
 
 <script>
@@ -423,28 +509,43 @@
 
         function hideNotif() {
             notifWrap.classList.add('hiding');
-            setTimeout(() => { notifWrap.classList.add('hidden'); notifWrap.classList.remove('hiding'); }, 250);
+            setTimeout(() => {
+                notifWrap.classList.add('hidden');
+                notifWrap.classList.remove('hiding');
+            }, 250);
         }
 
-        notifClose.addEventListener('click', () => { if (notifTimer) clearTimeout(notifTimer); hideNotif(); });
+        notifClose.addEventListener('click', () => {
+            if (notifTimer) clearTimeout(notifTimer);
+            hideNotif();
+        });
 
         @if(session('success'))
-            showNotif('{{ session("success") }}', 'success');
+        showNotif('{{ session("success") }}', 'success');
         @endif
         @if(session('error'))
-            showNotif('{{ session("error") }}', 'error');
+        showNotif('{{ session("error") }}', 'error');
         @endif
 
         // ★ HELPER MODAL ★
-        function openModal(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
-        function closeModal(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+        function openModal(m) {
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+
+        function closeModal(m) {
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
 
         // ★ MODAL TAMBAH ★
         const tambahModal = document.getElementById('tambahBarangModal');
         document.getElementById('openTambahBarang')?.addEventListener('click', () => openModal(tambahModal));
         document.getElementById('closeTambahBarang')?.addEventListener('click', () => closeModal(tambahModal));
         document.getElementById('cancelTambahBarang')?.addEventListener('click', () => closeModal(tambahModal));
-        tambahModal?.addEventListener('click', e => { if (e.target === tambahModal) closeModal(tambahModal); });
+        tambahModal?.addEventListener('click', e => {
+            if (e.target === tambahModal) closeModal(tambahModal);
+        });
 
         // ★ MODAL EDIT ★
         const editModal = document.getElementById('editBarangModal');
@@ -460,7 +561,9 @@
         });
         document.getElementById('closeEditModal')?.addEventListener('click', () => closeModal(editModal));
         document.getElementById('cancelEditModal')?.addEventListener('click', () => closeModal(editModal));
-        editModal?.addEventListener('click', e => { if (e.target === editModal) closeModal(editModal); });
+        editModal?.addEventListener('click', e => {
+            if (e.target === editModal) closeModal(editModal);
+        });
 
         // ★ MODAL PREVIEW ★
         const previewModal = document.getElementById("imagePreviewModal");
@@ -472,7 +575,9 @@
             });
         });
         document.getElementById("closePreview")?.addEventListener("click", () => closeModal(previewModal));
-        previewModal?.addEventListener("click", e => { if (e.target === previewModal) closeModal(previewModal); });
+        previewModal?.addEventListener("click", e => {
+            if (e.target === previewModal) closeModal(previewModal);
+        });
 
         // ★ CLEAR SEARCH ★
         document.getElementById('clearSearch')?.addEventListener('click', function() {
@@ -482,15 +587,45 @@
 
         // ★ ESC KEY ★
         document.addEventListener('keydown', function(e) {
-            if (e.key === "Escape") { closeModal(tambahModal); closeModal(editModal); closeModal(previewModal); }
+            if (e.key === "Escape") {
+                closeModal(tambahModal);
+                closeModal(editModal);
+                closeModal(previewModal);
+            }
         });
 
         // ★ AUTO OPEN MODAL KALAU ADA ERROR ★
-        @php $hasErrors = $errors->any(); @endphp
+        @php $hasErrors = $errors->any();
+        @endphp
         @if($hasErrors)
-            openModal(tambahModal);
+        openModal(tambahModal);
         @endif
 
+        // DELETE MODAL
+        let deleteForm = null;
+
+        const deleteModal = document.getElementById('deleteModal');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+
+        document.querySelectorAll('.deleteForm').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                deleteForm = this;
+
+                deleteModal.classList.remove('hidden');
+                deleteModal.classList.add('flex');
+            });
+        });
+
+        confirmDelete.addEventListener('click', function() {
+            if (deleteForm) deleteForm.submit();
+        });
+
+        cancelDelete.addEventListener('click', function() {
+            deleteModal.classList.add('hidden');
+            deleteModal.classList.remove('flex');
+        });
     });
 </script>
 
