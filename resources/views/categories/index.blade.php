@@ -7,13 +7,21 @@
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-[#1CA7B6] tracking-wide">Kategori</h1>
+                {{-- GANTI WARNA JUDUL MENJADI BIRU (#5EA6FF) --}}
+                <h1 class="text-3xl font-bold text-[#5EA6FF] tracking-wide">Kategori</h1>
                 <p class="text-sm text-gray-500 mt-1">Daftar dan Input Kategori</p>
             </div>
+            
+            {{-- GANTI TOMBOL MENJADI GRADASI BIRU SESUAI CONTOH --}}
             <button type="button" id="openTambahKategori"
-                class="px-5 py-2.5 text-sm bg-[#1CA7B6] hover:bg-[#178a97] text-white font-semibold rounded-xl shadow-md shadow-[#1CA7B6]/25 transition whitespace-nowrap">
-                + Tambah Kategori
-            </button>
+    class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+    
+    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+    </svg>
+    
+    Tambah Kategori
+</button>
         </div>
 
         {{-- ================= NOTIF TOAST ================= --}}
@@ -40,8 +48,9 @@
                         <path stroke-linecap="round" d="m21 21-4.35-4.35" />
                     </svg>
                 </div>
+                {{-- GANTI WARNA FOCUS RING MENJADI BIRU --}}
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..."
-                    class="w-full pl-10 pr-10 py-2.5 bg-white rounded-xl shadow-inner border-0 text-sm outline-none focus:ring-2 focus:ring-[#1CA7B6]/20">
+                    class="w-full pl-10 pr-10 py-2.5 bg-white rounded-xl shadow-inner border-0 text-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20">
                 @if(request('search'))
                     <a href="{{ route('categories.index') }}"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition">
@@ -59,8 +68,9 @@
             <table class="w-full text-sm" style="table-layout: fixed;">
 
                 <thead>
+                    {{-- GANTI HEADER TABEL MENJADI GRADASI BIRU SESUAI CONTOH --}}
                     <tr class="text-white text-xs uppercase tracking-wider"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <th class="py-3 px-4 text-center" style="width: 12%;">No</th>
                         <th class="py-3 px-4 text-center" style="width: 56%;">Kategori</th>
                         <th class="py-3 px-4 text-center" style="width: 32%;">Aksi</th>
@@ -191,7 +201,7 @@
 
     </div>
 
-    {{-- ================= STYLE ================= --}}
+    {{-- ================= STYLE (DIUBAH WARNA JADI BIRU) ================= --}}
     <style>
         #notifWrap { animation: notifSlideIn 0.3s ease-out; }
         @keyframes notifSlideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
@@ -206,32 +216,38 @@
             animation: katModalIn 0.22s ease-out;
         }
         @keyframes katModalIn { from { opacity:0; transform:translateY(-14px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
-        .kategori-modal-title { font-weight: 700; color: #1CA7B6; }
+        
+        .kategori-modal-title { font-weight: 700; color: #5EA6FF; } 
+        
         .kategori-input {
             width: 100%; margin-bottom: .75rem; padding: .65rem .9rem;
             border: 1px solid #ccc; border-radius: .7rem; font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .kategori-input:focus { outline: none; border-color: #3fb2c8; box-shadow: 0 0 0 3px rgba(63,178,200,0.15); }
+        .kategori-input:focus { outline: none; border-color: #5EA6FF; box-shadow: 0 0 0 3px rgba(94,166,255,0.15); }
         .kategori-input::placeholder { color: #9ca3af; }
+        
         .kategori-btn-cancel {
             padding: .6rem 1.2rem; background: #dcdcdc; color: #374151;
             border-radius: .75rem; font-weight: 600; font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s; border: none; cursor: pointer;
         }
         .kategori-btn-cancel:hover { background: #c5c5c5; }
+        
         .kategori-btn-submit {
-            padding: .6rem 1.2rem; background: linear-gradient(180deg, #5FD0DF, #1CA7B6);
+            padding: .6rem 1.2rem;
+            /* GRADASI BIRU SESUAI CONTOH */
+            background: linear-gradient(180deg, #7FC4FF, #5EA6FF);
             color: white; border-radius: .75rem; font-weight: 600; font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
-            border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(28,167,182,0.3);
+            border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(94,166,255,0.3);
         }
         .kategori-btn-submit:hover { opacity: .9; transform: translateY(-1px); }
         .kategori-btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     </style>
 
-    {{-- ================= SCRIPT ================= --}}
+    {{-- ================= SCRIPT (DIUBAH NOTIF JADI BIRU) ================= --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -247,10 +263,11 @@
                 if (notifTimer) clearTimeout(notifTimer);
                 notifWrap.classList.remove('hidden', 'hiding');
                 if (type === 'success') {
-                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                    notifBar.style.background = '#34d399';
+                    // GANTI WARNA SUKSES DARI EMERALD (HIJAU) KE BLUE (BIRU)
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-blue-50 border-blue-200 text-blue-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#5EA6FF'; // Bar warna biru tema
                 } else {
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';

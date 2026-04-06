@@ -222,9 +222,19 @@
                                             Pengembalian
                                         </button>
 
-                                        <span class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg font-semibold text-xs inline-block">
-                                            ✔ Confirmed
-                                        </span>
+                                       <span class="inline-flex items-center gap-1.5 text-green-600 font-semibold text-xs relative">
+    
+    <!-- ICON -->
+    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+        <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+        </svg>
+    </span>
+
+    <!-- TEXT -->
+    <span class="tracking-wide">Confirmed</span>
+
+</span>
                                     </div>
                                 @endif
 

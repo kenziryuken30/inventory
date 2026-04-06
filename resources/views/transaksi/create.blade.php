@@ -129,15 +129,18 @@
                             <thead>
                                 <tr class="text-white text-xs uppercase tracking-wider"
                                     style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                                    <th class="py-3 px-4 font-semibold text-left">NAMA CONSUMABLE</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-24">STOCK</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-32">JUMLAH</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-20">AKSI</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-12">No</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-20">Foto</th>
+                                    <th class="py-3 px-4 font-semibold text-left">Nama Consumable</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-24">Stock</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-32">Jumlah</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-20">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-50">
                                 <tr id="emptyRow">
-                                    <td colspan="4" class="py-10 text-center text-gray-400 italic text-sm">
+                                    {{-- UPDATE COLSPAN KE 6 KARNA JUMLAH KOLOM BERTAMBAH --}}
+                                    <td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">
                                         Belum ada consumable yang dipilih
                                     </td>
                                 </tr>
@@ -578,7 +581,7 @@
 
                     const tbody = document.querySelector('#tableConsumables tbody');
                     if (tbody.querySelectorAll('tr:not(#emptyRow)').length === 0) {
-                        tbody.innerHTML = '<tr id="emptyRow"><td colspan="4" class="py-10 text-center text-gray-400 italic text-sm">Belum ada consumable yang dipilih</td></tr>';
+                        tbody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">Belum ada consumable yang dipilih</td></tr>';
                     } else {
                         document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)').forEach((row, i) => {
                             row.querySelector('.no-col').innerText = i + 1;
@@ -644,20 +647,30 @@
                         updatedCount++;
                     } else {
                         startNo++;
+                        
+                        // ===== UPDATE STRUKTUR HTML BARIS (TAMBAH NO & FOTO TERPISAH) =====
                         const html = `
                             <tr data-id="${id}" class="hover:bg-gray-50 transition">
-                                <td class="py-3 px-4">
-                                    <div class="flex items-center gap-3">
-                                        <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[10px] font-bold text-gray-500 bg-gray-100 rounded-md no-col">${startNo}</span>
-                                        <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm flex-shrink-0">
-                                        <span class="font-semibold text-gray-800 item-name">${name}</span>
-                                    </div>
+                                <!-- KOLOM NO -->
+                                <td class="py-3 px-4 text-center font-medium text-gray-600 w-12">
+                                    <span class="no-col">${startNo}</span>
                                 </td>
-                                <td class="text-center py-3 px-4 font-medium text-blue-600">${stock}</td>
+                                <!-- KOLOM FOTO -->
+                                <td class="py-3 px-4 text-center w-20">
+                                    <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto">
+                                </td>
+                                <!-- KOLOM NAMA -->
+                                <td class="py-3 px-4">
+                                    <span class="font-semibold text-gray-800 item-name">${name}</span>
+                                </td>
+                                <!-- KOLOM STOCK -->
+                                <td class="text-center py-3 px-4 font-medium text-blue-600 w-24">${stock}</td>
+                                <!-- KOLOM JUMLAH -->
                                 <td class="text-center py-3 px-4 w-32">
                                     <input type="number" value="${qty}" min="1" onchange="updateQty(this)"
                                         class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none">
                                 </td>
+                                <!-- KOLOM AKSI -->
                                 <td class="text-center py-3 px-4 w-20">
                                     <button type="button" onclick="removeRow(this)"
                                         class="bg-red-50 text-red-500 px-2 py-1 rounded-lg text-xs font-bold hover:bg-red-100 transition">Hapus</button>
