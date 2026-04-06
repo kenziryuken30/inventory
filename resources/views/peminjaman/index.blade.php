@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div x-data="{openReturn: null}" class="w-full min-h-screen flex flex-col">
+    {{-- UPDATE: Menambahkan variabel deleteConfirm, deleteId, deleteCode ke x-data --}}
+    <div x-data="{ openReturn: null, deleteConfirm: false, deleteId: null, deleteCode: '' }" class="w-full min-h-screen flex flex-col">
 
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
@@ -10,16 +11,16 @@
                 <p class="text-sm text-gray-500 mt-1">Kelola data transaksi peminjaman alat</p>
             </div>
 
-            {{-- TOMBOL PERBAIKAN: Biru Muda Gradasi Atas Bawah (Fresh & Bright) --}}
+            {{-- TOMBOL PINJAM TOOLS (Outline Style) --}}
             <a href="{{ route('peminjaman.create') }}"
-    class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+                class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
     
-    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-    </svg>
+                <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
     
-    Pinjam Tools
-</a>
+                Pinjam Tools
+            </a>
         </div>
 
         {{-- ================= NOTIF TOAST ================= --}}
@@ -117,27 +118,29 @@
                                 @endforeach
                             </td>
                             <td class="py-4 px-6 text-center">
-                                <div class="flex justify-center gap-2 flex-wrap">
+                                {{-- UPDATE: Menggunakan class items-center agar icon rapi --}}
+                                <div class="flex justify-center gap-2 items-center">
                                     @if (!$transaction->is_confirm)
+                                        {{-- TOMBOL EDIT (ICON) --}}
                                         <a href="{{ route('peminjaman.edit', $transaction->id) }}"
-                                            class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-semibold text-xs transition">
-                                            Edit
+                                            class="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition"
+                                            title="Edit">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
+                                            </svg>
                                         </a>
 
-                                        {{-- Form Hapus Tersembunyi --}}
-                                        <form action="{{ route('peminjaman.destroy', $transaction->id) }}" method="POST"
-                                            id="deleteForm_{{ $transaction->id }}" class="hidden">
-                                            @csrf @method('DELETE')
-                                        </form>
-
+                                        {{-- TOMBOL HAPUS (ICON) - Menggunakan Alpine JS --}}
                                         <button type="button"
-                                            onclick="openDeleteModal({{ $transaction->id }}, '{{ $transaction->kode_transaksi ?? $transaction->transaction_code }}')"
-                                            class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold text-xs transition">
-                                            Hapus
+                                            @click="deleteId = '{{ $transaction->id }}'; deleteCode = '{{ $transaction->kode_transaksi ?? $transaction->transaction_code }}'; deleteConfirm = true"
+                                            class="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                                            title="Hapus">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                            </svg>
                                         </button>
 
-                                        <form action="{{ route('peminjaman.confirm', $transaction->id) }}" method="POST"
-                                            class="inline">
+                                        <form action="{{ route('peminjaman.confirm', $transaction->id) }}" method="POST" class="inline">
                                             @csrf
                                             <button class="text-white px-3 py-1.5 rounded-lg font-semibold text-xs transition"
                                                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
@@ -291,38 +294,57 @@
             @endif
         @endforeach
 
+        {{-- ================= MODAL KONFIRMASI HAPUS (ALPINE JS STYLE) ================= --}}
+        <div x-show="deleteConfirm" x-cloak
+            @click.self="deleteConfirm = false"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[10002] p-4">
+            
+            <div x-show="deleteConfirm"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-90"
+                class="bg-white w-full max-w-sm rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 text-center">
 
-        {{-- ================= MODAL HAPUS TRANSAKSI ================= --}}
-        <div id="deleteModal"
-            class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[10002] p-3 sm:p-4">
-            <div class="w-[calc(100%-1.5rem)] sm:w-11/12 max-w-sm bg-white rounded-2xl shadow-2xl p-5 sm:p-6 text-center">
                 <div class="flex justify-center mb-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-100 flex items-center justify-center">
-                        <svg class="w-7 h-7 sm:w-8 sm:h-8 text-red-500" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.8">
+                    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
                         </svg>
                     </div>
                 </div>
 
-                <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Transaksi?</h3>
-                <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
-                <p id="deleteNameModal" class="text-xs sm:text-sm font-semibold text-[#5EA6FF] mb-5"></p>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Transaksi?</h3>
+                <p class="text-sm text-gray-500 mb-1">Anda yakin ingin menghapus transaksi</p>
+                <p class="text-sm font-bold text-[#5EA6FF] mb-6" x-text="deleteCode"></p>
 
                 <div class="flex gap-3">
-                    <button id="cancelDelete"
-                        class="flex-1 px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-xs sm:text-sm font-semibold hover:bg-[#c5c5c5] transition">
+                    <button @click="deleteConfirm = false"
+                        class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition">
                         Batal
                     </button>
-                    <button id="confirmDelete"
-                        class="flex-1 px-5 py-2.5 bg-red-500 text-white rounded-xl text-xs sm:text-sm font-semibold hover:bg-red-600 transition">
-                        Ya, Hapus
-                    </button>
+                    
+                    {{-- Form Action Hapus (Menggunakan URL Helper untuk dinamis ID) --}}
+                    <form method="POST" :action="'{{ url('peminjaman') }}/' + deleteId" class="flex-1">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="w-full px-4 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition">
+                            Ya, Hapus
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-
 
         {{-- ================= STYLE ================= --}}
         @push('styles')
@@ -433,49 +455,7 @@
                     window.showNotif('{{ session("error") }}', 'error');
                 @endif
 
-
-                // ================= MODAL HAPUS TRANSAKSI =================
-                const deleteModal = document.getElementById('deleteModal');
-                const deleteNameModal = document.getElementById('deleteNameModal');
-                let pendingDeleteId = null;
-
-                window.openDeleteModal = function (id, code) {
-                    pendingDeleteId = id;
-                    deleteNameModal.textContent = 'Transaksi ' + code;
-
-                    deleteModal.classList.remove('hidden');
-                    deleteModal.classList.add('flex');
-                };
-
-                function closeDeleteModal() {
-                    deleteModal.classList.add('hidden');
-                    deleteModal.classList.remove('flex');
-                    pendingDeleteId = null;
-                }
-
-                document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
-
-                deleteModal.addEventListener('click', function (e) {
-                    if (e.target === deleteModal) closeDeleteModal();
-                });
-
-                document.getElementById('confirmDelete').addEventListener('click', function () {
-                    if (pendingDeleteId) {
-                        const form = document.getElementById('deleteForm_' + pendingDeleteId);
-                        if (form) {
-                            form.submit();
-                        }
-                    }
-                    closeDeleteModal();
-                });
-
-                // ================= ESC KEY GLOBAL =================
-                document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') {
-                        closeDeleteModal();
-                    }
-                });
-
+                // KODE JS LAMA UNTUK MODAL HAPUS TELAH DIHAPUS KARENA SUDAH MENGGUNAKAN ALPINE JS
             });
         </script>
 @endsection
