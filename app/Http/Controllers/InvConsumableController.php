@@ -25,15 +25,34 @@ class InvConsumableController extends Controller
         return view('consumable.index', compact('consumables', 'categories'));
     }
 
+    // ★ TAMBAH METHOD INI ★
+    public function checkName(Request $request)
+    {
+        $name = $request->query('name');
+        $id = $request->query('id');
+
+        if (!$name) {
+            return response()->json(['exists' => false]);
+        }
+
+        $query = InvConsumable::whereRaw('LOWER(name) = ?', [strtolower(trim($name))]);
+
+        if ($id) {
+            $query->where('id', '!=', $id);
+        }
+
+        return response()->json(['exists' => $query->exists()]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
+            'name'        => 'required|unique:inv_consumables,name',
             'category_id' => 'required',
-            'stock' => 'required|integer',
+            'stock'       => 'required|integer',
             'minimum_stock' => 'nullable|integer',
-            'unit' => 'required',
-            'image' => 'nullable|image',
+            'unit'        => 'required',
+            'image'       => 'nullable|image',
         ]);
 
         $data['id'] = Str::uuid();
@@ -48,19 +67,17 @@ class InvConsumableController extends Controller
         return back()->with('success', 'Consumable berhasil ditambahkan');
     }
 
-
-
     public function update(Request $request, $id)
     {
         $item = InvConsumable::findOrFail($id);
 
         $data = $request->validate([
-            'name' => 'required',
-            'category_id' => 'required',
-            'stock' => 'required|integer',
+            'name'          => 'required|unique:inv_consumables,name,' . $id,
+            'category_id'   => 'required',
+            'stock'         => 'required|integer',
             'minimum_stock' => 'required|integer',
-            'unit' => 'required',
-            'image' => 'nullable|image',
+            'unit'          => 'required',
+            'image'         => 'nullable|image',
         ]);
 
         if ($request->hasFile('image')) {

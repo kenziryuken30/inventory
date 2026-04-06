@@ -2,7 +2,13 @@
 
 @section('content')
 
-    <div class="max-w-7xl mx-auto" x-data="{ openDetail: null }">
+    {{-- x-cloak harus di paling atas --}}
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
+    {{-- x-data di root, semua modal harus di dalam ini --}}
+    <div class="max-w-7xl mx-auto" x-data="{ openDetail: null }" x-cloak>
 
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
@@ -12,13 +18,13 @@
             </div>
         </div>
 
-
         {{-- ================= FILTER ================= --}}
-        <form method="GET" action="{{ route('laporan.consumable.transaksi') }}"
+        <form method="GET" action="{{ route('laporan.consumable.transaksi') }}" id="filterForm"
             class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-end"
             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
-            <input type="hidden" name="type" value="{{ $type }}">
+            {{-- Hidden type akan di-update oleh JS saat toggle diklik --}}
+            <input type="hidden" name="type" id="filterType" value="{{ $type }}">
 
             <div class="flex-1 min-w-[200px]">
                 <label class="text-white text-sm font-semibold block mb-1">Nama Peminta</label>
@@ -28,19 +34,23 @@
 
             <div>
                 <label class="text-white text-sm font-semibold block mb-1">Dari Tanggal</label>
-                <input type="date" name="start_date" value="{{ request('start_date') }}"
+                <input type="date" name="start_date" id="startDate" value="{{ request('start_date') }}"
                     class="px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:outline-none text-sm">
             </div>
 
             <div>
                 <label class="text-white text-sm font-semibold block mb-1">Sampai Tanggal</label>
-                <input type="date" name="end_date" value="{{ request('end_date') }}"
+                <input type="date" name="end_date" id="endDate" value="{{ request('end_date') }}"
                     class="px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:outline-none text-sm">
             </div>
 
-            <div class="flex gap-2 items-end">
+            {{-- Validasi tanggal error --}}
+            <div id="dateError" class="hidden w-full text-sm text-white bg-red-500/80 px-4 py-2 rounded-xl">
+                ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
+            </div>
 
-                <button type="submit"
+            <div class="flex gap-2 items-end">
+                <button type="submit" id="filterBtn"
                     class="bg-white text-[#5EA6FF] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-300 text-sm hover:-translate-y-0.5">
                     🔎 Filter
                 </button>
@@ -57,7 +67,7 @@
                 </a>
 
                 {{-- PDF --}}
-                <a href="{{ route('laporan.consumable.export.pdf', request()->all()) }}"
+                <a href="{{ route('laporan.consumable.export.pdf', array_merge(request()->query(), ['type' => $type])) }}"
                     class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
                     style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white; box-shadow: 0 4px 15px rgba(225,29,72,0.35);">
                     <span class="relative z-10 flex items-center gap-1.5">
@@ -68,7 +78,7 @@
                 </a>
 
                 {{-- EXCEL --}}
-                <a href="{{ route('laporan.consumable.export.excel', request()->all()) }}"
+                <a href="{{ route('laporan.consumable.export.excel', array_merge(request()->query(), ['type' => $type])) }}"
                     class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
                     style="background: linear-gradient(135deg, #34D399, #059669); color: white; box-shadow: 0 4px 15px rgba(5,150,105,0.35);">
                     <span class="relative z-10 flex items-center gap-1.5">
@@ -77,40 +87,30 @@
                     </span>
                     <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
-
             </div>
         </form>
 
-
         {{-- ================= TOGGLE ================= --}}
         <div class="flex items-center gap-4 mb-6">
-
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
-
-                <a href="{{ route('laporan.consumable.transaksi', array_merge(request()->all(), ['type' => 'pengeluaran'])) }}"
+                <button type="button" id="togglePengeluaran"
                     class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengeluaran' ? 'bg-white shadow text-[#1CA7B6]' : 'text-gray-600 hover:text-gray-800' }}">
                     📤 Pengeluaran
-                </a>
-
-                <a href="{{ route('laporan.consumable.transaksi', array_merge(request()->all(), ['type' => 'pengembalian'])) }}"
+                </button>
+                <button type="button" id="togglePengembalian"
                     class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengembalian' ? 'bg-white shadow text-[#1CA7B6]' : 'text-gray-600 hover:text-gray-800' }}">
                     📥 Pengembalian
-                </a>
+                </button>
             </div>
             <div class="text-sm text-gray-500">
                 Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $totalTransaksi }}</span>
             </div>
-
         </div>
-
 
         {{-- ================= TABLE ================= --}}
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-
             <div class="max-h-[420px] overflow-y-auto">
-
                 <table class="min-w-full text-sm text-gray-700">
-
                     <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <tr>
@@ -127,17 +127,12 @@
                             @endif
                         </tr>
                     </thead>
-
                     <tbody class="divide-y divide-gray-100">
-
                         @forelse($data as $row)
-
                             <tr class="hover:bg-gray-50 transition">
-
                                 <td class="py-4 px-6 text-center font-medium text-gray-600">
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
-
                                 <td class="py-4 px-6 font-bold text-[#1CA7B6]">
                                     @if($type == 'pengeluaran')
                                         {{ $row->transaction_code }}
@@ -145,7 +140,6 @@
                                         {{ $row->transaction->transaction_code }}
                                     @endif
                                 </td>
-
                                 <td class="py-4 px-6 text-gray-700">
                                     @if($type == 'pengeluaran')
                                         {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
@@ -153,7 +147,6 @@
                                         {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}
                                     @endif
                                 </td>
-
                                 <td class="py-4 px-6 text-gray-700">
                                     @if($type == 'pengeluaran')
                                         {{ $row->borrower_name }}
@@ -161,7 +154,6 @@
                                         {{ $row->transaction->borrower_name }}
                                     @endif
                                 </td>
-
                                 <td class="py-4 px-6 text-gray-700">
                                     @if($type == 'pengeluaran')
                                         @foreach($row->items as $item)
@@ -171,7 +163,6 @@
                                         {{ $row->consumable->name }}
                                     @endif
                                 </td>
-
                                 <td class="py-4 px-6 text-center font-bold text-[#1CA7B6]">
                                     @if($type == 'pengeluaran')
                                         {{ $row->items->sum('qty') }}
@@ -179,10 +170,8 @@
                                         {{ $row->qty_return }}
                                     @endif
                                 </td>
-
                                 @if($type == 'pengeluaran')
                                     <td class="py-4 px-6 text-center">
-                                        {{-- ✅ BUTTON DETAIL YANG SUDAH DIPERBAIKI WARNYA --}}
                                         <button @click="openDetail = {{ $row->id }}"
                                             class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
                                             style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
@@ -199,40 +188,44 @@
                                         {{ $row->note ?? '-' }}
                                     </td>
                                 @endif
-
                             </tr>
-
                         @empty
                             <tr>
                                 <td colspan="7" class="py-12 text-center text-gray-400">
                                     <div class="flex flex-col items-center gap-2">
-                                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                                            </path>
+                                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                         </svg>
                                         <span>Tidak ada data transaksi pada periode ini</span>
                                     </div>
                                 </td>
                             </tr>
                         @endforelse
-
                     </tbody>
                 </table>
             </div>
         </div>
 
+        {{-- ================= PAGINATION ================= --}}
+        <div class="mt-6 flex justify-center">
+            {{ $data->appends(request()->query())->links() }}
+        </div>
 
         {{-- ================= MODAL PENGELUARAN ================= --}}
         @if($type == 'pengeluaran')
-
             @foreach($data as $row)
+                <div x-show="openDetail === {{ $row->id }}"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    @click.self="openDetail = null">
 
-                <div x-show="openDetail === {{ $row->id }}" x-transition x-cloak
-                    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-
-                    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                        @click.stop>
 
                         <div class="px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
@@ -245,44 +238,36 @@
 
                         <div class="p-6 overflow-auto flex-1 bg-gray-50">
                             <div class="grid grid-cols-2 gap-6 text-sm mb-6">
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Kode Transaksi</p>
                                     <p class="text-gray-800 font-semibold">{{ $row->transaction_code }}</p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal</p>
-                                    <p class="text-gray-800">{{ \Carbon\Carbon::parse($row->created_at)->format('d M Y') }}</p>
+                                    <p class="text-gray-800">{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Karyawan</p>
                                     <p class="text-gray-800">{{ $row->borrower_name }}</p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Client</p>
                                     <p class="text-gray-800">{{ $row->client ?? '-' }}</p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Project</p>
                                     <p class="text-gray-800">{{ $row->project ?? '-' }}</p>
                                 </div>
-
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Keperluan</p>
                                     <div class="bg-white rounded-xl px-4 py-3 shadow-inner text-gray-700 border border-gray-200">
                                         {{ $row->purpose ?? '-' }}
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                                 <table class="w-full text-sm">
-
                                     <thead class="text-white text-xs uppercase tracking-wider"
                                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                                         <tr>
@@ -291,7 +276,6 @@
                                             <th class="py-3 px-4 font-semibold text-left">UNIT</th>
                                         </tr>
                                     </thead>
-
                                     <tbody class="bg-white divide-y divide-gray-100">
                                         @foreach($row->items as $item)
                                             <tr class="hover:bg-gray-50 transition">
@@ -301,12 +285,10 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
 
-                        {{-- ✅ BUTTON TUTUP YANG SUDAH DIPERBAIKI --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
@@ -315,22 +297,26 @@
                                 <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                             </button>
                         </div>
-
                     </div>
                 </div>
-
             @endforeach
         @endif
 
         {{-- ================= MODAL PENGEMBALIAN ================= --}}
         @if($type == 'pengembalian')
-
             @foreach($data as $row)
+                <div x-show="openDetail === {{ $row->id }}"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    @click.self="openDetail = null">
 
-                <div x-show="openDetail === {{ $row->id }}" x-transition x-cloak
-                    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-
-                    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                        @click.stop>
 
                         <div class="px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
@@ -342,39 +328,33 @@
 
                         <div class="p-6 overflow-auto flex-1 bg-gray-50">
                             <div class="grid grid-cols-2 gap-6 text-sm mb-4">
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Kode Transaksi</p>
                                     <p class="text-gray-800 font-semibold">{{ $row->transaction->transaction_code }}</p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian</p>
                                     <p class="text-gray-800">
-                                        {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}</p>
+                                        {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}
+                                    </p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Karyawan</p>
                                     <p class="text-gray-800">{{ $row->transaction->borrower_name }}</p>
                                 </div>
-
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Consumable</p>
                                     <p class="text-gray-800">{{ $row->consumable->name }}</p>
                                 </div>
-
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Jumlah Dikembalikan</p>
                                     <p class="text-[#1CA7B6] font-bold text-lg">
                                         {{ $row->qty_return }} {{ $row->consumable->unit }}
                                     </p>
                                 </div>
-
                             </div>
                         </div>
 
-                        {{-- ✅ BUTTON TUTUP YANG SUDAH DIPERBAIKI --}}
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
@@ -383,20 +363,82 @@
                                 <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                             </button>
                         </div>
-
                     </div>
                 </div>
-
             @endforeach
         @endif
 
-        <style>
-            [x-cloak] {
-                display: none !important;
-            }
-        </style>
-        <div class="mt-6 flex justify-center">
-            {{ $data->links() }}
-        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const filterForm = document.getElementById('filterForm');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            const filterType = document.getElementById('filterType');
+            const dateError = document.getElementById('dateError');
+            const togglePengeluaran = document.getElementById('togglePengeluaran');
+            const togglePengembalian = document.getElementById('togglePengembalian');
+
+            // ★ VALIDASI TANGGAL ★
+            filterForm?.addEventListener('submit', function (e) {
+                const start = startDate.value;
+                const end = endDate.value;
+
+                // Kalau keduanya diisi, cek logic
+                if (start && end && end < start) {
+                    e.preventDefault();
+                    dateError.classList.remove('hidden');
+                    endDate.classList.add('ring-2', 'ring-red-400');
+                    return;
+                }
+
+                dateError.classList.add('hidden');
+                endDate.classList.remove('ring-2', 'ring-red-400');
+            });
+
+            // Auto-hide error saat user rubah tanggal
+            endDate?.addEventListener('change', function () {
+                const start = startDate.value;
+                if (start && this.value && this.value >= start) {
+                    dateError.classList.add('hidden');
+                    this.classList.remove('ring-2', 'ring-red-400');
+                }
+            });
+
+            startDate?.addEventListener('change', function () {
+                const end = endDate.value;
+                if (this.value && end && end >= this.value) {
+                    dateError.classList.add('hidden');
+                    endDate.classList.remove('ring-2', 'ring-red-400');
+                }
+            });
+
+            // ★ TOGGLE TYPE (pakai form submit, bukan link) ★
+            function switchType(type) {
+                filterType.value = type;
+
+                // Update tampilan toggle
+                if (type === 'pengeluaran') {
+                    togglePengeluaran.classList.add('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    togglePengeluaran.classList.remove('text-gray-600');
+                    togglePengembalian.classList.remove('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    togglePengembalian.classList.add('text-gray-600');
+                } else {
+                    togglePengembalian.classList.add('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    togglePengembalian.classList.remove('text-gray-600');
+                    togglePengeluaran.classList.remove('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    togglePengeluaran.classList.add('text-gray-600');
+                }
+
+                // Submit form dengan type baru
+                filterForm.submit();
+            }
+
+            togglePengeluaran?.addEventListener('click', () => switchType('pengeluaran'));
+            togglePengembalian?.addEventListener('click', () => switchType('pengembalian'));
+        });
+    </script>
+
 @endsection

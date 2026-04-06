@@ -92,11 +92,17 @@ class ReportConsumableController extends Controller
     {
         $type = $request->type ?? 'pengeluaran';
 
-        $data = $this->getData($request, $type);
+        $data = $this->getData($request, $type, true);
+
+        $period = [
+            'start' => $request->start_date,
+            'end'   => $request->end_date,
+        ];
 
         $pdf = Pdf::loadView('laporan.consumable.export', [
-            'data' => $data,
-            'type' => $type
+            'data'   => $data,
+            'type'   => $type,
+            'period' => $period,
         ])->setPaper('A4', 'landscape');
 
         return $pdf->download('laporan_consumable_' . $type . '.pdf');
@@ -107,10 +113,10 @@ class ReportConsumableController extends Controller
     {
         $type = $request->type ?? 'pengeluaran';
 
-        $data = $this->getData($request, $type);
+        $data = $this->getData($request, $type, true);
 
         return Excel::download(
-            new ReportConsumableExport($data, $type),
+            new ReportConsumableExport($data, $type, $request->start_date, $request->end_date),
             'laporan_consumable_' . $type . '.xlsx'
         );
     }

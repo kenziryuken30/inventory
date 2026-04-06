@@ -31,6 +31,28 @@
             </div>
         </div>
 
+        {{-- ================= SEARCH ================= --}}
+        <form method="GET" action="{{ route('categories.index') }}" class="mb-5">
+            <div class="relative max-w-sm">
+                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <path stroke-linecap="round" d="m21 21-4.35-4.35" />
+                    </svg>
+                </div>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..."
+                    class="w-full pl-10 pr-10 py-2.5 bg-white rounded-xl shadow-inner border-0 text-sm outline-none focus:ring-2 focus:ring-[#1CA7B6]/20">
+                @if(request('search'))
+                    <a href="{{ route('categories.index') }}"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </a>
+                @endif
+            </div>
+        </form>
+
         {{-- ================= TABEL ================= --}}
         <div class="rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-100">
 
@@ -50,7 +72,7 @@
                     @forelse($categories as $cat)
 
                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                            <td class="py-3.5 px-4 text-center font-medium text-gray-600">{{ $loop->iteration }}</td>
+                            <td class="py-3.5 px-4 text-center font-medium text-gray-600">{{ $categories->firstItem() + $loop->index }}</td>
                             <td class="py-3.5 px-4 font-medium text-gray-800 text-center">{{ $cat->category_name }}</td>
                             <td class="py-3.5 px-4 text-center">
                                 <div class="flex justify-center gap-3">
@@ -92,12 +114,17 @@
             </table>
         </div>
 
+        {{-- ================= PAGINATION ================= --}}
+        <div class="mt-5 flex justify-center">
+            {{ $categories->appends(request()->query())->links() }}
+        </div>
+
 
         {{-- ================= MODAL TAMBAH ================= --}}
         <div id="tambahKategoriModal"
             class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1000]">
             <div class="kategori-modal-box w-11/12 max-w-md bg-[#efefef] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 sm:p-8">
-                <form method="POST" action="{{ route('categories.store') }}">
+                <form id="tambahKategoriForm" method="POST" action="{{ route('categories.store') }}">
                     @csrf
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="kategori-modal-title text-lg font-semibold">Tambah Kategori</h2>
@@ -107,7 +134,7 @@
                     <input name="category_name" placeholder="Nama Kategori" class="kategori-input" required>
                     <div class="flex justify-end gap-3 mt-5">
                         <button type="button" id="cancelTambahKategori" class="kategori-btn-cancel">Batal</button>
-                        <button type="submit" class="kategori-btn-submit">Simpan</button>
+                        <button type="submit" id="tambahSubmitBtn" class="kategori-btn-submit">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -128,7 +155,7 @@
                     <input name="category_name" id="editKategoriName" placeholder="Nama Kategori" class="kategori-input" required>
                     <div class="flex justify-end gap-3 mt-5">
                         <button type="button" id="cancelEditKategori" class="kategori-btn-cancel">Batal</button>
-                        <button type="submit" class="kategori-btn-submit">Update</button>
+                        <button type="submit" id="editSubmitBtn" class="kategori-btn-submit">Update</button>
                     </div>
                 </form>
             </div>
@@ -155,7 +182,7 @@
                     <form id="deleteKategoriForm" method="POST" class="flex-1">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"
+                        <button type="submit" id="deleteSubmitBtn"
                             class="w-full px-4 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition">Ya, Hapus</button>
                     </form>
                 </div>
@@ -201,6 +228,7 @@
             border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(28,167,182,0.3);
         }
         .kategori-btn-submit:hover { opacity: .9; transform: translateY(-1px); }
+        .kategori-btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     </style>
 
     {{-- ================= SCRIPT ================= --}}
@@ -251,14 +279,25 @@
             function openModal(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
             function closeModal(m) { m.classList.add('hidden'); m.classList.remove('flex'); }
 
+            // ★ MODAL TAMBAH ★
             const tambahModal = document.getElementById('tambahKategoriModal');
+            const tambahForm = document.getElementById('tambahKategoriForm');
+            const tambahSubmitBtn = document.getElementById('tambahSubmitBtn');
+
             document.getElementById('openTambahKategori')?.addEventListener('click', () => openModal(tambahModal));
             document.getElementById('closeTambahKategori')?.addEventListener('click', () => closeModal(tambahModal));
             document.getElementById('cancelTambahKategori')?.addEventListener('click', () => closeModal(tambahModal));
             tambahModal?.addEventListener('click', e => { if (e.target === tambahModal) closeModal(tambahModal); });
 
+            tambahForm?.addEventListener('submit', function () {
+                tambahSubmitBtn.disabled = true;
+            });
+
+            // ★ MODAL EDIT ★
             const editModal = document.getElementById('editKategoriModal');
             const editForm = document.getElementById('editKategoriForm');
+            const editSubmitBtn = document.getElementById('editSubmitBtn');
+
             document.addEventListener('click', function (e) {
                 const btn = e.target.closest('.editKategoriBtn');
                 if (!btn) return;
@@ -270,8 +309,15 @@
             document.getElementById('cancelEditKategori')?.addEventListener('click', () => closeModal(editModal));
             editModal?.addEventListener('click', e => { if (e.target === editModal) closeModal(editModal); });
 
+            editForm?.addEventListener('submit', function () {
+                editSubmitBtn.disabled = true;
+            });
+
+            // ★ MODAL HAPUS ★
             const deleteModal = document.getElementById('deleteKategoriModal');
             const deleteForm = document.getElementById('deleteKategoriForm');
+            const deleteSubmitBtn = document.getElementById('deleteSubmitBtn');
+
             document.addEventListener('click', function (e) {
                 const btn = e.target.closest('.deleteKategoriBtn');
                 if (!btn) return;
@@ -282,6 +328,11 @@
             document.getElementById('cancelDeleteKategori')?.addEventListener('click', () => closeModal(deleteModal));
             deleteModal?.addEventListener('click', e => { if (e.target === deleteModal) closeModal(deleteModal); });
 
+            deleteForm?.addEventListener('submit', function () {
+                deleteSubmitBtn.disabled = true;
+            });
+
+            // ★ ESC KEY ★
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') { closeModal(tambahModal); closeModal(editModal); closeModal(deleteModal); }
             });
