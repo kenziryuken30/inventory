@@ -6,14 +6,21 @@
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Peminjaman Tools</h2>
+                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Peminjaman Tools</h2>
                 <p class="text-sm text-gray-500 mt-1">Kelola data transaksi peminjaman alat</p>
             </div>
 
+            {{-- TOMBOL PERBAIKAN: Biru Muda Gradasi Atas Bawah (Fresh & Bright) --}}
             <a href="{{ route('peminjaman.create') }}"
-                class="text-white px-6 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
-                + Pinjam Tools
+                class="group relative inline-flex items-center px-6 py-2.5 font-bold text-white transition-all duration-300 rounded-xl shadow-lg hover:shadow-sky-400/50 hover:-translate-y-0.5 active:translate-y-0 tracking-wide"
+                style="background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);">
+                
+                {{-- Ikon Plus dengan Animasi Putar --}}
+                <svg class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                
+                Pinjam Tools
             </a>
         </div>
 
@@ -35,7 +42,7 @@
         {{-- ================= FILTER ================= --}}
         <form method="GET" action="{{ route('peminjaman.index') }}"
             class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-center min-h-[80px]"
-            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
             <div class="relative flex-1 min-w-[200px]">
                 <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
@@ -51,21 +58,21 @@
                 </button>
             </div>
 
-            <label class="text-white font-semibold text-sm">Tanggal</label>
+            <label class="text-white font-semibold text-sm drop-shadow-sm">Tanggal</label>
             <input type="date" name="start_date" value="{{ request('start_date') }}"
                 class="bg-white border-0 rounded-xl px-4 py-2.5 text-sm shadow-inner focus:outline-none">
 
-            <span class="text-white font-bold text-sm">s/d</span>
+            <span class="text-white font-bold text-sm drop-shadow-sm">s/d</span>
 
             <input type="date" name="end_date" value="{{ request('end_date') }}"
                 class="bg-white border-0 rounded-xl px-4 py-2.5 text-sm shadow-inner focus:outline-none">
 
             <button type="submit"
-                class="bg-white text-[#1CA7B6] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 transition text-sm">
+                class="bg-white text-[#5EA6FF] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 transition text-sm">
                 Filter
             </button>
 
-            <a href="{{ route('peminjaman.index') }}" class="text-white underline text-sm hover:text-gray-100 transition">
+            <a href="{{ route('peminjaman.index') }}" class="text-white underline text-sm hover:text-gray-100 transition font-medium">
                 Reset
             </a>
         </form>
@@ -75,7 +82,7 @@
             <table class="min-w-full text-sm">
                 <thead>
                     <tr class="text-white text-xs uppercase tracking-wider"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <th class="py-4 px-6 font-semibold text-center" style="width: 50px;">NO</th>
                         <th class="py-4 px-6 font-semibold text-left" style="width: 120px;">KODE</th>
                         <th class="py-4 px-6 font-semibold text-left" style="width: 150px;">TGL PINJAM</th>
@@ -92,7 +99,7 @@
                             <td class="py-4 px-6 text-center font-medium text-gray-600">
                                 {{ $loop->iteration }}
                             </td>
-                            <td class="py-4 px-6 font-bold text-[#1CA7B6]">
+                            <td class="py-4 px-6 font-bold text-[#5EA6FF]">
                                 {{ $transaction->kode_transaksi ?? $transaction->transaction_code }}
                             </td>
                             <td class="py-4 px-6 text-gray-700">
@@ -135,7 +142,7 @@
                                             class="inline">
                                             @csrf
                                             <button class="text-white px-3 py-1.5 rounded-lg font-semibold text-xs transition"
-                                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                                 Confirm
                                             </button>
                                         </form>
@@ -186,7 +193,7 @@
 
                             {{-- HEADER MODAL --}}
                             <div class="px-6 py-4 flex justify-between items-center text-white"
-                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <div>
                                     <h3 class="text-lg font-bold">Proses Pengembalian</h3>
                                     <p class="text-sm text-white/80">Pilih alat yang akan dikembalikan</p>
@@ -208,7 +215,7 @@
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-1">Tanggal Pengembalian</label>
                                         <input type="date" name="return_date" value="{{ date('Y-m-d') }}" required
-                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none text-sm">
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:outline-none text-sm">
                                     </div>
                                 </div>
 
@@ -217,9 +224,9 @@
                                     <table class="w-full text-sm">
                                         {{-- HEADER TABEL GRADASI --}}
                                         <thead class="text-white text-xs uppercase tracking-wider"
-                                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                             <tr class="text-white text-xs uppercase tracking-wider"
-                                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                                 <th class="py-3 px-4 text-center w-16 font-semibold">Pilih</th>
                                                 <th class="py-3 px-4 text-left font-semibold">Nama Alat</th>
                                                 <th class="py-3 px-4 text-left font-semibold">No Seri</th>
@@ -231,7 +238,7 @@
                                             @foreach ($transaction->items->whereNull('return_date') as $item)
                                                 <tr class="hover:bg-gray-50 transition">
                                                     <td class="px-4 py-3 text-center">
-                                                        <input type="checkbox" class="w-4 h-4 accent-[#1CA7B6]" x-model="selected"
+                                                        <input type="checkbox" class="w-4 h-4 accent-[#5EA6FF]" x-model="selected"
                                                             value="{{ $item->id }}" name="items[{{ $item->id }}][id]">
                                                     </td>
 
@@ -275,7 +282,7 @@
                                 <button type="submit" :disabled="selected.length === 0"
                                     :class="selected.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'hover:opacity-90'"
                                     class="px-5 py-2.5 text-white rounded-xl font-semibold text-sm shadow-md transition"
-                                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                     Kembalikan <span x-text="selected.length"></span> Alat
                                 </button>
                             </div>
@@ -303,7 +310,7 @@
 
                 <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Transaksi?</h3>
                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
-                <p id="deleteNameModal" class="text-xs sm:text-sm font-semibold text-[#1CA7B6] mb-5"></p>
+                <p id="deleteNameModal" class="text-xs sm:text-sm font-semibold text-[#5EA6FF] mb-5"></p>
 
                 <div class="flex gap-3">
                     <button id="cancelDelete"

@@ -9,7 +9,7 @@
         <div class="flex justify-between items-center mb-6">
 
             <div>
-                <h1 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">
+                <h1 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">
                     Transaksi Consumable
                 </h1>
 
@@ -22,12 +22,11 @@
 
                 <a href="{{ route('transaksi.create') }}"
                     class="text-white px-6 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                     + Permintaan Consumable
                 </a>
 
             </div>
-
         </div>
 
         {{-- ================= NOTIF TOAST ================= --}}
@@ -49,7 +48,7 @@
         <form method="GET" action="{{ route('transaksi.index') }}" class="mb-6">
 
             <div class="p-4 rounded-2xl shadow-md flex flex-wrap items-center gap-3"
-                 style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Cari Barang atau Karyawan..."
                     class="flex-1 min-w-[200px] bg-white border-0 rounded-xl shadow-inner px-4 py-2.5 text-sm focus:ring-2 focus:ring-white focus:outline-none">
@@ -65,7 +64,7 @@
                     class="px-4 py-2.5 rounded-xl bg-white text-gray-700 text-sm shadow-inner border-0 focus:outline-none">
 
                 <button type="submit"
-                    class="px-5 py-2.5 text-sm bg-white text-[#1CA7B6] font-bold rounded-xl shadow-sm hover:bg-gray-100 transition">
+                    class="px-5 py-2.5 text-sm bg-white text-[#5EA6FF] font-bold rounded-xl shadow-sm hover:bg-gray-100 transition">
                     Filter
                 </button>
 
@@ -86,7 +85,7 @@
 
                 <thead>
                     <tr class="text-white text-xs uppercase tracking-wider"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
                         <th class="py-4 px-6 font-semibold text-center">No</th>
                         <th class="py-4 px-6 font-semibold text-left">Kode</th>
@@ -111,7 +110,7 @@
                                 {{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}
                             </td>
 
-                            <td class="py-4 px-6 font-bold text-[#1CA7B6]">
+                            <td class="py-4 px-6 font-bold text-[#5EA6FF]">
                                 {{ $trx->transaction_code }}
                             </td>
 
@@ -196,7 +195,7 @@
                                             @csrf
 
                                             <button class="text-white px-3 py-1.5 rounded-lg font-semibold text-xs transition"
-                                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                                 Confirm
                                             </button>
 
@@ -216,7 +215,6 @@
                                             ✔ Confirmed
                                         </span>
                                     </div>
-
                                 @endif
 
                             </td>
@@ -260,7 +258,7 @@
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-90"
-                class="bg-white w-full max-w-sm rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 text-center"
+                class="bg-white w-full max-w-sm rounded-2xl shadow-[0_15px 40px_rgba(0,0,0,0.25)] p-6 text-center"
                 style="font-family: 'Plus Jakarta Sans', sans-serif;">
 
                 <div class="flex justify-center mb-4">
@@ -274,7 +272,7 @@
 
                 <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Transaksi?</h3>
                 <p class="text-sm text-gray-500 mb-1">Anda yakin ingin menghapus transaksi</p>
-                <p class="text-sm font-bold text-[#1CA7B6] mb-6" x-text="deleteCode"></p>
+                <p class="text-sm font-bold text-[#5EA6FF] mb-6" x-text="deleteCode"></p>
 
                 <div class="flex gap-3">
                     <button @click="deleteConfirm = false"
@@ -309,7 +307,7 @@
 
                             {{-- HEADER --}}
                             <div class="px-6 py-4 flex justify-between items-center text-white"
-                                 style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <div>
                                     <h3 class="text-lg font-bold">Proses Pengembalian</h3>
                                     <p class="text-sm text-white/80">Pilih item yang akan dikembalikan</p>
@@ -333,7 +331,7 @@
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-1">Tanggal Return</label>
                                         <input type="date" name="return_date" value="{{ date('Y-m-d') }}"
-                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none text-sm">
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:outline-none text-sm">
                                     </div>
 
                                 </div>
@@ -343,7 +341,7 @@
                                     <table class="w-full text-sm">
 
                                         <thead class="text-white text-xs uppercase tracking-wider"
-                                               style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                               style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                             <tr>
                                                 <th class="py-3 px-4 text-center w-16 font-semibold">Pilih</th>
                                                 <th class="py-3 px-4 text-left font-semibold">Consumable</th>
@@ -367,7 +365,7 @@
 
                                                         <td class="px-4 py-3 text-center">
                                                             <input type="radio" name="selected_item" value="{{ $item->id }}" x-model="selected"
-                                                                   class="w-4 h-4 accent-[#1CA7B6] border-gray-300">
+                                                                   class="w-4 h-4 accent-[#5EA6FF] border-gray-300">
                                                         </td>
 
                                                         <td class="px-4 py-3 font-medium text-gray-800">
@@ -380,13 +378,13 @@
 
                                                         <td class="px-4 py-3 text-center">
                                                             <input type="number" name="items[{{ $item->id }}][qty]" min="1" max="{{ $sisa }}"
-                                                                class="w-20 border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none text-center"
+                                                                class="w-20 border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#5EA6FF] focus:outline-none text-center"
                                                                 :disabled="selected != '{{ $item->id }}'">
                                                         </td>
 
                                                         <td class="px-4 py-3">
                                                             <input type="text" name="items[{{ $item->id }}][note]" placeholder="Keterangan"
-                                                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none"
+                                                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#5EA6FF] focus:outline-none"
                                                                 :disabled="selected != '{{ $item->id }}'">
                                                         </td>
 
@@ -413,7 +411,7 @@
                                 <button type="submit" :disabled="!selected"
                                         :class="!selected ? 'bg-gray-300 cursor-not-allowed' : 'hover:opacity-90'"
                                         class="px-5 py-2.5 text-white rounded-xl font-semibold text-sm shadow-md transition"
-                                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                     Kembalikan
                                 </button>
 
@@ -523,4 +521,4 @@
     });
     </script>
 
-@endsection
+@endsection 
