@@ -12,16 +12,14 @@
 
             {{-- TOMBOL PERBAIKAN: Biru Muda Gradasi Atas Bawah (Fresh & Bright) --}}
             <a href="{{ route('peminjaman.create') }}"
-                class="group relative inline-flex items-center px-6 py-2.5 font-bold text-white transition-all duration-300 rounded-xl shadow-lg hover:shadow-sky-400/50 hover:-translate-y-0.5 active:translate-y-0 tracking-wide"
-                style="background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);">
-                
-                {{-- Ikon Plus dengan Animasi Putar --}}
-                <svg class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-                </svg>
-                
-                Pinjam Tools
-            </a>
+    class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+    
+    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+    </svg>
+    
+    Pinjam Tools
+</a>
         </div>
 
         {{-- ================= NOTIF TOAST ================= --}}
