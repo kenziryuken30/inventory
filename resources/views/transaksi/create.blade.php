@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="w-full min-h-screen flex flex-col" x-data="{ openModal:false }">
+    <div class="w-full min-h-screen flex flex-col" x-data="{ openModal:false }" @close-modal.window="openModal = false">
 
         {{-- HEADER PAGE --}}
         <div class="flex justify-between items-end mb-6">
@@ -16,7 +16,7 @@
             </a>
         </div>
 
-        {{-- NOTIF TOAST --}}
+        {{-- NOTIF TOAST HALAMAN UTAMA --}}
         <div id="notifWrap" class="hidden mb-5">
             <div id="notifBox"
                 class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
@@ -46,34 +46,27 @@
 
                             <script>window.empData = @json($employees);</script>
 
-                            {{-- Search Employee (Autocomplete) --}}
+                            {{-- Search Employee --}}
                             <div x-data="empSearch()" @click.away="show = false" class="relative">
-
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Nama Karyawan <span class="text-red-500">*</span>
                                 </label>
-
                                 <div class="relative">
                                     <input type="text" x-model="search" @focus="if(!selected) show = true"
                                         @input="if(!selected) show = true" placeholder="Ketik nama karyawan..."
                                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none pr-9">
-
                                     <button type="button" x-show="selected" x-cloak
                                         @click="search = ''; selected = ''; selectedId = ''"
                                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
                                 </div>
-
                                 <input type="hidden" name="employee_id" :value="selectedId">
                                 <input type="hidden" name="borrower_name" :value="selected">
-
                                 <div x-show="show && !selected && search.length > 0" x-transition x-cloak
                                     class="absolute z-50 mt-1 w-full bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-
                                     <div class="max-h-56 overflow-y-auto">
                                         <template x-for="[id, name] in filtered" :key="id">
                                             <button type="button"
@@ -82,11 +75,8 @@
                                                 <span x-text="name"></span>
                                             </button>
                                         </template>
-
                                         <template x-if="filtered.length === 0">
-                                            <div class="px-4 py-6 text-center text-gray-400 text-sm">
-                                                Tidak ditemukan
-                                            </div>
+                                            <div class="px-4 py-6 text-center text-gray-400 text-sm">Tidak ditemukan</div>
                                         </template>
                                     </div>
                                 </div>
@@ -100,7 +90,6 @@
                                 <input type="date" name="date" value="{{ date('Y-m-d') }}" required
                                     class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                             </div>
-
                             <div></div>
                         </div>
 
@@ -111,13 +100,11 @@
                                 <input type="text" name="client" placeholder="Masukkan nama client"
                                     class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                             </div>
-
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
                                 <input type="text" name="project" placeholder="Masukkan nama proyek"
                                     class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none">
                             </div>
-
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
                                 <input type="text" name="purpose" placeholder="Masukkan keperluan"
@@ -137,7 +124,6 @@
                             + Pilih Consumable
                         </button>
                     </div>
-
                     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
                         <table class="w-full text-sm" id="tableConsumables">
                             <thead>
@@ -187,6 +173,23 @@
                 </div>
 
                 <div class="p-6 flex-1 overflow-auto">
+
+                    {{-- ========== NOTIF ERROR DI DALAM MODAL ========== --}}
+                    <div id="modalNotifWrap" class="hidden mb-4">
+                        <div id="modalNotifBox"
+                            class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+                            <div id="modalNotifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+                            <p id="modalNotifText" class="text-sm font-medium"></p>
+                            <button id="modalNotifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+                        </div>
+                    </div>
+                    {{-- ========== END NOTIF MODAL ========== --}}
+
                     <div class="mb-5">
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -230,8 +233,7 @@
                                             </div>
                                         </td>
                                         <td class="text-center py-3 px-4">
-                                            <span
-                                                class="font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
+                                            <span class="font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
                                                 {{ $c->stock }}
                                             </span>
                                             @if($c->stock <= $c->minimum_stock)
@@ -255,7 +257,6 @@
                         class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                         Batal
                     </button>
-
                     <button type="button" id="btnAddConsumable"
                         class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
@@ -281,11 +282,9 @@
                         </svg>
                     </div>
                 </div>
-
                 <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Item?</h3>
                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
                 <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#1CA7B6] mb-5"></p>
-
                 <div class="flex gap-3">
                     <button id="cancelDeleteItem"
                         class="flex-1 px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-xs sm:text-sm font-semibold hover:bg-[#c5c5c5] transition">
@@ -316,7 +315,8 @@
             font-weight: 400;
         }
 
-        #notifWrap {
+        #notifWrap,
+        #modalNotifWrap {
             animation: notifSlideIn 0.4s ease-out;
         }
 
@@ -325,7 +325,8 @@
             to   { opacity: 1; transform: translateX(0); }
         }
 
-        #notifWrap.hiding {
+        #notifWrap.hiding,
+        #modalNotifWrap.hiding {
             animation: notifSlideOut 0.35s ease-in forwards;
         }
 
@@ -334,7 +335,8 @@
             to   { opacity: 0; transform: translateX(60px); }
         }
 
-        #notifBar {
+        #notifBar,
+        #modalNotifBar {
             transition: width 3.5s linear;
         }
     </style>
@@ -362,6 +364,7 @@
             const searchInput = document.getElementById('searchConsumable');
             const selectAllCheckbox = document.getElementById('selectAllCons');
 
+            // ===== ELEMEN NOTIF HALAMAN UTAMA =====
             const notifWrap = document.getElementById('notifWrap');
             const notifBox = document.getElementById('notifBox');
             const notifIcon = document.getElementById('notifIcon');
@@ -370,6 +373,16 @@
             const notifClose = document.getElementById('notifClose');
             let notifTimer = null;
 
+            // ===== ELEMEN NOTIF MODAL =====
+            const modalNotifWrap = document.getElementById('modalNotifWrap');
+            const modalNotifBox = document.getElementById('modalNotifBox');
+            const modalNotifIcon = document.getElementById('modalNotifIcon');
+            const modalNotifText = document.getElementById('modalNotifText');
+            const modalNotifBar = document.getElementById('modalNotifBar');
+            const modalNotifClose = document.getElementById('modalNotifClose');
+            let modalNotifTimer = null;
+
+            // ===== FUNGSI NOTIF HALAMAN UTAMA =====
             function showNotif(message, type) {
                 if (notifTimer) clearTimeout(notifTimer);
                 notifWrap.classList.remove('hidden', 'hiding');
@@ -413,6 +426,51 @@
                 hideNotif();
             });
 
+            // ===== FUNGSI NOTIF MODAL =====
+            function showModalNotif(message, type) {
+                if (modalNotifTimer) clearTimeout(modalNotifTimer);
+                modalNotifWrap.classList.remove('hidden', 'hiding');
+
+                if (type === 'success') {
+                    modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                    modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                    modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    modalNotifBar.style.background = '#34d399';
+                } else {
+                    modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                    modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                    modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                    modalNotifBar.style.background = '#f87171';
+                }
+
+                modalNotifText.textContent = message;
+                modalNotifBar.style.transition = 'none';
+                modalNotifBar.style.width = '0%';
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        modalNotifBar.style.transition = 'width 3.5s linear';
+                        modalNotifBar.style.width = '100%';
+                    });
+                });
+
+                modalNotifTimer = setTimeout(() => hideModalNotif(), 3500);
+            }
+
+            function hideModalNotif() {
+                modalNotifWrap.classList.add('hiding');
+                setTimeout(() => {
+                    modalNotifWrap.classList.add('hidden');
+                    modalNotifWrap.classList.remove('hiding');
+                }, 250);
+            }
+
+            modalNotifClose.addEventListener('click', () => {
+                if (modalNotifTimer) clearTimeout(modalNotifTimer);
+                hideModalNotif();
+            });
+
+            // ===== SESSION NOTIF =====
             @if(session('success'))
                 showNotif('{{ session("success") }}', 'success');
             @endif
@@ -448,14 +506,12 @@
             searchInput?.addEventListener('keyup', function () {
                 const keyword = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#popupTable tbody tr.cons-row');
-
                 rows.forEach(row => {
                     if (row.dataset.added === 'true') {
                         row.style.display = 'none';
                         return;
                     }
-                    const nameText = row.dataset.name;
-                    row.style.display = nameText.includes(keyword) ? '' : 'none';
+                    row.style.display = row.dataset.name.includes(keyword) ? '' : 'none';
                 });
             });
 
@@ -482,18 +538,15 @@
                 row.querySelector('.hidden-qty').value = qty;
             };
 
-            // ===== LOGIC HAPUS ITEM (PAKE MODAL) =====
+            // ===== LOGIC HAPUS ITEM =====
             let rowToDelete = null;
             const deleteItemModal = document.getElementById('deleteItemModal');
             const deleteItemNameModal = document.getElementById('deleteItemNameModal');
 
             window.removeRow = function (btn) {
                 const row = btn.closest('tr');
-                const itemName = row.querySelector('.item-name').textContent.trim();
-
                 rowToDelete = row;
-                deleteItemNameModal.textContent = itemName;
-
+                deleteItemNameModal.textContent = row.querySelector('.item-name').textContent.trim();
                 deleteItemModal.classList.remove('hidden');
                 deleteItemModal.classList.add('flex');
             };
@@ -505,7 +558,6 @@
             }
 
             document.getElementById('cancelDeleteItem').addEventListener('click', closeDeleteItemModal);
-
             deleteItemModal.addEventListener('click', function (e) {
                 if (e.target === deleteItemModal) closeDeleteItemModal();
             });
@@ -517,7 +569,6 @@
 
                     rowToDelete.remove();
 
-                    // MUNCULKAN KEMBALI DI MODAL
                     const modalCheckbox = document.querySelector(`.pick-consumable[data-id="${rowId}"]`);
                     if (modalCheckbox) {
                         const modalRow = modalCheckbox.closest('tr');
@@ -527,15 +578,9 @@
 
                     const tbody = document.querySelector('#tableConsumables tbody');
                     if (tbody.querySelectorAll('tr:not(#emptyRow)').length === 0) {
-                        tbody.innerHTML = `
-                                <tr id="emptyRow">
-                                    <td colspan="4" class="py-10 text-center text-gray-400 italic text-sm">
-                                        Belum ada consumable yang dipilih
-                                    </td>
-                                </tr>`;
+                        tbody.innerHTML = '<tr id="emptyRow"><td colspan="4" class="py-10 text-center text-gray-400 italic text-sm">Belum ada consumable yang dipilih</td></tr>';
                     } else {
-                        const rows = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
-                        rows.forEach((row, i) => {
+                        document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)').forEach((row, i) => {
                             row.querySelector('.no-col').innerText = i + 1;
                         });
                     }
@@ -553,13 +598,12 @@
 
                 const selectedItems = document.querySelectorAll('.pick-consumable:checked');
                 if (selectedItems.length === 0) {
-                    showNotif("Pilih minimal 1 consumable", "error");
-                    return; 
+                    showModalNotif("Pilih minimal 1 consumable", "error");
+                    return;
                 }
 
                 let hasError = false;
 
-                // ================= TAHAP 1: CEK VALIDASI SEMUA DULU =================
                 selectedItems.forEach(selected => {
                     const row = selected.closest('tr');
                     const name = selected.dataset.name;
@@ -567,26 +611,21 @@
                     const qty = parseInt(row.querySelector('.qty-input').value);
 
                     if (qty > stock) {
-                        showNotif("Stock " + name + " hanya tersedia " + stock, "error");
+                        showModalNotif("Stock " + name + " hanya tersedia " + stock, "error");
                         hasError = true;
                     } else if (qty <= 0 || isNaN(qty)) {
-                        showNotif("Jumlah untuk " + name + " tidak valid", "error");
+                        showModalNotif("Jumlah untuk " + name + " tidak valid", "error");
                         hasError = true;
                     }
                 });
 
-                // KALAU ADA SALAH SATU YANG ERROR, LANGSUNG STOP! JANGAN MASUKKAN APAPUN KE HALAMAN
-                if (hasError) {
-                    return; 
-                }
+                if (hasError) return;
 
-                // ================= TAHAP 2: PROSES TAMBAH (BARU JALAN KALAU SEMUA SUDAH BENER) =================
                 const emptyRow = document.getElementById('emptyRow');
                 if (emptyRow) emptyRow.remove();
 
                 let addedCount = 0;
                 let updatedCount = 0;
-
                 const existingRows = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
                 let startNo = existingRows.length;
 
@@ -606,40 +645,31 @@
                     } else {
                         startNo++;
                         const html = `
-                                <tr data-id="${id}" class="hover:bg-gray-50 transition">
-                                    <td class="py-3 px-4">
-                                        <div class="flex items-center gap-3">
-                                            <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[10px] font-bold text-gray-500 bg-gray-100 rounded-md no-col">${startNo}</span>
-                                            <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm flex-shrink-0">
-                                            <span class="font-semibold text-gray-800 item-name">${name}</span>
-                                        </div>
-                                    </td>
-                                    <td class="text-center py-3 px-4 font-medium text-blue-600">${stock}</td>
-                                    <td class="text-center py-3 px-4 w-32">
-                                        <input type="number"
-                                            value="${qty}"
-                                            min="1"
-                                            onchange="updateQty(this)"
-                                            class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none">
-                                    </td>
-                                    <td class="text-center py-3 px-4 w-20">
-                                        <button type="button"
-                                            onclick="removeRow(this)"
-                                            class="bg-red-50 text-red-500 px-2 py-1 rounded-lg text-xs font-bold hover:bg-red-100 transition">
-                                            Hapus
-                                        </button>
-
-                                        <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                                        <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
-                                    </td>
-                                </tr>`;
-
+                            <tr data-id="${id}" class="hover:bg-gray-50 transition">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[10px] font-bold text-gray-500 bg-gray-100 rounded-md no-col">${startNo}</span>
+                                        <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm flex-shrink-0">
+                                        <span class="font-semibold text-gray-800 item-name">${name}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center py-3 px-4 font-medium text-blue-600">${stock}</td>
+                                <td class="text-center py-3 px-4 w-32">
+                                    <input type="number" value="${qty}" min="1" onchange="updateQty(this)"
+                                        class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none">
+                                </td>
+                                <td class="text-center py-3 px-4 w-20">
+                                    <button type="button" onclick="removeRow(this)"
+                                        class="bg-red-50 text-red-500 px-2 py-1 rounded-lg text-xs font-bold hover:bg-red-100 transition">Hapus</button>
+                                    <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                                    <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
+                                </td>
+                            </tr>`;
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
                         addedCount++;
                     }
 
-                    // HAPUS DARI MODAL KARENA SUDAH BERHASIL MASUK DAFTAR
                     row.dataset.added = 'true';
                     row.style.display = 'none';
                     selected.checked = false;
@@ -648,11 +678,8 @@
 
                 if (selectAllCheckbox) selectAllCheckbox.checked = false;
 
-                // TUTUP MODAL KARENA SEMUA SUDAH BERHASIL
-                const root = document.querySelector('[x-data]');
-                if (root && window.Alpine) {
-                    Alpine.$data(root).openModal = false;
-                }
+                // ===== TUTUP MODAL PAKAI DISPATCH EVENT =====
+                window.dispatchEvent(new CustomEvent('close-modal'));
 
                 if (addedCount > 0 && updatedCount === 0) {
                     showNotif(addedCount + " consumable berhasil ditambahkan", "success");
@@ -663,13 +690,11 @@
                 }
             });
 
-            // ===== ESC KEY GLOBAL =====
+            // ===== ESC KEY =====
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    closeDeleteItemModal();
-                }
+                if (e.key === 'Escape') closeDeleteItemModal();
             });
 
         });
     </script>
-@endsection     
+@endsection

@@ -16,7 +16,7 @@
             </a>
         </div>
 
-        {{-- ================= NOTIF TOAST ================= --}}
+        {{-- ================= NOTIF TOAST HALAMAN UTAMA ================= --}}
         <div id="notifWrap" class="hidden mb-5">
             <div id="notifBox"
                 class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
@@ -34,42 +34,34 @@
         {{-- ================= PANEL BESAR ================= --}}
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 space-y-8">
 
-            {{-- PERBAIKAN: Form dibuka di awal agar membungkus SEMUA input termasuk tabel --}}
             <form id="updateForm" action="{{ route('transaksi.update', $transaction->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
-                {{-- Grid Utama: 3 Kolom --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                    {{-- Kolom 1: Karyawan --}}
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Karyawan</label>
                         <input type="text" name="borrower_name" value="{{ $transaction->borrower_name }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
-                    {{-- Kolom 2: Tanggal --}}
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal</label>
                         <input type="date" name="date" value="{{ $transaction->date->format('Y-m-d') }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
-                    {{-- Kolom 3: Kosong (Spacer) --}}
                     <div class="hidden md:block">
                         <label class="block text-sm font-bold text-gray-700 mb-2">&nbsp;</label>
                         <div class="w-full px-4 py-2.5">&nbsp;</div>
                     </div>
 
-                    {{-- Kolom 1 (Baris 2): Nama Client --}}
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Nama Client</label>
                         <input type="text" name="client" value="{{ $transaction->client }}" placeholder="Masukan nama klien"
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
-                    {{-- Kolom 2 (Baris 2): Proyek --}}
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Proyek</label>
                         <input type="text" name="project" value="{{ $transaction->project }}"
@@ -77,19 +69,16 @@
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
-                    {{-- Kolom 3 (Baris 2): Keperluan --}}
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Keperluan</label>
                         <input type="text" name="purpose" value="{{ $transaction->purpose }}"
                             placeholder="Masukan Keperluan"
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
                     </div>
-
                 </div>
-                {{-- END Grid Header --}}
 
 
-                {{-- ================= DAFTAR CONSUMABLE (SEKARANG DI DALAM FORM) ================= --}}
+                {{-- ================= DAFTAR CONSUMABLE ================= --}}
                 <div class="space-y-4 mt-8">
 
                     <div class="flex justify-between items-center">
@@ -126,8 +115,7 @@
                                                 <img src="{{ asset('storage/' . $item->consumable->image) }}"
                                                     class="w-12 h-12 object-cover rounded-lg mx-auto shadow-sm border">
                                             @else
-                                                <div
-                                                    class="w-12 h-12 bg-gray-200 rounded-lg mx-auto flex items-center justify-center text-gray-400 text-xs">
+                                                <div class="w-12 h-12 bg-gray-200 rounded-lg mx-auto flex items-center justify-center text-gray-400 text-xs">
                                                     No Img
                                                 </div>
                                             @endif
@@ -138,7 +126,6 @@
                                         </td>
 
                                         <td class="text-center py-4 px-4">
-                                            {{-- Input Qty utama (visible) --}}
                                             <input type="number" value="{{ $item->qty }}" min="1" onchange="updateQty(this)"
                                                 class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#1CA7B6]">
 
@@ -163,7 +150,7 @@
                 </div>
 
 
-                {{-- ================= SAVE BUTTON (SEKARANG DI DALAM FORM) ================= --}}
+                {{-- ================= SAVE BUTTON ================= --}}
                 <div class="flex justify-end pt-4 mt-6 border-t border-gray-100">
                     <button type="submit"
                         class="text-white px-8 py-3 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
@@ -173,7 +160,6 @@
                 </div>
 
             </form>
-            {{-- FORM DITUTUP DI SINI --}}
 
         </div>
 
@@ -196,6 +182,23 @@
                 </div>
 
                 <div class="p-6 overflow-auto flex-1 bg-gray-50">
+
+                    {{-- ========== NOTIF ERROR DI DALAM MODAL ========== --}}
+                    <div id="modalNotifWrap" class="hidden mb-4">
+                        <div id="modalNotifBox"
+                            class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
+                            <div id="modalNotifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+                            <p id="modalNotifText" class="text-sm font-medium"></p>
+                            <button id="modalNotifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+                        </div>
+                    </div>
+                    {{-- ========== END NOTIF MODAL ========== --}}
+
                     <div class="mb-6">
                         <input type="text" id="searchConsumableModal" placeholder="Cari nama consumable..."
                             class="w-full bg-white border-0 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none text-sm">
@@ -233,8 +236,7 @@
                                             </div>
                                         </td>
 
-                                        <td
-                                            class="py-3 px-4 text-center font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
+                                        <td class="py-3 px-4 text-center font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
                                             {{ $c->stock }}
                                             @if($c->stock <= $c->minimum_stock)
                                                 <div class="text-xs text-red-400 normal-case font-normal">
@@ -301,22 +303,24 @@
         </div>
 
         <style>
-            /* NOTIF */
-            #notifWrap {
+            #notifWrap,
+            #modalNotifWrap {
                 animation: notifSlideIn 0.4s ease-out;
             }
             @keyframes notifSlideIn {
                 from { opacity: 0; transform: translateX(-40px); }
                 to   { opacity: 1; transform: translateX(0); }
             }
-            #notifWrap.hiding {
+            #notifWrap.hiding,
+            #modalNotifWrap.hiding {
                 animation: notifSlideOut 0.35s ease-in forwards;
             }
             @keyframes notifSlideOut {
                 from { opacity: 1; transform: translateX(0); }
                 to   { opacity: 0; transform: translateX(60px); }
             }
-            #notifBar {
+            #notifBar,
+            #modalNotifBar {
                 transition: width 3.5s linear;
             }
         </style>
@@ -327,7 +331,7 @@
 
                 let index = {{ $transaction->items->count() }};
 
-                // ================= NOTIF SYSTEM =================
+                // ================= ELEMEN NOTIF HALAMAN UTAMA =================
                 const notifWrap = document.getElementById('notifWrap');
                 const notifBox = document.getElementById('notifBox');
                 const notifIcon = document.getElementById('notifIcon');
@@ -336,6 +340,16 @@
                 const notifClose = document.getElementById('notifClose');
                 let notifTimer = null;
 
+                // ================= ELEMEN NOTIF MODAL =================
+                const modalNotifWrap = document.getElementById('modalNotifWrap');
+                const modalNotifBox = document.getElementById('modalNotifBox');
+                const modalNotifIcon = document.getElementById('modalNotifIcon');
+                const modalNotifText = document.getElementById('modalNotifText');
+                const modalNotifBar = document.getElementById('modalNotifBar');
+                const modalNotifClose = document.getElementById('modalNotifClose');
+                let modalNotifTimer = null;
+
+                // ================= FUNGSI NOTIF HALAMAN UTAMA =================
                 window.showNotif = function (message, type) {
                     if (notifTimer) clearTimeout(notifTimer);
                     notifWrap.classList.remove('hidden', 'hiding');
@@ -379,6 +393,51 @@
                     hideNotif();
                 });
 
+                // ================= FUNGSI NOTIF MODAL =================
+                function showModalNotif(message, type) {
+                    if (modalNotifTimer) clearTimeout(modalNotifTimer);
+                    modalNotifWrap.classList.remove('hidden', 'hiding');
+
+                    if (type === 'success') {
+                        modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
+                        modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
+                        modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                        modalNotifBar.style.background = '#34d399';
+                    } else {
+                        modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
+                        modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
+                        modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                        modalNotifBar.style.background = '#f87171';
+                    }
+
+                    modalNotifText.textContent = message;
+                    modalNotifBar.style.transition = 'none';
+                    modalNotifBar.style.width = '0%';
+
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            modalNotifBar.style.transition = 'width 3.5s linear';
+                            modalNotifBar.style.width = '100%';
+                        });
+                    });
+
+                    modalNotifTimer = setTimeout(() => hideModalNotif(), 3500);
+                }
+
+                function hideModalNotif() {
+                    modalNotifWrap.classList.add('hiding');
+                    setTimeout(() => {
+                        modalNotifWrap.classList.add('hidden');
+                        modalNotifWrap.classList.remove('hiding');
+                    }, 250);
+                }
+
+                modalNotifClose.addEventListener('click', () => {
+                    if (modalNotifTimer) clearTimeout(modalNotifTimer);
+                    hideModalNotif();
+                });
+
+                // ================= SESSION NOTIF =================
                 @if(session('success'))
                     window.showNotif('{{ session("success") }}', 'success');
                 @endif
@@ -413,7 +472,7 @@
                     }
                 };
 
-                // ================= REMOVE ROW (PAKE MODAL) =================
+                // ================= REMOVE ROW =================
                 let rowToDelete = null;
                 const deleteItemModal = document.getElementById('deleteItemModal');
                 const deleteItemNameModal = document.getElementById('deleteItemNameModal');
@@ -425,7 +484,6 @@
                     rowToDelete = row;
                     deleteItemNameModal.textContent = itemName;
                     
-                    // Buka modal
                     deleteItemModal.classList.remove('hidden');
                     deleteItemModal.classList.add('flex');
                 };
@@ -449,7 +507,6 @@
 
                         rowToDelete.remove();
 
-                        // Uncheck di modal jika ada
                         const popupCheckbox = document.querySelector(`.pick-consumable[data-id="${rowId}"]`);
                         if (popupCheckbox) {
                             popupCheckbox.checked = false;
@@ -470,7 +527,6 @@
                 const addBtn = document.getElementById('btnAddConsumable');
                 const searchInput = document.getElementById('searchConsumableModal');
 
-                // OPEN MODAL
                 if (openBtn && modal) {
                     openBtn.addEventListener('click', function () {
                         modal.classList.remove('hidden');
@@ -478,7 +534,6 @@
                     });
                 }
 
-                // CLOSE MODAL
                 function closeModal() {
                     modal.classList.add('hidden');
                     modal.classList.remove('flex');
@@ -493,7 +548,6 @@
                     if (e.target === modal) closeModal();
                 });
 
-                // SEARCH
                 if (searchInput) {
                     searchInput.addEventListener('keyup', function () {
                         let keyword = this.value.toLowerCase();
@@ -504,14 +558,35 @@
                     });
                 }
 
-                // ADD CONSUMABLE
+                // ================= ADD CONSUMABLE (NOTIF ERROR DI MODAL) =================
                 addBtn.addEventListener('click', function () {
                     const selectedItems = document.querySelectorAll('.pick-consumable:checked');
 
                     if (selectedItems.length === 0) {
-                        window.showNotif("Pilih minimal 1 consumable", "error");
+                        showModalNotif("Pilih minimal 1 consumable", "error");
                         return;
                     }
+
+                    let hasError = false;
+
+                    // CEK VALIDASI SEMUA DULU, BARU PROSES
+                    selectedItems.forEach(selected => {
+                        const rowPopup = selected.closest('tr');
+                        const name = selected.dataset.name;
+                        const stock = parseInt(selected.dataset.stock);
+                        const qty = parseInt(rowPopup.querySelector('.qty-input').value);
+
+                        if (qty > stock) {
+                            showModalNotif("Stock " + name + " hanya tersedia " + stock, "error");
+                            hasError = true;
+                        } else if (qty <= 0 || isNaN(qty)) {
+                            showModalNotif("Jumlah untuk " + name + " tidak valid", "error");
+                            hasError = true;
+                        }
+                    });
+
+                    // KALAU ADA ERROR, STOP! JANGAN MASUKKAN APAPUN
+                    if (hasError) return;
 
                     let addedCount = 0;
                     let updatedCount = 0;
@@ -523,16 +598,6 @@
                         const stock = parseInt(selected.dataset.stock);
                         const image = rowPopup.querySelector('img').src;
                         const qty = parseInt(rowPopup.querySelector('.qty-input').value);
-
-                        if (qty > stock) {
-                            window.showNotif("Stock " + name + " hanya tersedia " + stock, "error");
-                            return;
-                        }
-
-                        if (qty <= 0 || isNaN(qty)) {
-                            window.showNotif("Jumlah untuk " + name + " tidak valid", "error");
-                            return;
-                        }
 
                         const exist = document.querySelector(`#tableConsumables tr[data-id="${id}"]`);
 
@@ -576,6 +641,7 @@
                     refreshNo();
                     closeModal();
 
+                    // NOTIF SUCCESS DI HALAMAN UTAMA (MODAL SUDAH TUTUP)
                     if (addedCount > 0 && updatedCount === 0) {
                         window.showNotif(addedCount + " consumable berhasil ditambahkan", "success");
                     } else if (addedCount > 0 && updatedCount > 0) {
@@ -585,7 +651,7 @@
                     }
                 });
 
-                // ================= ESC KEY GLOBAL =================
+                // ================= ESC KEY =================
                 document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') { 
                         closeModal(); 
