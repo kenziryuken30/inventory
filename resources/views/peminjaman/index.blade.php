@@ -38,42 +38,69 @@
             </div>
         </div>
 
-        {{-- ================= FILTER ================= --}}
+        {{-- ================= FILTER (UPDATED) ================= --}}
         <form method="GET" action="{{ route('peminjaman.index') }}"
-            class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-center min-h-[80px]"
+            class="mb-6 p-4 sm:p-5 rounded-2xl shadow-md flex flex-wrap gap-3 sm:gap-4 items-center"
             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
             <div class="relative flex-1 min-w-[200px]">
+                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
                 <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                     placeholder="Masukan nama peminjam atau barang"
-                    class="w-full bg-white border-0 rounded-xl px-4 py-2.5 pr-8 text-sm shadow-inner focus:ring-2 focus:ring-white focus:outline-none">
+                    class="w-full bg-white border-0 rounded-xl pl-10 pr-10 py-2.5 text-sm shadow-inner focus:ring-2 focus:ring-white focus:outline-none transition">
 
                 {{-- Tombol X Langsung Reset --}}
                 <button type="button"
                     onclick="document.getElementById('searchInput').value=''; this.closest('form').submit();"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition"
                     style="display:{{ request('search') ? 'block' : 'none' }}" id="clearSearchBtn">
-                    X
+                    ✕
                 </button>
             </div>
 
-            <label class="text-white font-semibold text-sm drop-shadow-sm">Tanggal</label>
+            <div class="flex items-center gap-2 text-white font-semibold text-sm drop-shadow-sm whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <span>Tanggal</span>
+            </div>
+            
             <input type="date" name="start_date" value="{{ request('start_date') }}"
-                class="bg-white border-0 rounded-xl px-4 py-2.5 text-sm shadow-inner focus:outline-none">
+                class="bg-white border-0 rounded-xl px-4 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-white transition">
 
             <span class="text-white font-bold text-sm drop-shadow-sm">s/d</span>
 
             <input type="date" name="end_date" value="{{ request('end_date') }}"
-                class="bg-white border-0 rounded-xl px-4 py-2.5 text-sm shadow-inner focus:outline-none">
+                class="bg-white border-0 rounded-xl px-4 py-2 text-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-white transition">
 
+            {{-- TOMBOL FILTER (STYLE DIUPDATE JADI ROUNDED FULL) --}}
             <button type="submit"
-                class="bg-white text-[#5EA6FF] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 transition text-sm">
+                class="flex items-center gap-2 bg-white text-[#5EA6FF] px-5 py-2 rounded-full font-bold shadow-sm hover:bg-gray-100 transition text-sm hover:-translate-y-0.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
                 Filter
             </button>
 
-            <a href="{{ route('peminjaman.index') }}" class="text-white underline text-sm hover:text-gray-100 transition font-medium">
-                Reset
+            {{-- TOMBOL RESET (SESUAI CONTOH) --}}
+            <a href="{{ route('peminjaman.index') }}"
+               class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
+                      transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+               style="background: linear-gradient(145deg, #f9fafb, #e5e7eb); color:#6b7280;">
+            
+                <span>Reset</span>
+            
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                    <svg class="w-3 h-3 text-gray-400 group-hover:text-gray-600 transition"
+                         fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0 0 14-7M19 5a9 9 0 0 0-14 7"/>
+                    </svg>
+                </span>
             </a>
+
         </form>
 
         {{-- ================= TABLE RIWAYAT ================= --}}
@@ -467,4 +494,4 @@
                 // KODE JS LAMA UNTUK MODAL HAPUS TELAH DIHAPUS KARENA SUDAH MENGGUNAKAN ALPINE JS
             });
         </script>
-@endsection
+@endsection 
