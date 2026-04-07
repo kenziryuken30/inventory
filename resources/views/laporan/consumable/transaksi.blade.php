@@ -13,7 +13,8 @@
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Laporan Transaksi Consumable</h2>
+                {{-- PERBAIKI WARNA JUDUL --}}
+                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Laporan Transaksi Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Rekap data pengeluaran dan pengembalian barang consumable</p>
             </div>
         </div>
@@ -94,16 +95,16 @@
         <div class="flex items-center gap-4 mb-6">
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
                 <button type="button" id="togglePengeluaran"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengeluaran' ? 'bg-white shadow text-[#1CA7B6]' : 'text-gray-600 hover:text-gray-800' }}">
+                    class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengeluaran' ? 'bg-white shadow text-[#5EA6FF]' : 'text-gray-600 hover:text-gray-800' }}">
                     📤 Pengeluaran
                 </button>
                 <button type="button" id="togglePengembalian"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengembalian' ? 'bg-white shadow text-[#1CA7B6]' : 'text-gray-600 hover:text-gray-800' }}">
+                    class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengembalian' ? 'bg-white shadow text-[#5EA6FF]' : 'text-gray-600 hover:text-gray-800' }}">
                     📥 Pengembalian
                 </button>
             </div>
             <div class="text-sm text-gray-500">
-                Total {{ ucfirst($type) }} : <span class="font-bold text-[#1CA7B6]">{{ $totalTransaksi }}</span>
+                Total {{ ucfirst($type) }} : <span class="font-bold text-[#5EA6FF]">{{ $totalTransaksi }}</span>
             </div>
         </div>
 
@@ -133,7 +134,7 @@
                                 <td class="py-4 px-6 text-center font-medium text-gray-600">
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
-                                <td class="py-4 px-6 font-bold text-[#1CA7B6]">
+                                <td class="py-4 px-6 font-bold text-[#5EA6FF]">
                                     @if($type == 'pengeluaran')
                                         {{ $row->transaction_code }}
                                     @else
@@ -163,7 +164,7 @@
                                         {{ $row->consumable->name }}
                                     @endif
                                 </td>
-                                <td class="py-4 px-6 text-center font-bold text-[#1CA7B6]">
+                                <td class="py-4 px-6 text-center font-bold text-[#5EA6FF]">
                                     @if($type == 'pengeluaran')
                                         {{ $row->items->sum('qty') }}
                                     @else
@@ -174,7 +175,7 @@
                                     <td class="py-4 px-6 text-center">
                                         <button @click="openDetail = {{ $row->id }}"
                                             class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-                                            style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
+                                            style="background: linear-gradient(135deg, #7FC4FF, #5EA6FF); box-shadow: 0 3px 12px rgba(94,166,255,0.35);">
                                             <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -211,7 +212,7 @@
             {{ $data->appends(request()->query())->links() }}
         </div>
 
-        {{-- ================= MODAL PENGELUARAN ================= --}}
+        {{-- ================= MODAL PENGELUARAN (PERBAIKAN SYNTAX) ================= --}}
         @if($type == 'pengeluaran')
             @foreach($data as $row)
                 <div x-show="openDetail === {{ $row->id }}"
@@ -227,8 +228,9 @@
                     <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         @click.stop>
 
+                        {{-- PERBAIKAN: DITAMBAHKAN TUTUP KURUNG (">") --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                           style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <div>
                                 <h3 class="text-lg font-bold">Detail Transaksi Consumable</h3>
                                 <p class="text-sm text-white/80">Informasi lengkap transaksi</p>
@@ -236,7 +238,7 @@
                             <button @click="openDetail = null" class="text-2xl text-white/80 hover:text-white transition">✕</button>
                         </div>
 
-                        <div class="p-6 overflow-auto flex-1 bg-gray-50">
+                        <div class="p-6 overflow-auto flex-1 bg-[#F0F7FF]">
                             <div class="grid grid-cols-2 gap-6 text-sm mb-6">
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Kode Transaksi</p>
@@ -260,7 +262,7 @@
                                 </div>
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Keperluan</p>
-                                    <div class="bg-white rounded-xl px-4 py-3 shadow-inner text-gray-700 border border-gray-200">
+                                   <div class="bg-blue-50 rounded-xl px-4 py-3 shadow-inner text-gray-700 border border-blue-200">
                                         {{ $row->purpose ?? '-' }}
                                     </div>
                                 </div>
@@ -268,8 +270,9 @@
 
                             <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                                 <table class="w-full text-sm">
+                                    {{-- PERBAIKAN: DITAMBAHKAN TUTUP KURUNG (">") --}}
                                     <thead class="text-white text-xs uppercase tracking-wider"
-                                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                         <tr>
                                             <th class="py-3 px-4 font-semibold text-left">NAMA CONSUMABLE</th>
                                             <th class="py-3 px-4 font-semibold text-center">QTY</th>
@@ -280,7 +283,7 @@
                                         @foreach($row->items as $item)
                                             <tr class="hover:bg-gray-50 transition">
                                                 <td class="px-4 py-3 text-gray-800">{{ $item->consumable->name }}</td>
-                                                <td class="px-4 py-3 text-center font-semibold text-[#1CA7B6]">{{ $item->qty }}</td>
+                                                <td class="px-4 py-3 text-center font-semibold text-[#5EA6FF]">{{ $item->qty }}</td>
                                                 <td class="px-4 py-3 text-gray-600">{{ $item->consumable->unit }}</td>
                                             </tr>
                                         @endforeach
@@ -292,7 +295,7 @@
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-                                style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
+                                style="background: linear-gradient(135deg, #7FC4FF, #5EA6FF);box-shadow: 0 3px 12px rgba(94,166,255,0.35);">
                                 <span class="relative z-10">Tutup</span>
                                 <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                             </button>
@@ -302,7 +305,7 @@
             @endforeach
         @endif
 
-        {{-- ================= MODAL PENGEMBALIAN ================= --}}
+        {{-- ================= MODAL PENGEMBALIAN (PERBAIKAN WARNA) ================= --}}
         @if($type == 'pengembalian')
             @foreach($data as $row)
                 <div x-show="openDetail === {{ $row->id }}"
@@ -318,8 +321,9 @@
                     <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         @click.stop>
 
+                        {{-- PERBAIKAN WARNA JADI BIRU --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <div>
                                 <h3 class="text-lg font-bold">Detail Pengembalian Consumable</h3>
                             </div>
@@ -348,7 +352,7 @@
                                 </div>
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Jumlah Dikembalikan</p>
-                                    <p class="text-[#1CA7B6] font-bold text-lg">
+                                    <p class="text-[#5EA6FF] font-bold text-lg">
                                         {{ $row->qty_return }} {{ $row->consumable->unit }}
                                     </p>
                                 </div>
@@ -358,7 +362,7 @@
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-                                style="background: linear-gradient(135deg, #5FD0DF, #1CA7B6); box-shadow: 0 3px 12px rgba(28,167,182,0.35);">
+                                style="background: linear-gradient(135deg, #7FC4FF, #5EA6FF); box-shadow: 0 3px 12px rgba(94,166,255,0.35);">
                                 <span class="relative z-10">Tutup</span>
                                 <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                             </button>
@@ -421,14 +425,16 @@
 
                 // Update tampilan toggle
                 if (type === 'pengeluaran') {
-                    togglePengeluaran.classList.add('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    // PERBAIKAN WARNA JS KE BIRU
+                    togglePengeluaran.classList.add('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengeluaran.classList.remove('text-gray-600');
-                    togglePengembalian.classList.remove('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    togglePengembalian.classList.remove('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengembalian.classList.add('text-gray-600');
                 } else {
-                    togglePengembalian.classList.add('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    // PERBAIKAN WARNA JS KE BIRU
+                    togglePengembalian.classList.add('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengembalian.classList.remove('text-gray-600');
-                    togglePengeluaran.classList.remove('bg-white', 'shadow', 'text-[#1CA7B6]');
+                    togglePengeluaran.classList.remove('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengeluaran.classList.add('text-gray-600');
                 }
 
