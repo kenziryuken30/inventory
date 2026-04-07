@@ -46,7 +46,8 @@
                                         Nama Peminjam <span class="text-red-500">*</span>
                                     </label>
                                     <div class="relative">
-                                        <input type="text" id="employee_name" class="w-full px-4 py-2 border rounded-lg focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition"
+                                        <input type="text" id="employee_name"
+                                            class="w-full px-4 py-2 border rounded-lg focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition"
                                             placeholder="Cari nama karyawan...">
                                         <input type="hidden" name="employee_id" id="employee_id">
                                         <div id="employee_suggestions"
@@ -104,7 +105,7 @@
                                             <th class="py-4 px-6 font-semibold text-center">Foto</th>
                                             <th class="py-4 px-6 font-semibold text-left">Nama Tool</th>
                                             <th class="py-4 px-6 font-semibold text-center">No Seri</th>
-                                            <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+                                            <th class="py-4 px-6 font-semibold text-center w-16">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableSelectedTools" class="divide-y divide-gray-100 text-sm">
@@ -184,7 +185,8 @@
                                     </td>
                                     <td class="py-3 px-4 font-medium text-gray-800">{{ $serial->toolkit->toolkit_name }}</td>
                                     <td class="py-3 px-4 text-center text-gray-500 font-mono text-xs">
-                                        {{ $serial->serial_number }}</td>
+                                        {{ $serial->serial_number }}
+                                    </td>
                                     <td class="py-3 px-4 text-center">
                                         <img src="{{ $serial->toolkit->image ? asset('storage/' . $serial->toolkit->image) : asset('images/no-image.png') }}"
                                             class="w-10 h-10 object-contain mx-auto rounded-lg shadow-sm preview-image cursor-pointer hover:scale-110 transition">
@@ -280,6 +282,29 @@
 
     #tableSelectedTools tr[id^="row-"] {
         animation: fadeIn 0.3s ease-out;
+    }
+
+    .btn-delete-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #fef2f2;
+        color: #ef4444;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-delete-icon:hover {
+        background: #fee2e2;
+        transform: scale(1.1);
+    }
+
+    .btn-delete-icon:active {
+        transform: scale(0.95);
     }
 </style>
 
@@ -470,7 +495,11 @@
                         <td class="py-3 px-6 font-semibold text-gray-800 tool-name-cell">${name}</td>
                         <td class="text-center py-3 px-6 text-gray-500">${serial}</td>
                         <td class="text-center py-3 px-6">
-                            <button type="button" onclick="removeRow(this)" class="bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition">Hapus</button>
+                            <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </button>
                             <input type="hidden" name="serial_ids[]" value="${id}">
                         </td>
                     </tr>
