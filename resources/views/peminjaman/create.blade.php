@@ -5,7 +5,8 @@
         {{-- Header Page --}}
         <div class="flex justify-between items-end mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Peminjaman Tools</h2>
+                {{-- PERBAIKI WARNA JUDUL --}}
+                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Peminjaman Tools</h2>
                 <p class="text-sm text-gray-500 mt-1">Proses peminjaman alat dan kelola daftar tools</p>
             </div>
             <a href="{{ route('peminjaman.index') }}"
@@ -45,7 +46,7 @@
                                         Nama Peminjam <span class="text-red-500">*</span>
                                     </label>
                                     <div class="relative">
-                                        <input type="text" id="employee_name" class="w-full px-4 py-2 border rounded-lg"
+                                        <input type="text" id="employee_name" class="w-full px-4 py-2 border rounded-lg focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition"
                                             placeholder="Cari nama karyawan...">
                                         <input type="hidden" name="employee_id" id="employee_id">
                                         <div id="employee_suggestions"
@@ -58,7 +59,7 @@
                                         Tanggal <span class="text-red-500">*</span>
                                     </label>
                                     <input type="date" name="date" value="{{ date('Y-m-d') }}" required
-                                        class="w-52 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
+                                        class="w-52 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
                                 </div>
                             </div>
 
@@ -66,17 +67,17 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama client</label>
                                     <input type="text" name="client_name"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
+                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
                                     <input type="text" name="project"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
+                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
                                     <input type="text" name="purpose"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm">
+                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
                                 </div>
                             </div>
                         </div>
@@ -85,9 +86,10 @@
                         <div class="space-y-0 mt-10">
                             <div class="flex justify-between items-center mb-6">
                                 <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
+                                {{-- PERBAIKI WARNA TOMBOL --}}
                                 <button type="button" id="openToolsBtn"
                                     class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
-                                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                     + Pilih Tools
                                 </button>
                             </div>
@@ -95,8 +97,9 @@
                             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                                 <table class="w-full">
                                     <thead>
+                                        {{-- PERBAIKI WARNA HEADER TABEL --}}
                                         <tr class="text-white text-xs uppercase tracking-wider"
-                                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                             <th class="py-4 px-6 font-semibold text-center">No</th>
                                             <th class="py-4 px-6 font-semibold text-center">Foto</th>
                                             <th class="py-4 px-6 font-semibold text-left">Nama Tool</th>
@@ -116,9 +119,10 @@
                         </div>
 
                         <div class="pt-8 border-t border-gray-200 flex justify-end">
+                            {{-- PERBAIKI WARNA TOMBOL SAVE --}}
                             <button type="submit"
                                 class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 Save Transaksi
                             </button>
                         </div>
@@ -131,8 +135,9 @@
     {{-- ================= MODAL TOOLS ================= --}}
     <div id="toolsModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
+            {{-- PERBAIKI WARNA HEADER MODAL --}}
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center text-white"
-                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                 <h3 class="text-lg font-bold">Pilih Tools Tersedia</h3>
                 <button type="button" id="closeToolsBtn"
                     class="text-white/80 hover:text-white text-2xl transition">✕</button>
@@ -146,8 +151,9 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </span>
+                        {{-- PERBAIKI FOCUS COLOR --}}
                         <input type="text" id="searchTools" placeholder="Cari nama tools..."
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none transition text-sm">
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition text-sm">
                     </div>
                 </div>
                 <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
@@ -155,8 +161,9 @@
                         <thead class="sticky top-0 bg-gray-50">
                             <tr class="text-gray-600 border-b border-gray-200">
                                 <th class="py-3 px-4 text-center w-12">
+                                    {{-- PERBAIKI ACCENT COLOR CHECKBOX --}}
                                     <input type="checkbox" id="selectAllTools"
-                                        class="w-4 h-4 accent-[#1CA7B6] rounded border-gray-300">
+                                        class="w-4 h-4 accent-[#5EA6FF] rounded border-gray-300">
                                 </th>
                                 <th class="py-3 px-4 text-left font-semibold">Nama Tools</th>
                                 <th class="py-3 px-4 text-center font-semibold">No Seri</th>
@@ -165,11 +172,12 @@
                         </thead>
                         <tbody id="toolsTable" class="bg-white divide-y divide-gray-100">
                             @foreach ($serials as $serial)
-                                <tr class="hover:bg-teal-50/50 transition cursor-pointer tool-row"
+                                <tr class="hover:bg-blue-50/30 transition cursor-pointer tool-row"
                                     data-name="{{ strtolower($serial->toolkit->toolkit_name) }}">
                                     <td class="py-3 px-4 text-center">
+                                        {{-- PERBAIKI ACCENT COLOR CHECKBOX --}}
                                         <input type="checkbox"
-                                            class="tool-checkbox w-4 h-4 accent-[#1CA7B6] rounded border-gray-300"
+                                            class="tool-checkbox w-4 h-4 accent-[#5EA6FF] rounded border-gray-300"
                                             value="{{ $serial->id }}" data-name="{{ $serial->toolkit->toolkit_name }}"
                                             data-serial="{{ $serial->serial_number }}"
                                             data-image="{{ $serial->toolkit->image }}">
@@ -192,9 +200,10 @@
                     class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                     Batal
                 </button>
+                {{-- PERBAIKI WARNA TOMBOL TAMBAH --}}
                 <button type="button" id="btnAddTool"
                     class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
-                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -208,8 +217,9 @@
     <div id="imagePreviewModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[9999] p-4">
         <div class="relative max-w-4xl w-full">
+            {{-- PERBAIKI WARNA HOVER CLOSE BUTTON --}}
             <button id="closePreview"
-                class="absolute -top-10 right-0 text-white text-3xl hover:text-[#5FD0DF] transition">✕</button>
+                class="absolute -top-10 right-0 text-white text-3xl hover:text-[#5EA6FF] transition">✕</button>
             <img id="previewImage" class="max-h-[85vh] max-w-full mx-auto rounded-xl shadow-2xl">
         </div>
     </div>
@@ -327,7 +337,7 @@
             if (!e.target.closest('#employee_name')) box.classList.add('hidden');
         });
 
-        // ===== NOTIF SYSTEM =====
+        // ===== NOTIF SYSTEM (PERBAIKAN WARNA SUKSES JADI BIRU) =====
         const notifWrap = document.getElementById('notifWrap');
         const notifBox = document.getElementById('notifBox');
         const notifIcon = document.getElementById('notifIcon');
@@ -341,10 +351,11 @@
             notifWrap.classList.remove('hidden');
 
             if (type === 'success') {
-                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                notifIcon.innerHTML = '<svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                notifBar.style.background = '#34d399';
+                // PERBAIKI: Notif Hijau diganti Notif Biru
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-blue-50 border-blue-200 text-blue-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100';
+                notifIcon.innerHTML = '<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                notifBar.style.background = '#5EA6FF';
             } else {
                 notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                 notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';

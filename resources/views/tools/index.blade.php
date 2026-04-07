@@ -6,7 +6,8 @@
 
     {{-- ================= HEADER ================= --}}
     <div class="mb-4 sm:mb-5">
-        <h1 class="text-2xl sm:text-[26px] font-extrabold text-[#0e7490] tracking-tight leading-tight">
+        {{-- WARNA JUDUL DIUBAH JADI BIRU TEMA --}}
+        <h1 class="text-2xl sm:text-[26px] font-extrabold text-[#5EA6FF] tracking-tight leading-tight">
             Data Tools
         </h1>
         <p class="text-xs sm:text-sm text-gray-500 mt-1 leading-snug">
@@ -45,7 +46,7 @@
                     </div>
                     <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                         placeholder="Cari barang..."
-                        class="w-full h-10 sm:h-[42px] bg-white rounded-xl pl-10 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none transition">
+                        class="w-full h-10 sm:h-[42px] bg-white rounded-xl pl-10 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20 focus:border-[#5EA6FF] transition">
                     @if(request('search'))
                     <button type="button" id="clearSearch"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 text-sm font-bold">
@@ -57,7 +58,7 @@
                 {{-- FILTER --}}
                 <div class="relative">
                     <select name="condition" onchange="this.form.submit()"
-                        class="w-full sm:w-[180px] h-10 sm:h-[42px] bg-white rounded-xl pl-3.5 pr-9 text-sm font-medium text-gray-700 shadow-sm outline-none appearance-none cursor-pointer transition">
+                        class="w-full sm:w-[180px] h-10 sm:h-[42px] bg-white rounded-xl pl-3.5 pr-9 text-sm font-medium text-gray-700 shadow-sm outline-none appearance-none cursor-pointer transition focus:ring-2 focus:ring-[#5EA6FF]/20 focus:border-[#5EA6FF]">
                         <option value="">Semua Kondisi</option>
                         <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>Baik</option>
                         <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>Rusak</option>
@@ -72,11 +73,11 @@
 
             </form>
 
-            {{-- TAMBAH --}}
+            {{-- TOMBOL TAMBAH (GAYA BARU SESUAI CONTOH KATEGORI) --}}
             <button type="button" id="openTambahBarang"
-                class="w-full sm:w-auto h-10 sm:h-[42px] px-5 bg-white text-gray-700 text-sm font-semibold rounded-xl shadow hover:bg-gray-50 hover:-translate-y-0.5 transition whitespace-nowrap flex items-center justify-center gap-1.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                class="group inline-flex items-center justify-center px-5 h-10 sm:h-[42px] rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+                <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Tambah Barang
             </button>
@@ -261,17 +262,18 @@
                 @endif
 
                 <div class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                    <h2 class="text-base sm:text-lg font-bold text-[#1CA7B6]">Tambah Barang</h2>
+                    {{-- JUDUL MODAL DIUBAH JADI BIRU --}}
+                    <h2 class="text-base sm:text-lg font-bold text-[#5EA6FF]">Tambah Barang</h2>
                     <button type="button" id="closeTambahBarang"
                         class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                 </div>
 
                 <div class="flex-1 overflow-y-auto min-h-0 px-5 sm:px-8 py-4 space-y-3">
                     <input type="text" name="toolkit_name" placeholder="Nama Barang"
-                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
 
                     <select name="category_id" required
-                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                         <option value="">Pilih Kategori</option>
                         @foreach($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->category_name }}</option>
@@ -279,7 +281,7 @@
                     </select>
 
                     <input type="text" name="serial_number" placeholder="No Seri"
-                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                     @error('serial_number')
                     <p class="text-red-500 text-xs mt-1 -mb-1">{{ $message }}</p>
                     @enderror
@@ -293,8 +295,9 @@
                         class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">
                         Batal
                     </button>
+                    {{-- TOMBOL SUBMIT DIUBAH JADI GRADASI BIRU --}}
                     <button type="submit"
-                        class="px-5 py-2.5 bg-gradient-to-b from-[#5FD0DF] to-[#1CA7B6] text-white rounded-xl text-sm font-semibold shadow-lg shadow-cyan-200/40 hover:opacity-90 hover:-translate-y-0.5 transition">
+                        class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">
                         Tambah
                     </button>
                 </div>
@@ -312,24 +315,24 @@
                 @method('PUT')
 
                 <div class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                    <h2 class="text-base sm:text-lg font-bold text-[#1CA7B6]">Edit Barang</h2>
+                    <h2 class="text-base sm:text-lg font-bold text-[#5EA6FF]">Edit Barang</h2>
                     <button type="button" id="closeEditModal"
                         class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                 </div>
 
                 <div class="flex-1 overflow-y-auto min-h-0 px-5 sm:px-8 py-4 space-y-3">
                     <input type="text" name="toolkit_name" id="editName"
-                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
 
                     <select name="category_id" id="editCategory"
-                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                         @foreach($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                         @endforeach
                     </select>
 
                     <input type="text" name="serial_number" id="editSerial"
-                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
 
                     <input type="file" name="image"
                         class="w-full px-4 py-2 bg-[#e6e6e6] border border-gray-300 rounded-lg text-xs cursor-pointer">
@@ -340,8 +343,9 @@
                         class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">
                         Batal
                     </button>
+                    {{-- TOMBOL UPDATE DIUBAH JADI GRADASI BIRU --}}
                     <button type="submit"
-                        class="px-5 py-2.5 bg-gradient-to-b from-[#5FD0DF] to-[#1CA7B6] text-white rounded-xl text-sm font-semibold shadow-lg shadow-cyan-200/40 hover:opacity-90 hover:-translate-y-0.5 transition">
+                        class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">
                         Update
                     </button>
                 </div>
@@ -472,7 +476,7 @@
             });
         });
 
-        // ★ NOTIF SYSTEM — SAMA PERSIS CONSUMABLE ★
+        // ★ NOTIF SYSTEM — DIUBAH WARNA SUKSES JADI BIRU ★
         const notifWrap = document.getElementById('notifWrap');
         const notifBox = document.getElementById('notifBox');
         const notifIcon = document.getElementById('notifIcon');
@@ -485,10 +489,11 @@
             if (notifTimer) clearTimeout(notifTimer);
             notifWrap.classList.remove('hidden', 'hiding');
             if (type === 'success') {
-                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                notifBar.style.background = '#34d399';
+                // GANTI WARNA SUKSES DARI EMERALD (HIJAU) KE BLUE (BIRU)
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-lg border bg-blue-50 border-blue-200 text-blue-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100';
+                notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                notifBar.style.background = '#5EA6FF'; // Bar warna biru tema
             } else {
                 notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                 notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -575,7 +580,7 @@
             });
         });
         document.getElementById("closePreview")?.addEventListener("click", () => closeModal(previewModal));
-        previewModal?.addEventListener("click", e => {
+        previewModal?.addEventListener('click', e => {
             if (e.target === previewModal) closeModal(previewModal);
         });
 

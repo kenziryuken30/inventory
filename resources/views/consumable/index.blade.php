@@ -6,7 +6,8 @@
 
         {{-- ================= HEADER ================= --}}
         <div class="mb-4 sm:mb-6">
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#0e7490] tracking-wide leading-tight">
+            {{-- WARNA JUDUL DISAMAKAN DENGAN TEMA BARU (#5EA6FF) --}}
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#5EA6FF] tracking-wide leading-tight">
                 Data Consumable
             </h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola data Consumable</p>
@@ -40,7 +41,7 @@
                         </div>
                         <form method="GET" action="/consumable" class="flex items-center">
                             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari barang..."
-                                class="w-full bg-white rounded-xl shadow-inner pl-10 pr-10 py-2.5 text-sm outline-none">
+                                class="w-full bg-white rounded-xl shadow-inner pl-10 pr-10 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             @if(request('search'))
                                 <a href="/consumable"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition">
@@ -51,9 +52,14 @@
                             @endif
                         </form>
                     </div>
+                    
+                    {{-- TOMBOL TAMBAH CONSUMABLE (DIUBAH WARNA JADI GRADASI BIRU) --}}
                     <button type="button" id="openTambahConsumable"
-                        class="w-full sm:w-auto px-5 py-2.5 text-sm bg-white text-gray-700 font-semibold rounded-xl shadow hover:bg-gray-50 transition whitespace-nowrap">
-                        + Tambah Consumable
+                        class="group inline-flex items-center justify-center px-5 h-10 sm:h-[42px] rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+                <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                        Tambah Consumable
                     </button>
                 </div>
             </div>
@@ -138,7 +144,8 @@
                 <form id="tambahConsumableForm" method="POST" action="/consumable" enctype="multipart/form-data" class="flex flex-col min-h-0" novalidate>
                     @csrf
                     <div class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                        <h2 class="text-base sm:text-lg font-bold text-[#0e7490]">Tambah Consumable</h2>
+                        {{-- JUDUL MODAL DIUBAH WARNA NYA --}}
+                        <h2 class="text-base sm:text-lg font-bold text-[#5EA6FF]">Tambah Consumable</h2>
                         <button type="button" id="closeTambahConsumable" class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                     </div>
                     <div class="flex-1 overflow-y-auto min-h-0 px-5 sm:px-8 py-4 space-y-3">
@@ -146,7 +153,7 @@
                         {{-- NAMA --}}
                         <div class="relative">
                             <input name="name" id="tambahName" placeholder="Nama Barang"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="tambahNameEmpty" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Nama barang wajib diisi</span>
@@ -168,7 +175,7 @@
                         {{-- STOK --}}
                         <div class="relative">
                             <input name="stock" type="number" id="tambahStock" placeholder="Stok" min="0"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="tambahStockEmpty" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Stok wajib diisi</span>
@@ -182,7 +189,7 @@
                         {{-- MINIMUM STOK --}}
                         <div class="relative">
                             <input name="minimum_stock" type="number" id="tambahMinStock" placeholder="Minimum Stok (opsional)" min="0"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="tambahMinStockNegatif" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Minimum stok tidak boleh negatif</span>
@@ -192,7 +199,7 @@
                         {{-- UNIT --}}
                         <div class="relative">
                             <select name="unit" id="tambahUnit"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                                 <option value="">-- Pilih Unit --</option>
                                 <option value="pcs">Pcs</option>
                                 <option value="box">Box</option>
@@ -210,7 +217,7 @@
                         {{-- KATEGORI --}}
                         <div class="relative">
                             <select name="category_id" id="tambahCategory"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
@@ -235,7 +242,8 @@
 
                     <div class="flex justify-end gap-3 px-5 sm:px-8 py-4 border-t border-gray-200 flex-shrink-0">
                         <button type="button" id="cancelTambahConsumable" class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">Batal</button>
-                        <button type="submit" id="tambahSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">Simpan</button>
+                        {{-- TOMBOL SIMPAN DIPERCANTIK DENGAN SHADOW & HOVER EFFECT --}}
+                        <button type="submit" id="tambahSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -248,7 +256,8 @@
                     @csrf
                     @method('PUT')
                     <div class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                        <h2 class="text-base sm:text-lg font-bold text-[#0e7490]">Edit Consumable</h2>
+                        {{-- JUDUL MODAL EDIT DIUBAH WARNA NYA --}}
+                        <h2 class="text-base sm:text-lg font-bold text-[#5EA6FF]">Edit Consumable</h2>
                         <button type="button" id="closeEditConsumable" class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                     </div>
                     <div class="flex-1 overflow-y-auto min-h-0 px-5 sm:px-8 py-4 space-y-3">
@@ -256,7 +265,7 @@
                         {{-- NAMA --}}
                         <div class="relative">
                             <input name="name" id="editName"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="editNameEmpty" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Nama barang wajib diisi</span>
@@ -278,7 +287,7 @@
                         {{-- STOK --}}
                         <div class="relative">
                             <input name="stock" type="number" id="editStock" min="0"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="editStockEmpty" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Stok wajib diisi</span>
@@ -292,7 +301,7 @@
                         {{-- MINIMUM STOK --}}
                         <div class="relative">
                             <input name="minimum_stock" type="number" id="editMinStock" min="0"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="editMinStockNegatif" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Minimum stok tidak boleh negatif</span>
@@ -300,7 +309,7 @@
                         </div>
 
                         {{-- UNIT --}}
-                        <select name="unit" id="editUnit" class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        <select name="unit" id="editUnit" class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <option value="pcs">Pcs</option>
                             <option value="box">Box</option>
                             <option value="pack">Pack</option>
@@ -310,7 +319,7 @@
                         </select>
 
                         {{-- KATEGORI --}}
-                        <select name="category_id" id="editCategoryId" class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                        <select name="category_id" id="editCategoryId" class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
                             @endforeach
@@ -329,7 +338,8 @@
 
                     <div class="flex justify-end gap-3 px-5 sm:px-8 py-4 border-t border-gray-200 flex-shrink-0">
                         <button type="button" id="cancelEditConsumable" class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">Batal</button>
-                        <button type="submit" id="editSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">Update</button>
+                        {{-- TOMBOL UPDATE DIPERCANTIK DENGAN SHADOW & HOVER EFFECT --}}
+                        <button type="submit" id="editSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">Update</button>
                     </div>
                 </form>
             </div>
@@ -341,7 +351,7 @@
                 <form id="restockConsumableForm" method="POST" novalidate>
                     @csrf
                     <div class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200">
-                        <h2 class="text-base sm:text-lg font-bold text-[#0e7490]">Tambah Stok</h2>
+                        <h2 class="text-base sm:text-lg font-bold text-[#5EA6FF]">Tambah Stok</h2>
                         <button type="button" id="closeRestockConsumable" class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
                     </div>
                     <div class="px-5 sm:px-8 py-4 space-y-3">
@@ -350,7 +360,7 @@
                         </div>
                         <div class="relative">
                             <input type="number" name="qty" id="restockQty" placeholder="Jumlah tambah stok" min="1"
-                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#3fb2c8] focus:ring-2 focus:ring-[#3fb2c8]/15 transition">
+                                class="w-full px-4 py-3 bg-[#f5f5f5] border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#5EA6FF] focus:ring-2 focus:ring-[#5EA6FF]/20 transition">
                             <div id="restockQtyEmpty" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>Jumlah wajib diisi</span>
@@ -363,7 +373,7 @@
                     </div>
                     <div class="flex justify-end gap-3 px-5 sm:px-8 py-4 border-t border-gray-200">
                         <button type="button" id="cancelRestockConsumable" class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">Batal</button>
-                        <button type="submit" id="restockSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg hover:opacity-90 transition">Tambah</button>
+                        <button type="submit" id="restockSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">Tambah</button>
                     </div>
                 </form>
             </div>
@@ -440,10 +450,11 @@
                 if (notifTimer) clearTimeout(notifTimer);
                 notifWrap.classList.remove('hidden', 'hiding');
                 if (type === 'success') {
-                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                    notifBar.style.background = '#34d399';
+                    // Updated to Blue Theme
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-lg border bg-blue-50 border-blue-200 text-blue-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#5EA6FF';
                 } else {
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -748,7 +759,7 @@
                 }
 
                 if (stock === '') { showErr('editStockEmpty', 'editStock'); hasError = true; }
-                else if (parseInt(stock) < 0) { showErr('editStockNegatif', 'editStock'); hasError = true; }
+                else if (parseInt(stock) < 0) { showErr('editStockNegativ', 'editStock'); hasError = true; }
 
                 if (minStock !== '' && parseInt(minStock) < 0) { showErr('editMinStockNegatif', 'editMinStock'); hasError = true; }
 
@@ -844,4 +855,4 @@
         });
     </script>
 
-@endsection
+@endsection 
