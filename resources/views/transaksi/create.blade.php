@@ -139,7 +139,6 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-50">
                                 <tr id="emptyRow">
-                                    {{-- UPDATE COLSPAN KE 6 KARNA JUMLAH KOLOM BERTAMBAH --}}
                                     <td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">
                                         Belum ada consumable yang dipilih
                                     </td>
@@ -342,6 +341,17 @@
         #modalNotifBar {
             transition: width 3.5s linear;
         }
+
+        .row-error {
+            background-color: #fef2f2 !important;
+            animation: shakeRow 0.4s ease-in-out;
+        }
+
+        @keyframes shakeRow {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
 
     <script>
@@ -395,6 +405,11 @@
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
                     notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
                     notifBar.style.background = '#34d399';
+                } else if (type === 'warning') {
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
+                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                    notifBar.style.background = '#fbbf24';
                 } else {
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -439,6 +454,11 @@
                     modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
                     modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
                     modalNotifBar.style.background = '#34d399';
+                } else if (type === 'warning') {
+                    modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
+                    modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
+                    modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                    modalNotifBar.style.background = '#fbbf24';
                 } else {
                     modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                     modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -481,10 +501,14 @@
                 showNotif('{{ session("error") }}', 'error');
             @endif
 
-            // ===== VALIDATION SAVE =====
+            // ===== VALIDASI SAVE — HANYA CEK STOCK, QTY KOSONG AUTO ISI 1 =====
             btnSave.addEventListener('click', function () {
                 const employeeId = form.querySelector('input[name="employee_id"]');
                 const items = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
+
+                document.querySelectorAll('.row-error').forEach(row => {
+                    row.classList.remove('row-error');
+                });
 
                 if (!employeeId.value) {
                     showNotif("Pilih karyawan terlebih dahulu", "error");
@@ -493,6 +517,38 @@
 
                 if (items.length === 0) {
                     showNotif("Pilih minimal 1 consumable terlebih dahulu", "error");
+                    return;
+                }
+
+                let stockErrors = [];
+                items.forEach(row => {
+                    const qtyInput = row.querySelector('.qty-input-main');
+                    const hiddenQty = row.querySelector('.hidden-qty');
+                    const stock = parseInt(row.dataset.stock);
+                    let qty = parseInt(qtyInput.value);
+                    const itemName = row.querySelector('.item-name').textContent.trim();
+
+                    // Kalau qty kosong atau 0, auto isi 1 tanpa notif
+                    if (isNaN(qty) || qty <= 0) {
+                        qty = 1;
+                        qtyInput.value = 1;
+                    }
+
+                    if (hiddenQty) hiddenQty.value = qty;
+
+                    // Cuma cek stock overflow
+                    if (qty > stock) {
+                        stockErrors.push(itemName + " - stock hanya " + stock + ", Anda meminta " + qty);
+                        row.classList.add('row-error');
+                    }
+                });
+
+                if (stockErrors.length > 0) {
+                    showNotif(stockErrors[0], "error");
+                    const firstErrorRow = document.querySelector('.row-error');
+                    if (firstErrorRow) {
+                        firstErrorRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                     return;
                 }
 
@@ -528,17 +584,34 @@
                 });
             });
 
-            // ===== LOGIC QTY =====
+            // ===== LOGIC QTY — HANYA CEK STOCK, HAPUS CEK "TIDAK VALID" =====
             window.updateQty = function (input) {
                 const row = input.closest('tr');
                 const qty = parseInt(input.value);
-                if (qty <= 0 || isNaN(qty)) {
-                    showNotif("Jumlah tidak valid", "error");
-                    input.value = 1;
-                    row.querySelector('.hidden-qty').value = 1;
+                const stock = parseInt(row.dataset.stock);
+
+                row.classList.remove('row-error');
+
+                // Kalau kosong atau 0, biarin aja — nanti di save yang handle
+                if (isNaN(qty) || qty <= 0) {
+                    const hiddenQty = row.querySelector('.hidden-qty');
+                    if (hiddenQty) hiddenQty.value = input.value;
                     return;
                 }
-                row.querySelector('.hidden-qty').value = qty;
+
+                // Cuma cek kalau qty melebihi stock
+                if (qty > stock) {
+                    const itemName = row.querySelector('.item-name').textContent.trim();
+                    showNotif("Stock " + itemName + " hanya tersedia " + stock, "warning");
+                    row.classList.add('row-error');
+                    input.value = stock;
+                    const hiddenQty = row.querySelector('.hidden-qty');
+                    if (hiddenQty) hiddenQty.value = stock;
+                    return;
+                }
+
+                const hiddenQty = row.querySelector('.hidden-qty');
+                if (hiddenQty) hiddenQty.value = qty;
             };
 
             // ===== LOGIC HAPUS ITEM =====
@@ -616,9 +689,6 @@
                     if (qty > stock) {
                         showModalNotif("Stock " + name + " hanya tersedia " + stock, "error");
                         hasError = true;
-                    } else if (qty <= 0 || isNaN(qty)) {
-                        showModalNotif("Jumlah untuk " + name + " tidak valid", "error");
-                        hasError = true;
                     }
                 });
 
@@ -643,34 +713,31 @@
                     const exist = document.querySelector(`#tableConsumables tr[data-id="${id}"]`);
                     if (exist) {
                         exist.querySelector('.qty-input-main').value = qty;
+                        exist.querySelector('.qty-input-main').max = stock;
                         exist.querySelector('.hidden-qty').value = qty;
+                        exist.dataset.stock = stock;
+                        const stockDisplay = exist.querySelector('.stock-display');
+                        if (stockDisplay) stockDisplay.textContent = stock;
                         updatedCount++;
                     } else {
                         startNo++;
                         
-                        // ===== UPDATE STRUKTUR HTML BARIS (TAMBAH NO & FOTO TERPISAH) =====
                         const html = `
-                            <tr data-id="${id}" class="hover:bg-gray-50 transition">
-                                <!-- KOLOM NO -->
+                            <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
                                 <td class="py-3 px-4 text-center font-medium text-gray-600 w-12">
                                     <span class="no-col">${startNo}</span>
                                 </td>
-                                <!-- KOLOM FOTO -->
                                 <td class="py-3 px-4 text-center w-20">
                                     <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto">
                                 </td>
-                                <!-- KOLOM NAMA -->
                                 <td class="py-3 px-4">
                                     <span class="font-semibold text-gray-800 item-name">${name}</span>
                                 </td>
-                                <!-- KOLOM STOCK -->
-                                <td class="text-center py-3 px-4 font-medium text-blue-600 w-24">${stock}</td>
-                                <!-- KOLOM JUMLAH -->
+                                <td class="text-center py-3 px-4 font-medium text-blue-600 w-24 stock-display">${stock}</td>
                                 <td class="text-center py-3 px-4 w-32">
-                                    <input type="number" value="${qty}" min="1" onchange="updateQty(this)"
+                                    <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
                                         class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#1CA7B6] focus:outline-none">
                                 </td>
-                                <!-- KOLOM AKSI -->
                                 <td class="text-center py-3 px-4 w-20">
                                     <button type="button" onclick="removeRow(this)"
                                         class="bg-red-50 text-red-500 px-2 py-1 rounded-lg text-xs font-bold hover:bg-red-100 transition">Hapus</button>
@@ -691,7 +758,6 @@
 
                 if (selectAllCheckbox) selectAllCheckbox.checked = false;
 
-                // ===== TUTUP MODAL PAKAI DISPATCH EVENT =====
                 window.dispatchEvent(new CustomEvent('close-modal'));
 
                 if (addedCount > 0 && updatedCount === 0) {

@@ -28,8 +28,9 @@ class ConsumableTransactionController extends Controller
         }
 
         $transactions = $query
-            ->orderByDesc('date')
-            ->paginate(10);
+        ->orderByDesc('date')
+        ->orderByDesc('id') 
+        ->paginate(10);
 
         return view('transaksi.index', compact('transactions'));
     }
@@ -38,7 +39,7 @@ class ConsumableTransactionController extends Controller
     {
         return view('transaksi.create', [
             'consumables' => InvConsumable::all(),
-            'employees' => InvEmployee::where('is_exit', 1)->orderBy('full_name')->pluck('full_name', 'id'), 
+            'employees' => InvEmployee::where('is_exit', 1)->orderBy('full_name')->pluck('full_name', 'id'),
         ]);
     }
 
@@ -60,7 +61,7 @@ class ConsumableTransactionController extends Controller
                 $transactionCode = $letters . $numbers;
             } while (InvConsumableTransaction::where('transaction_code', $transactionCode)->exists());
 
-            $employee = InvEmployee::find($request->employee_id); 
+            $employee = InvEmployee::find($request->employee_id);
 
             $trx = InvConsumableTransaction::create([
                 'transaction_code' => $transactionCode,
@@ -118,16 +119,14 @@ class ConsumableTransactionController extends Controller
     }
 
     public function edit($id)
-    {
-        $transaction = InvConsumableTransaction::with('items.consumable')
-            ->findOrFail($id);
+{
+    $transaction = InvConsumableTransaction::with('items.consumable')
+        ->findOrFail($id);
 
-        $selected = $transaction->items->pluck('consumable_id');
+    $consumables = InvConsumable::all();
 
-        $consumables = InvConsumable::whereNotIn('id', $selected)->get();
-
-        return view('transaksi.edit', compact('transaction', 'consumables'));
-    }
+    return view('transaksi.edit', compact('transaction', 'consumables'));
+}
 
     public function update(Request $request, $id)
     {
@@ -334,45 +333,58 @@ class ConsumableTransactionController extends Controller
 
     public function confirm($id)
     {
-        DB::transaction(function () use ($id) {
+        try {
 
-            $trx = InvConsumableTransaction::with('items.consumable')
-                ->findOrFail($id);
+            DB::transaction(function () use ($id) {
 
-            if ($trx->is_confirm) {
-                throw new \Exception("Transaksi sudah dikonfirmasi");
-            }
+                $trx = InvConsumableTransaction::with('items.consumable')
+                    ->findOrFail($id);
 
-            foreach ($trx->items as $item) {
-
-                $consumable = InvConsumable::lockForUpdate()
-                    ->find($item->consumable_id);
-
-                if ($item->qty > $item->consumable->stock) {
-                    throw new \Exception(
-                        "Stock {$item->consumable->name} tidak cukup"
-                    );
+                if ($trx->is_confirm) {
+                    throw new \Exception("Transaksi sudah dikonfirmasi");
                 }
 
-                $item->consumable->decrement('stock', $item->qty);
-            }
+                foreach ($trx->items as $item) {
 
-            $trx->update([
-                'is_confirm' => true
-            ]);
-        });
+                    $consumable = InvConsumable::lockForUpdate()
+                        ->find($item->consumable_id);
 
-        return redirect()
-            ->route('transaksi.index')
-            ->with('success', 'Transaksi berhasil dikonfirmasi');
+                    // ❗ FIX: pakai $consumable bukan $item->consumable
+                    if ($item->qty > $consumable->stock) {
+                        throw new \Exception(
+                            "Stock {$consumable->name} tidak cukup"
+                        );
+                    }
+
+                    $consumable->decrement('stock', $item->qty);
+                }
+
+                $trx->update([
+                    'is_confirm' => true
+                ]);
+            });
+
+            return redirect()
+                ->route('transaksi.index')
+                ->with('success', 'Transaksi berhasil dikonfirmasi');
+        } catch (\Exception $e) {
+
+            return redirect()
+                ->route('transaksi.index')
+                ->with('error', $e->getMessage());
+        }
     }
 
     public function kembali(Request $request, $id)
-    {
+    {   
+        $request->validate([
+        'return_date' => 'required|date' 
+    ]);
+
+    DB::transaction(function () use ($request, $id) {
         $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
 
         foreach ($request->items as $itemId => $data) {
-
             if (!empty($data['qty']) && $data['qty'] > 0) {
 
                 $item = InvConsumableTransactionItem::findOrFail($itemId);
@@ -413,6 +425,9 @@ class ConsumableTransactionController extends Controller
         return redirect()
             ->route('transaksi.index')
             ->with('success', 'Consumable berhasil dikembalikan');
+        }
+    );
+
     }
 
     public function storeItem(Request $request, $id)

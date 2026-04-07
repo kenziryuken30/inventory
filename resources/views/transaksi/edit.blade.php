@@ -99,13 +99,14 @@
                                     <th class="py-3 px-4 font-semibold text-center w-10">NO</th>
                                     <th class="py-3 px-4 font-semibold text-center w-20">Foto</th>
                                     <th class="py-3 px-4 font-semibold text-center">Nama Consumable</th>
+                                    <th class="py-3 px-4 font-semibold text-center w-24">Stock</th>
                                     <th class="py-3 px-4 font-semibold text-center w-32">Jumlah</th>
                                     <th class="py-3 px-4 font-semibold text-center w-24">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
                                 @foreach($transaction->items as $i => $item)
-                                    <tr data-id="{{ $item->consumable_id }}" class="hover:bg-gray-50 transition align-middle">
+                                    <tr data-id="{{ $item->consumable_id }}" data-stock="{{ $item->consumable->stock ?? 0 }}" class="hover:bg-gray-50 transition align-middle">
                                         <td class="text-center py-4 px-4 text-gray-600 no font-medium">
                                             {{ $loop->iteration }}
                                         </td>
@@ -121,12 +122,16 @@
                                             @endif
                                         </td>
 
-                                        <td class="text-center py-4 px-4 font-medium text-gray-800">
+                                        <td class="text-center py-4 px-4 font-medium text-gray-800 item-name">
                                             {{ $item->consumable->name ?? '-' }}
                                         </td>
 
+                                        <td class="text-center py-4 px-4 font-semibold text-blue-600 stock-display">
+                                            {{ $item->consumable->stock ?? 0 }}
+                                        </td>
+
                                         <td class="text-center py-4 px-4">
-                                            <input type="number" value="{{ $item->qty }}" min="1" onchange="updateQty(this)"
+                                            <input type="number" value="{{ $item->qty }}" min="1" max="{{ $item->consumable->stock ?? 0 }}" onchange="updateQty(this)"
                                                 class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#1CA7B6]">
 
                                             <input type="hidden" name="items[{{ $i }}][consumable_id]"
@@ -152,7 +157,7 @@
 
                 {{-- ================= SAVE BUTTON ================= --}}
                 <div class="flex justify-end pt-4 mt-6 border-t border-gray-100">
-                    <button type="submit"
+                    <button type="button" id="btnSave"
                         class="text-white px-8 py-3 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
                         style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
                         Save Transaksi
@@ -220,7 +225,7 @@
 
                             <tbody class="bg-white divide-y divide-gray-100">
                                 @foreach ($consumables as $c)
-                                    <tr class="hover:bg-gray-50 transition cursor-pointer">
+                                    <tr class="hover:bg-gray-50 transition cursor-pointer cons-row" data-name="{{ strtolower($c->name) }}">
 
                                         <td class="py-3 px-4 text-center">
                                             <input type="checkbox"
@@ -323,6 +328,15 @@
             #modalNotifBar {
                 transition: width 3.5s linear;
             }
+            .row-error {
+                background-color: #fef2f2 !important;
+                animation: shakeRow 0.4s ease-in-out;
+            }
+            @keyframes shakeRow {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
         </style>
 
         {{-- ================= SCRIPT ================= --}}
@@ -330,6 +344,7 @@
             document.addEventListener('DOMContentLoaded', function () {
 
                 let index = {{ $transaction->items->count() }};
+                const form = document.getElementById('updateForm');
 
                 // ================= ELEMEN NOTIF HALAMAN UTAMA =================
                 const notifWrap = document.getElementById('notifWrap');
@@ -359,6 +374,11 @@
                         notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
                         notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
                         notifBar.style.background = '#34d399';
+                    } else if (type === 'warning') {
+                        notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
+                        notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
+                        notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                        notifBar.style.background = '#fbbf24';
                     } else {
                         notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                         notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -403,6 +423,11 @@
                         modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
                         modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
                         modalNotifBar.style.background = '#34d399';
+                    } else if (type === 'warning') {
+                        modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
+                        modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
+                        modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                        modalNotifBar.style.background = '#fbbf24';
                     } else {
                         modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                         modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -455,14 +480,36 @@
                         });
                 }
 
+                // ================= AMBIL ID YANG MASIH ADA DI TABEL UTAMA =================
+                function getExistingIds() {
+                    const ids = new Set();
+                    document.querySelectorAll('#tableConsumables tbody tr').forEach(row => {
+                        if (row.dataset.id) ids.add(row.dataset.id);
+                    });
+                    return ids;
+                }
+
                 // ================= UPDATE QTY =================
                 window.updateQty = function (input) {
                     const row = input.closest('tr');
                     const qty = parseInt(input.value);
+                    const stock = parseInt(row.dataset.stock);
 
-                    if (qty <= 0 || isNaN(qty)) {
-                        window.showNotif("Jumlah tidak valid", "error");
-                        input.value = 1;
+                    row.classList.remove('row-error');
+
+                    if (isNaN(qty) || qty <= 0) {
+                        const hiddenQty = row.querySelector('.hidden-qty');
+                        if (hiddenQty) hiddenQty.value = input.value;
+                        return;
+                    }
+
+                    if (qty > stock) {
+                        const itemName = row.querySelector('.item-name').textContent.trim();
+                        window.showNotif("Stock " + itemName + " hanya tersedia " + stock, "warning");
+                        row.classList.add('row-error');
+                        input.value = stock;
+                        const hiddenQty = row.querySelector('.hidden-qty');
+                        if (hiddenQty) hiddenQty.value = stock;
                         return;
                     }
 
@@ -472,18 +519,18 @@
                     }
                 };
 
-                // ================= REMOVE ROW =================
+                // ================= REMOVE ROW — GAK USAH SENTUH POPUP =================
                 let rowToDelete = null;
                 const deleteItemModal = document.getElementById('deleteItemModal');
                 const deleteItemNameModal = document.getElementById('deleteItemNameModal');
 
                 window.removeRow = function (btn) {
                     const row = btn.closest('tr');
-                    const itemName = row.querySelector('td:nth-child(3)').textContent.trim();
-                    
+                    const itemName = row.querySelector('.item-name').textContent.trim();
+
                     rowToDelete = row;
                     deleteItemNameModal.textContent = itemName;
-                    
+
                     deleteItemModal.classList.remove('hidden');
                     deleteItemModal.classList.add('flex');
                 };
@@ -495,23 +542,15 @@
                 }
 
                 document.getElementById('cancelDeleteItem').addEventListener('click', closeDeleteItemModal);
-                
+
                 deleteItemModal.addEventListener('click', function(e) {
                     if (e.target === deleteItemModal) closeDeleteItemModal();
                 });
 
                 document.getElementById('confirmDeleteItem').addEventListener('click', function() {
                     if (rowToDelete) {
-                        const rowId = rowToDelete.dataset.id;
-                        const itemName = rowToDelete.querySelector('td:nth-child(3)').textContent.trim();
-
+                        const itemName = rowToDelete.querySelector('.item-name').textContent.trim();
                         rowToDelete.remove();
-
-                        const popupCheckbox = document.querySelector(`.pick-consumable[data-id="${rowId}"]`);
-                        if (popupCheckbox) {
-                            popupCheckbox.checked = false;
-                        }
-
                         refreshNo();
                         window.showNotif(itemName + " berhasil dihapus", "success");
                     }
@@ -519,7 +558,7 @@
                 });
 
 
-                // ================= MODAL LOGIC =================
+                // ================= MODAL LOGIC — BACA LANGSUNG DARI TABEL, GAK PAKE FLAG =================
                 const modal = document.getElementById('consumableModal');
                 const openBtn = document.getElementById('openConsumableBtn');
                 const closeBtn = document.getElementById('closeConsumableBtn');
@@ -527,8 +566,29 @@
                 const addBtn = document.getElementById('btnAddConsumable');
                 const searchInput = document.getElementById('searchConsumableModal');
 
+                // —— BUKA MODAL: baca ID dari tabel utama, hide yang match ——
                 if (openBtn && modal) {
                     openBtn.addEventListener('click', function () {
+                        const existingIds = getExistingIds();
+
+                        document.querySelectorAll('#popupTable tbody tr.cons-row').forEach(row => {
+                            const checkbox = row.querySelector('.pick-consumable');
+                            if (!checkbox) return;
+
+                            const id = checkbox.dataset.id;
+                            checkbox.checked = false;
+
+                            const qtyInput = row.querySelector('.qty-input');
+                            if (qtyInput) qtyInput.value = 1;
+
+                            if (existingIds.has(id)) {
+                                row.style.display = 'none';
+                            } else {
+                                row.style.display = '';
+                            }
+                        });
+
+                        if (searchInput) searchInput.value = '';
                         modal.classList.remove('hidden');
                         modal.classList.add('flex');
                     });
@@ -537,8 +597,6 @@
                 function closeModal() {
                     modal.classList.add('hidden');
                     modal.classList.remove('flex');
-                    if (searchInput) searchInput.value = '';
-                    document.querySelectorAll('#popupTable tbody tr').forEach(row => row.style.display = '');
                 }
 
                 closeBtn.addEventListener('click', closeModal);
@@ -548,17 +606,29 @@
                     if (e.target === modal) closeModal();
                 });
 
+                // —— SEARCH: baca ID dari tabel utama, gabungkan dengan filter keyword ——
                 if (searchInput) {
                     searchInput.addEventListener('keyup', function () {
-                        let keyword = this.value.toLowerCase();
-                        document.querySelectorAll('#popupTable tbody tr').forEach(row => {
-                            let name = row.children[1].innerText.toLowerCase();
-                            row.style.display = name.includes(keyword) ? '' : 'none';
+                        const keyword = this.value.toLowerCase();
+                        const existingIds = getExistingIds();
+
+                        document.querySelectorAll('#popupTable tbody tr.cons-row').forEach(row => {
+                            const checkbox = row.querySelector('.pick-consumable');
+                            if (!checkbox) return;
+
+                            const id = checkbox.dataset.id;
+                            const name = row.dataset.name;
+
+                            if (existingIds.has(id)) {
+                                row.style.display = 'none';
+                            } else {
+                                row.style.display = name.includes(keyword) ? '' : 'none';
+                            }
                         });
                     });
                 }
 
-                // ================= ADD CONSUMABLE (NOTIF ERROR DI MODAL) =================
+                // ================= ADD CONSUMABLE =================
                 addBtn.addEventListener('click', function () {
                     const selectedItems = document.querySelectorAll('.pick-consumable:checked');
 
@@ -569,7 +639,6 @@
 
                     let hasError = false;
 
-                    // CEK VALIDASI SEMUA DULU, BARU PROSES
                     selectedItems.forEach(selected => {
                         const rowPopup = selected.closest('tr');
                         const name = selected.dataset.name;
@@ -579,13 +648,9 @@
                         if (qty > stock) {
                             showModalNotif("Stock " + name + " hanya tersedia " + stock, "error");
                             hasError = true;
-                        } else if (qty <= 0 || isNaN(qty)) {
-                            showModalNotif("Jumlah untuk " + name + " tidak valid", "error");
-                            hasError = true;
                         }
                     });
 
-                    // KALAU ADA ERROR, STOP! JANGAN MASUKKAN APAPUN
                     if (hasError) return;
 
                     let addedCount = 0;
@@ -603,19 +668,24 @@
 
                         if (exist) {
                             exist.querySelector('.qty-input-main').value = qty;
+                            exist.querySelector('.qty-input-main').max = stock;
                             const hiddenQtyExist = exist.querySelector('.hidden-qty');
                             if (hiddenQtyExist) hiddenQtyExist.value = qty;
+                            const stockDisplay = exist.querySelector('.stock-display');
+                            if (stockDisplay) stockDisplay.textContent = stock;
+                            exist.dataset.stock = stock;
                             updatedCount++;
                         } else {
                             const html = `
-                                <tr data-id="${id}" class="hover:bg-gray-50 transition align-middle border-b border-gray-100">
+                                <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition align-middle border-b border-gray-100">
                                     <td class="text-center py-4 px-4 text-gray-600 no font-medium"></td>
                                     <td class="text-center py-2 px-4">
                                         <img src="${image}" class="w-12 h-12 object-cover rounded-lg mx-auto shadow-sm border">
                                     </td>
-                                    <td class="text-center py-4 px-4 font-medium text-gray-800">${name}</td>
+                                    <td class="text-center py-4 px-4 font-medium text-gray-800 item-name">${name}</td>
+                                    <td class="text-center py-4 px-4 font-semibold text-blue-600 stock-display">${stock}</td>
                                     <td class="text-center py-4 px-4">
-                                        <input type="number" value="${qty}" min="1" onchange="updateQty(this)"
+                                        <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
                                                class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#1CA7B6]">
 
                                         <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
@@ -636,12 +706,12 @@
 
                         selected.checked = false;
                         rowPopup.querySelector('.qty-input').value = 1;
+                        rowPopup.style.display = 'none';
                     });
 
                     refreshNo();
                     closeModal();
 
-                    // NOTIF SUCCESS DI HALAMAN UTAMA (MODAL SUDAH TUTUP)
                     if (addedCount > 0 && updatedCount === 0) {
                         window.showNotif(addedCount + " consumable berhasil ditambahkan", "success");
                     } else if (addedCount > 0 && updatedCount > 0) {
@@ -651,11 +721,60 @@
                     }
                 });
 
+
+                // ================= VALIDASI SAVE =================
+                document.getElementById('btnSave').addEventListener('click', function () {
+                    const items = document.querySelectorAll('#tableConsumables tbody tr');
+
+                    document.querySelectorAll('.row-error').forEach(row => {
+                        row.classList.remove('row-error');
+                    });
+
+                    if (items.length === 0) {
+                        window.showNotif("Tambahkan minimal 1 consumable", "error");
+                        return;
+                    }
+
+                    let stockErrors = [];
+
+                    items.forEach(row => {
+                        const qtyInput = row.querySelector('.qty-input-main');
+                        const hiddenQty = row.querySelector('.hidden-qty');
+                        const stock = parseInt(row.dataset.stock);
+                        let qty = parseInt(qtyInput.value);
+                        const itemName = row.querySelector('.item-name').textContent.trim();
+
+                        if (isNaN(qty) || qty <= 0) {
+                            qty = 1;
+                            qtyInput.value = 1;
+                        }
+
+                        if (hiddenQty) hiddenQty.value = qty;
+
+                        if (qty > stock) {
+                            stockErrors.push(itemName + " - stock hanya " + stock + ", Anda meminta " + qty);
+                            row.classList.add('row-error');
+                        }
+                    });
+
+                    if (stockErrors.length > 0) {
+                        window.showNotif(stockErrors[0], "error");
+                        const firstErrorRow = document.querySelector('.row-error');
+                        if (firstErrorRow) {
+                            firstErrorRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        return;
+                    }
+
+                    form.submit();
+                });
+
+
                 // ================= ESC KEY =================
                 document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') { 
-                        closeModal(); 
-                        closeDeleteItemModal(); 
+                    if (e.key === 'Escape') {
+                        closeModal();
+                        closeDeleteItemModal();
                     }
                 });
 
