@@ -89,7 +89,8 @@
 
     {{-- Header --}}
     <div class="mb-4 sm:mb-6 md:mb-8">
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#268397] mb-0.5 leading-tight break-words">Dashboard</h2>
+        {{-- DIUBAH: Warna teks judul menjadi #5EA6FF --}}
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#5EA6FF] mb-0.5 leading-tight break-words">Dashboard</h2>
         <p class="text-xs sm:text-sm text-gray-500 break-words">Selamat datang di Sistem Inventory Management</p>
     </div>
 
@@ -101,7 +102,8 @@
 
         {{-- Total Barang --}}
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-            bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
+            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
                 <p class="text-[11px] sm:text-sm opacity-90 leading-tight break-words">Total Tools</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">{{ $totalBarang }}</p>
@@ -117,7 +119,8 @@
 
         {{-- Alat Tersedia --}}
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-            bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
+            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
                 <p class="text-[11px] sm:text-sm opacity-90 leading-tight break-words">Tools Tersedia</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">{{ $alatTersedia }}</p>
@@ -132,7 +135,8 @@
 
         {{-- Alat Dipinjam --}}
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-            bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
+            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
                 <p class="text-[11px] sm:text-sm opacity-90 leading-tight break-words">Tools Di Pinjam</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">{{ $alatDipinjam }}</p>
@@ -148,7 +152,8 @@
 
         {{-- Consumable Menipis --}}
         <div class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-            bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] transform hover:scale-105 transition-transform duration-300">
+            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
             <div class="flex-1 min-w-0">
                 <p class="text-[11px] sm:text-sm opacity-90 leading-tight break-words">Consumable Menipis</p>
                 <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">{{ $consumableMenipis }}</p>
@@ -167,7 +172,9 @@
 
         {{-- Peminjaman Terbaru --}}
         <div class="rounded-xl sm:rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col">
-            <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] flex-shrink-0">
+            <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white 
+            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
                 <h3 class="text-sm sm:text-base md:text-lg font-semibold leading-tight break-words">Peminjaman Terbaru</h3>
             </div>
 
@@ -207,7 +214,9 @@
 
         {{-- Pengeluaran Consumable Terbaru --}}
         <div class="rounded-xl sm:rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col">
-            <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white bg-[linear-gradient(180deg,#268397_0%,#4CCAE6_100%)] flex-shrink-0">
+            <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white 
+            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
                 <h3 class="text-sm sm:text-base md:text-lg font-semibold leading-tight break-words">Pengeluaran Consumable Terbaru</h3>
             </div>
 

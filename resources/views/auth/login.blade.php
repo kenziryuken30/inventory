@@ -24,7 +24,8 @@
         .left {
             width: 55%;
             position: relative;
-            background: linear-gradient(180deg, #2ec4c7 0%, #168c94 100%);
+            /* DIUBAH: Gradasi Biru sesuai contoh (#7FC4FF atas, #5EA6FF bawah) */
+            background: linear-gradient(180deg, #7FC4FF 0%, #5EA6FF 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -96,7 +97,8 @@
 
         .login-card input:focus {
             outline: none;
-            border-color: #4DB6AC;
+            /* DIUBAH: Border fokus menjadi Biru (#5EA6FF) */
+            border-color: #5EA6FF;
             background: #ffffff;
         }
 
@@ -105,12 +107,14 @@
             padding: 14px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(90deg, #63b8af, #4db6ac);
+            /* DIUBAH: Gradasi Biru sesuai tema */
+            background: linear-gradient(90deg, #7FC4FF, #5EA6FF);
             color: white;
             font-weight: 600;
             font-size: 15px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(77, 182, 172, 0.25);
+            /* DIUBAH: Shadow warna biru */
+            box-shadow: 0 8px 20px rgba(94, 166, 255, 0.25);
             transition: 0.2s;
         }
 
