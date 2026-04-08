@@ -23,7 +23,7 @@
             padding: 0;
             background: #e9edf2;
             overflow-x: hidden;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
 
         .sidebar-bg {
@@ -176,7 +176,7 @@
 
             <div class="divider flex-none"></div>
 
-            <div class="flex-1 overflow-y-auto no-scrollbar pt-2 pb-6">
+            <div class="flex-1 pt-2 pb-6">
                 <ul class="space-y-3 text-[15px] font-medium px-3">
 
                     <li>
@@ -261,7 +261,7 @@
         </button>
 
         <!-- Main Content -->
-        <div class="flex-1 transition-all duration-300 min-h-screen relative z-10 lg:pl-[256px] pl-20">
+        <div class="flex-1 transition-all duration-300 min-h-screen overflow-y-auto relative z-10 lg:pl-[256px] pl-20">
 
             <img src="{{ asset('images/kiri.png') }}"
                 :style="'left: ' + (sidebarOpen ? '256px' : '80px') + 'px'"
