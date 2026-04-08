@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    
 
     <style>
         [x-cloak] {
@@ -23,6 +23,7 @@
             padding: 0;
             background: #e9edf2;
             overflow-x: hidden;
+            overflow-y: scroll;
         }
 
         .sidebar-bg {
@@ -144,8 +145,7 @@
 </head>
 
 <body x-data="{ sidebarOpen: window.innerWidth >= 1024 }"
-      x-init="$store.modal = {open: false}"
-      :class="sidebarOpen ? 'overflow-hidden lg:overflow-auto' : ''">
+      x-init="$store.modal = {open: false}">
 
     <div class="relative flex min-h-screen w-full">
 
@@ -261,7 +261,7 @@
         </button>
 
         <!-- Main Content -->
-        <div :class="sidebarOpen ? 'lg:pl-[256px]' : 'lg:pl-20'" class="flex-1 transition-all duration-300 min-h-screen relative z-10 pl-20">
+        <div class="flex-1 transition-all duration-300 min-h-screen relative z-10 lg:pl-[256px] pl-20">
 
             <img src="{{ asset('images/kiri.png') }}"
                 :style="'left: ' + (sidebarOpen ? '256px' : '80px') + 'px'"
