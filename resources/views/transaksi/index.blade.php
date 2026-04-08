@@ -80,7 +80,7 @@
              <a href="{{ route('transaksi.index') }}"
    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
           transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-   style="background: linear-gradient(145deg, #f9fafb, #e5e7eb); color:#6b7280;">
+  style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
 
     <span>Reset</span>
 

@@ -41,54 +41,56 @@
 
             <div class="flex gap-2 items-end">
 
+                {{-- TOMBOL FILTER (Putih/Abu - Sudah Benar) --}}
                 <button type="submit"
-                    class="bg-white text-[#5EA6FF] px-5 py-2.5 rounded-xl font-bold shadow-sm hover:bg-gray-100 hover:shadow-md transition-all duration-300 text-sm hover:-translate-y-0.5">
-                    🔎 Filter
+                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
+                    <span>Filter</span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                        <svg class="w-3 h-3 text-gray-500 group-hover:text-gray-700 transition"
+                            fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 4h18M6 12h12M10 20h4"/>
+                        </svg>
+                    </span>
                 </button>
 
-                {{-- RESET --}}
+                {{-- TOMBOL RESET (Ungu) --}}
                 <a href="{{ route('laporan.tools.transaksi', ['type' => $type]) }}"
-                    class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-                    style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white; box-shadow: 0 4px 15px rgba(168,85,247,0.35);">
-                    <span class="relative z-10 flex items-center gap-1.5">
-                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:-rotate-180" fill="none"
-                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                   style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
+                    <span>Reset</span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                        <svg class="w-3 h-3 text-purple-500 transition"
+                             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                                  d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0 0 14-7M19 5a9 9 0 0 0-14 7"/>
                         </svg>
-                        Reset
                     </span>
-                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
 
-                {{-- PDF --}}
+                {{-- TOMBOL PDF (Merah) --}}
                 <a href="{{ route('laporan.tools.export.pdf', ['type' => $type, 'start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
-                    class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-                    style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white; box-shadow: 0 4px 15px rgba(225,29,72,0.35);">
-                    <span class="relative z-10 flex items-center gap-1.5">
-                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm3-7h6v1.5H9V13zm0 3h6v1.5H9V16zm0-6h3v1.5H9V10z" />
+                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                   style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white;">
+                    <span>PDF</span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                        <svg class="w-3 h-3 text-red-500 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm3-7h6v1.5H9V13zm0 3h6v1.5H9V16zm0-6h3v1.5H9V10z" />
                         </svg>
-                        PDF
                     </span>
-                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
 
-                {{-- EXCEL --}}
+                {{-- TOMBOL EXCEL (Hijau) --}}
                 <a href="{{ route('laporan.tools.export.excel', ['type' => $type, 'start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
-                    class="group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-                    style="background: linear-gradient(135deg, #34D399, #059669); color: white; box-shadow: 0 4px 15px rgba(5,150,105,0.35);">
-                    <span class="relative z-10 flex items-center gap-1.5">
-                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h3v1.5H8V14zm0 3h3v1.5H8V17zm5-6h3v1.5h-3V11zm0 3h3v1.5h-3V14zm0 3h3v1.5h-3V17z" />
+                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                   style="background: linear-gradient(135deg, #34D399, #059669); color: white;">
+                    <span>Excel</span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                        <svg class="w-3 h-3 text-green-600 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h3v1.5H8V14zm0 3h3v1.5H8V17zm5-6h3v1.5h-3V11zm0 3h3v1.5h-3V14zm0 3h3v1.5h-3V17z" />
                         </svg>
-                        Excel
                     </span>
-                    <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                 </a>
 
             </div>
