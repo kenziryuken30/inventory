@@ -282,33 +282,42 @@ class ToolTransactionController extends Controller
     }
 
     public function confirm($id)
-    {
+{
+    try {
         $transaction = ToolTransaction::with('items.serial')
             ->findOrFail($id);
 
         DB::transaction(function () use ($transaction) {
+
+            foreach ($transaction->items as $item) {
+
+                $isUsed = ToolTransactionItem::where('serial_id', $item->serial_id)
+                    ->where('status', 'DIPINJAM')
+                    ->where('transaction_id', '!=', $transaction->id)
+                    ->exists();
+
+                if ($isUsed) {
+                    throw new \Exception('Serial ' . $item->serial->serial_number . ' sedang dipinjam!');
+                }
+            }
 
             $transaction->update([
                 'is_confirm' => true
             ]);
 
             foreach ($transaction->items as $item) {
-
-                $item->update([
-                    'status' => 'DIPINJAM'
-                ]);
-
-                $item->serial->update([
-                    'status' => 'DIPINJAM'
-                ]);
+                $item->update(['status' => 'DIPINJAM']);
+                $item->serial->update(['status' => 'DIPINJAM']);
             }
         });
 
-        return redirect()
-            ->route('peminjaman.index')
-            ->with('success', 'Transaksi berhasil dikonfirmasi');
-    }
+        return back()->with('success', 'Transaksi berhasil dikonfirmasi');
 
+    } catch (\Exception $e) {
+
+        return back()->with('error', $e->getMessage());
+    }
+}
     public function returnProcess(Request $request, $id)
     {
         $transaction = ToolTransaction::with('items.serial')->findOrFail($id);
