@@ -131,22 +131,29 @@
 
                                 {{-- FOTO --}}
                                 <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle">
-                                    <img src="{{ $tool->toolkit->image ? asset('storage/' . $tool->toolkit->image) : asset('images/no-image.png') }}"
-                                        class="tools-img w-10 h-10 sm:w-12 sm:h-12 object-contain bg-white rounded-lg shadow p-0.5 sm:p-1 cursor-pointer previewImage mx-auto"
-                                        data-fallback="{{ asset('images/no-image.png') }}">
+                                    @php
+                                        $image = optional($tool->toolkit)->image;
+                                    @endphp
+
+                                    <img 
+                                        src="{{ $image ? asset('storage/' . $image) : asset('images/no-image.png') }}"
+                                        class="tools-img w-10 h-10 object-contain bg-white rounded-lg shadow p-1"
+                                        
+                                        {{-- fallback hanya untuk ERROR --}}
+                                        onerror="this.src='{{ asset('images/error-image.png') }}'">
                                 </td>
 
                                 {{-- NAMA --}}
                                 <td
                                     class="py-2.5 sm:py-3 px-3 sm:px-6 font-semibold text-gray-800 text-xs sm:text-sm whitespace-nowrap align-middle">
-                                    {{ $tool->toolkit->toolkit_name }}
+                                    {{ optional($tool->toolkit)->toolkit_name }}
                                 </td>
 
                                 {{-- KATEGORI --}}
                                 <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle hidden md:table-cell">
                                     <span
                                         class="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-medium rounded-full bg-gray-100 text-gray-600">
-                                        {{ $tool->toolkit->category->category_name ?? '-' }}
+                                        {{ optional(optional($tool->toolkit)->category)->category_name ?? '-' }}
                                     </span>
                                 </td>
 
