@@ -12,7 +12,7 @@
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
 
         table {
@@ -37,49 +37,57 @@
 <body>
 
     <h2>
-        @if($type=='peminjaman')
-        Laporan Peminjaman Tools
+        @if($type == 'peminjaman')
+            Laporan Peminjaman Tools
         @else
-        Laporan Pengembalian Tools
+            Laporan Pengembalian Tools
         @endif
     </h2>
 
-    <p style="text-align:center;">
-        Periode :
-        {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
-        s/d
-        {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
+    <p style="text-align:center; margin:5px 0;">
+        Tanggal Cetak : {{ \Carbon\Carbon::now()->format('d M Y') }}
+    </p>
+
+    <p style="text-align:center; margin-bottom:10px;">
+        @if(request('start_date') || request('end_date'))
+            Periode :
+            {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
+            s/d
+            {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
+        @else
+            Periode : Semua Data
+        @endif
     </p>
 
     <table>
 
         <thead>
 
-            @if($type=='peminjaman')
+            @if($type == 'peminjaman')
 
-            <tr>
-                <th>No</th>
-                <th>Kode Transaksi</th>
-                <th>Tgl Pinjam</th>
-                <th>Karyawan</th>
-                <th>Alat Pinjam</th>
-                <th>No Seri</th>
-                <th>Client</th>
-                <th>Project</th>
-            </tr>
+                <tr>
+                    <th>No</th>
+                    <th>Kode Transaksi</th>
+                    <th>Tgl Pinjam</th>
+                    <th>Karyawan</th>
+                    <th>Alat Pinjam</th>
+                    <th>No Seri</th>
+                    <th>Client</th>
+                    <th>Project</th>
+                </tr>
 
             @else
 
-            <tr>
-                <th>No</th>
-                <th>Kode Transaksi</th>
-                <th>Tgl Kembali</th>
-                <th>Karyawan</th>
-                <th>Alat Dipinjam</th>
-                <th>No Seri</th>
-                <th>Kondisi</th>
-                <th>Keterangan</th>
-            </tr>
+                <tr>
+                    <th>No</th>
+                    <th>Kode Transaksi</th>
+                    <th>Tgl Kembali</th>
+                    <th>Karyawan</th>
+                    <th>Alat Dipinjam</th>
+                    <th>No Seri</th>
+                    <th>Kondisi</th>
+                    <th>Keterangan</th>
+                </tr>
 
             @endif
 
@@ -87,86 +95,86 @@
 
         <tbody>
 
-            @if($type=='peminjaman')
+            @if($type == 'peminjaman')
 
-            @foreach($data as $row)
+                @foreach($data as $row)
 
-            <tr>
+                    <tr>
 
-                <td>{{ $loop->iteration }}</td>
+                        <td>{{ $loop->iteration }}</td>
 
-                <td>{{ $row->transaction_code }}</td>
+                        <td>{{ $row->transaction_code }}</td>
 
-                <td>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</td>
 
-                <td>{{ $row->borrower_name }}</td>
+                        <td>{{ $row->borrower_name }}</td>
 
-                <td>
-                    @foreach($row->items as $item)
-                    {{ $item->toolkit->toolkit_name ?? '-' }}<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach($row->items as $item)
+                                {{ $item->toolkit->toolkit_name ?? '-' }}<br>
+                            @endforeach
+                        </td>
 
-                <td>
-                    @foreach($row->items as $item)
-                    {{ $item->serial->serial_number ?? '-' }}<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach($row->items as $item)
+                                {{ $item->serial->serial_number ?? '-' }}<br>
+                            @endforeach
+                        </td>
 
-                <td>{{ $row->client_name ?? '-' }}</td>
+                        <td>{{ $row->client_name ?? '-' }}</td>
 
-                <td>{{ $row->project ?? '-' }}</td>
+                        <td>{{ $row->project ?? '-' }}</td>
 
-            </tr>
+                    </tr>
 
-            @endforeach
+                @endforeach
 
 
             @else
 
-            @php
-            $group = $data->groupBy('transaction_id');
-            @endphp
+                @php
+                    $group = $data->groupBy('transaction_id');
+                @endphp
 
-            @foreach($group as $items)
+                @foreach($group as $items)
 
-            <tr>
+                    <tr>
 
-                <td>{{ $loop->iteration }}</td>
+                        <td>{{ $loop->iteration }}</td>
 
-                <td>{{ $items->first()->transaction->transaction_code }}</td>
+                        <td>{{ $items->first()->transaction->transaction_code }}</td>
 
-                <td>{{ \Carbon\Carbon::parse($items->first()->return_date)->format('d M Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($items->first()->return_date)->format('d M Y') }}</td>
 
-                <td>{{ $items->first()->transaction->borrower_name }}</td>
+                        <td>{{ $items->first()->transaction->borrower_name }}</td>
 
-                <td>
-                    @foreach($items as $item)
-                    {{ $item->toolkit->toolkit_name ?? '-' }}<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach($items as $item)
+                                {{ $item->toolkit->toolkit_name ?? '-' }}<br>
+                            @endforeach
+                        </td>
 
-                <td>
-                    @foreach($items as $item)
-                    {{ $item->serial->serial_number ?? '-' }}<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach($items as $item)
+                                {{ $item->serial->serial_number ?? '-' }}<br>
+                            @endforeach
+                        </td>
 
-                <td>
-                    @foreach($items as $item)
-                    {{ $item->return_condition ?? '-' }}<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach($items as $item)
+                                {{ $item->return_condition ?? '-' }}<br>
+                            @endforeach
+                        </td>
 
-                <td>
-                    @foreach($items as $item)
-                    {{ $item->return_note ?? '-' }}<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach($items as $item)
+                                {{ $item->return_note ?? '-' }}<br>
+                            @endforeach
+                        </td>
 
-            </tr>
+                    </tr>
 
-            @endforeach
+                @endforeach
 
             @endif
 
