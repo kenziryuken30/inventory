@@ -67,8 +67,24 @@ class ReportConsumableController extends Controller
     {
         $type = $request->get('type', 'pengeluaran');
 
-        $allData = $this->getData($request, $type, true);
+        // 🔥 VALIDASI HARUS DI ATAS
+        [$start, $end] = [$request->start_date, $request->end_date];
 
+        if ($start && $end && $end < $start) {
+            $data = collect(); // kosongkan data
+            $totalItems = 0;
+            $totalTransaksi = 0;
+
+            return view('laporan.consumable.transaksi', compact(
+                'data',
+                'type',
+                'totalItems',
+                'totalTransaksi'
+            ));
+        }
+
+        // 🔥 BARU QUERY JALAN
+        $allData = $this->getData($request, $type, true);
         $data = $this->getData($request, $type);
 
         if ($type == 'pengeluaran') {

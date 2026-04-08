@@ -41,6 +41,10 @@ class ReportToolController extends Controller
                     $q->where('borrower_name', 'like', '%' . $search . '%');
                 });
             }
+            if ($start && $end && $end < $start) {
+                $data = collect(); // kosongkan data
+                return view('laporan.tools.transaksi', compact('data', 'type'));
+            }
 
             $data = $query->orderBy('return_date', 'desc')->orderBy('id', 'desc')->paginate(10)->withQueryString();
         } else {
@@ -73,13 +77,11 @@ class ReportToolController extends Controller
         $start = $request->start_date;
         $end   = $request->end_date;
 
-        if ($start && $end && $start > $end) {
-            $end = $start;
-        }
+        // ❌ JANGAN DIPERBAIKI
+        // biarkan error tetap error
 
         return [$start, $end];
     }
-
     public function exportPDF(Request $request)
     {
         $type = $request->type ?? 'peminjaman';
@@ -127,15 +129,15 @@ class ReportToolController extends Controller
         return $pdf->download('laporan_tools_' . $type . '.pdf');
     }
 
-   public function exportExcel(Request $request)
-{
-    $type = $request->type ?? 'peminjaman';
+    public function exportExcel(Request $request)
+    {
+        $type = $request->type ?? 'peminjaman';
 
-    [$start, $end] = $this->fixDate($request);
+        [$start, $end] = $this->fixDate($request);
 
-    return Excel::download(
-        new TransactionReportExport($type, $start, $end),
-        'laporan_tools_' . $type . '.xlsx'
-    );
-}
+        return Excel::download(
+            new TransactionReportExport($type, $start, $end),
+            'laporan_tools_' . $type . '.xlsx'
+        );
+    }
 }

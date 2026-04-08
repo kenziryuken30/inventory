@@ -38,9 +38,6 @@
                     class="px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:outline-none text-sm">
             </div>
 
-            <div id="dateError" class="hidden w-full text-sm text-white bg-red-500/80 px-4 py-2 rounded-xl">
-                ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
-            </div>
 
             <div class="flex gap-2 items-end">
 
@@ -143,7 +140,23 @@
 
                         <tbody class="divide-y divide-gray-100">
 
-                            @forelse($data as $row)
+                            @php
+                                $invalidDate = request('start_date') && request('end_date') && request('end_date') < request('start_date');
+                            @endphp
+
+                            {{-- ❌ Kalau tanggal salah --}}
+                            @if($invalidDate)
+
+                                <tr>
+                                    <td colspan="6" class="py-12 text-center text-red-500 font-semibold">
+                                        ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
+                                    </td>
+                                </tr>
+
+                            {{-- ✅ Kalau data ada --}}
+                            @elseif($data->count() > 0)
+
+                            @foreach($data as $row)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="py-4 px-6 text-center font-medium text-gray-600">
                                         {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
@@ -185,29 +198,21 @@
                                         </button>
                                     </td>
                                 </tr>
-                            @empty
+                            @endforeach
+                             {{-- ⚪ Kalau kosong --}}
+                            @else
+
                                 <tr>
                                     <td colspan="6" class="py-12 text-center text-gray-400">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                                                </path>
-                                            </svg>
-                                            <span>Tidak ada data transaksi pada periode ini</span>
-                                        </div>
+                                        Tidak ada data transaksi pada periode ini
                                     </td>
                                 </tr>
-                            @endforelse
 
+                            @endif
                         </tbody>
                     </table>
                 </div>
             </div>
-
-
-
 
             {{-- MODAL DETAIL PEMINJAMAN --}}
             @foreach($data as $row)
@@ -322,7 +327,23 @@
 
                         <tbody class="divide-y divide-gray-100">
 
-                            @forelse($data as $row)
+                            @php
+                                $invalidDate = request('start_date') && request('end_date') && request('end_date') < request('start_date');
+                            @endphp
+
+                            {{-- ❌ Kalau tanggal salah --}}
+                            @if($invalidDate)
+
+                                <tr>
+                                    <td colspan="8" class="py-12 text-center text-red-500 font-semibold">
+                                        ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
+                                    </td>
+                                </tr>
+
+                            {{-- ✅ Kalau data ada --}}
+                            @elseif($data->count() > 0)
+
+                            @foreach($data as $row)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="py-4 px-6 text-center font-medium text-gray-600">
                                         {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
@@ -359,22 +380,17 @@
                                         {{ $row->return_note ?? '-' }}
                                     </td>
                                 </tr>
-                            @empty
+                            @endforeach
+                            {{-- ⚪ Kalau data kosong --}}
+                            @else
+
                                 <tr>
                                     <td colspan="8" class="py-12 text-center text-gray-400">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                                                </path>
-                                            </svg>
-                                            <span>Tidak ada data transaksi pada periode ini</span>
-                                        </div>
+                                        Tidak ada data transaksi pada periode ini
                                     </td>
                                 </tr>
-                            @endforelse
 
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -403,35 +419,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterForm = document.getElementById('filterForm');
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');
-    const dateError = document.getElementById('dateError');
 
     filterForm?.addEventListener('submit', function (e) {
 
-        const start = startDate.value;
-        const end = endDate.value;
+    const start = startDate.value;
+    const end = endDate.value;
 
-        if (start && end && end < start) {
-            e.preventDefault();
+    if (start && end && end < start) {
 
-            dateError.classList.remove('hidden');
-            endDate.classList.add('ring-2', 'ring-red-400');
-            return;
-        }
+        endDate.classList.add('ring-2', 'ring-red-400');
+        return;
 
-        dateError.classList.add('hidden');
+    } else {
+
         endDate.classList.remove('ring-2', 'ring-red-400');
-    });
+
+    }
+
+});
 
     endDate?.addEventListener('change', function () {
         if (this.value >= startDate.value) {
-            dateError.classList.add('hidden');
             this.classList.remove('ring-2', 'ring-red-400');
         }
     });
 
     startDate?.addEventListener('change', function () {
         if (endDate.value >= this.value) {
-            dateError.classList.add('hidden');
             endDate.classList.remove('ring-2', 'ring-red-400');
         }
     });

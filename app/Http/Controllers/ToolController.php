@@ -42,6 +42,15 @@ class ToolController extends Controller
 
             $condition = $tool->latestCondition->condition ?? 'baik';
 
+            // 🔥 AMBIL TRANSAKSI TERAKHIR TOOL
+            $lastItem = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
+                ->latest()
+                ->first();
+
+            // 🔥 SET STATUS
+            $tool->isPending = $lastItem && $lastItem->status === 'PENDING';
+            $tool->isDipinjam = $lastItem && $lastItem->status === 'DIPINJAM';
+
             if ($tool->isPending) {
                 $tool->status_label = 'pending';
             } elseif ($tool->isDipinjam) {

@@ -44,20 +44,27 @@
         @endif
     </h2>
 
-    <p style="text-align:center; margin:5px 0;">
-        Tanggal Cetak : {{ \Carbon\Carbon::now()->format('d M Y') }}
-    </p>
+    <div style="width:100%; margin-bottom:10px; font-size:12px;">
 
-    <p style="text-align:center; margin-bottom:10px;">
-        @if(request('start_date') || request('end_date'))
-            Periode :
-            {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
-            s/d
-            {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
-        @else
-            Periode : Semua Data
-        @endif
-    </p>
+        <span style="float:left;">
+            <strong>Periode :</strong>
+            @if(request('start_date') || request('end_date'))
+                {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : '-' }}
+                s/d
+                {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : '-' }}
+            @else
+                Semua Data
+            @endif
+        </span>
+
+        <span style="float:right;">
+            <strong>Tanggal Cetak :</strong>
+            {{ \Carbon\Carbon::now()->format('d M Y') }}
+        </span>
+
+        <div style="clear:both;"></div>
+
+    </div>
 
     <table>
 

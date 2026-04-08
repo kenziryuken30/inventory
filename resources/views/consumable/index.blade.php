@@ -467,11 +467,11 @@
                 }
                 notifText.textContent = message;
                 notifBar.style.transition = 'none';
-                notifBar.style.width = '100%';
+                notifBar.style.width = '0%';
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         notifBar.style.transition = 'width 3.5s linear';
-                        notifBar.style.width = '0%';
+                        notifBar.style.width = '100%';
                     });
                 });
                 notifTimer = setTimeout(() => hideNotif(), 3500);
