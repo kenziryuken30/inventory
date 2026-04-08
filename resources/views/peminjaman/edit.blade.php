@@ -6,7 +6,8 @@
     {{-- ================= TITLE ================= --}}
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Edit Peminjaman Tools</h2>
+            {{-- WARNA JUDUL DIUBAH JADI BIRU (#5EA6FF) --}}
+            <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Edit Peminjaman Tools</h2>
             <p class="text-sm text-gray-500 mt-1">Edit Proses Peminjaman dan Daftar Tools yang dipinjam</p>
         </div>
 
@@ -27,7 +28,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+            <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
         </div>
     </div>
 
@@ -49,7 +50,8 @@
                     <input type="text"
                         name="borrower_name"
                         value="{{ $transaction->borrower_name }}"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
                 {{-- Kolom 2: Tanggal --}}
@@ -58,7 +60,8 @@
                     <input type="date"
                         name="date"
                         value="{{ $transaction->date->format('Y-m-d') }}"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
                 {{-- Kolom 3: Spacer --}}
@@ -73,7 +76,8 @@
                     <input type="text"
                         name="client_name"
                         value="{{ $transaction->client_name }}"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
                 {{-- Kolom 2: Proyek --}}
@@ -82,7 +86,8 @@
                     <input type="text"
                         name="project"
                         value="{{ $transaction->project }}"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
                 {{-- Kolom 3: Keperluan --}}
@@ -91,7 +96,8 @@
                     <input type="text"
                         name="purpose"
                         value="{{ $transaction->purpose }}"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
             </div>
@@ -105,10 +111,11 @@
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-gray-800 text-lg">Daftar Alat yang Di Edit</h3>
 
+                {{-- TOMBOL PILIH TOOLS (WARNA DIUBAH JADI BIRU) --}}
                 <button type="button"
                     id="openToolsBtn"
                     class="text-white px-5 py-2 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 text-sm tracking-wide"
-                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                     + Pilih Tools
                 </button>
             </div>
@@ -117,7 +124,8 @@
                 <table class="w-full text-sm" id="tableTools">
                     <thead>
                         <tr class="text-white text-xs uppercase tracking-wider"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            {{-- HEADER TABEL DIUBAH JADI BIRU --}}
+                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <th class="py-3 px-4 font-semibold text-center w-10">NO</th>
                             <th class="py-3 px-4 font-semibold text-center w-20">Image</th>
                             <th class="py-3 px-4 font-semibold text-center">Nama Tools</th>
@@ -161,7 +169,7 @@
                                     @method('DELETE')
                                 </form>
 
-                                {{-- ★ ICON HAPUS (ganti dari text "Hapus" jadi icon tempat sampah) --}}
+                                {{-- ICON HAPUS --}}
                                 <button type="button"
                                     onclick="openDeleteModal({{ $item->id }})"
                                     class="inline-flex items-center justify-center w-9 h-9 rounded-lg 
@@ -169,9 +177,7 @@
                                         border border-red-200 hover:border-red-300 
                                         transition-all duration-200 hover:scale-105"
                                     title="Hapus">
-
                                     <i class="ph ph-trash text-red-500 text-[18px]"></i>
-
                                 </button>
                             </td>
                         </tr>
@@ -191,10 +197,11 @@
 
         {{-- ================= SAVE BUTTON ================= --}}
         <div class="flex justify-end pt-4 border-t border-gray-100">
+            {{-- TOMBOL SAVE (WARNA DIUBAH JADI BIRU) --}}
             <button type="submit"
                 form="updateForm"
                 class="text-white px-8 py-3 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                 Save Transaksi
             </button>
         </div>
@@ -208,8 +215,9 @@
 
         <div class="bg-white w-11/12 max-w-3xl rounded-2xl shadow-2xl relative overflow-hidden flex flex-col">
 
+            {{-- HEADER MODAL (WARNA DIUBAH JADI BIRU) --}}
             <div class="px-6 py-4 flex justify-between items-center text-white"
-                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                 <div>
                     <h3 class="text-lg font-bold">Pilih Tools Tersedia</h3>
                 </div>
@@ -225,7 +233,7 @@
                     <input type="text"
                         id="searchToolsModal"
                         placeholder="Cari nama tools atau no seri..."
-                        class="w-full bg-white border-0 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none text-sm">
+                        class="w-full bg-white border-0 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:outline-none text-sm">
                 </div>
 
                 <form action="{{ route('peminjaman.item.add', $transaction->id) }}"
@@ -237,7 +245,8 @@
                         <table class="w-full text-sm">
 
                             <thead class="sticky top-0 text-white text-xs uppercase tracking-wider"
-                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                {{-- HEADER TABEL MODAL (WARNA DIUBAH JADI BIRU) --}}
+                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <tr>
                                     <th class="py-3 px-4 w-10"></th>
                                     <th class="py-3 px-4 text-left font-semibold">Nama Tools</th>
@@ -255,7 +264,8 @@
                                         <input type="checkbox"
                                             name="serial_ids[]"
                                             value="{{ $serial->id }}"
-                                            class="w-5 h-5 rounded border-gray-300 text-[#1CA7B6] focus:ring-[#1CA7B6]">
+                                            {{-- CHECKBOX COLOR DIUBAH JADI BIRU --}}
+                                            class="w-5 h-5 rounded border-gray-300 text-[#5EA6FF] focus:ring-[#5EA6FF]">
                                     </td>
 
                                     <td class="py-3 px-4 font-medium text-gray-800">
@@ -296,9 +306,10 @@
                             Batal
                         </button>
 
+                        {{-- TOMBOL TAMBAHKAN (WARNA DIUBAH JADI BIRU) --}}
                         <button type="submit"
                             class="text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md hover:opacity-90 transition"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             + Tambahkan
                         </button>
 
@@ -316,7 +327,6 @@
     <div id="deleteItemModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[10002] p-3 sm:p-4">
         <div class="w-[calc(100%-1.5rem)] sm:w-11/12 max-w-sm bg-white rounded-2xl shadow-2xl p-5 sm:p-6 text-center">
             <div class="flex justify-center mb-4">
-                {{-- ★ ICON HAPUS di modal (ganti SVG jadi icon tempat sampah) --}}
                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-100 flex items-center justify-center">
                     <svg class="w-7 h-7 sm:w-8 sm:h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -326,7 +336,8 @@
 
             <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Item?</h3>
             <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
-            <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#1CA7B6] mb-5"></p>
+            {{-- WARNA TEXT DIUBAH JADI BIRU --}}
+            <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#5EA6FF] mb-5"></p>
 
             <div class="flex gap-3">
                 <button id="cancelDeleteItem" class="flex-1 px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-xs sm:text-sm font-semibold hover:bg-[#c5c5c5] transition">
@@ -343,22 +354,12 @@
     {{-- ================= STYLE NOTIF ================= --}}
     <style>
         #notifWrap {
-            animation: notifSlideIn 0.4s ease-out;
+            animation: notifSlideIn 0.3s ease-out;
         }
-        @keyframes notifSlideIn {
-            from { opacity: 0; transform: translateX(-40px); }
-            to   { opacity: 1; transform: translateX(0); }
-        }
-        #notifWrap.hiding {
-            animation: notifSlideOut 0.35s ease-in forwards;
-        }
-        @keyframes notifSlideOut {
-            from { opacity: 1; transform: translateX(0); }
-            to   { opacity: 0; transform: translateX(60px); }
-        }
-        #notifBar {
-            transition: width 3.5s linear;
-        }
+        @keyframes notifSlideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+        #notifWrap.hiding { animation: notifSlideOut 0.25s ease-in forwards; }
+        @keyframes notifSlideOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-12px); } }
+        #notifBar { transition: width 3.5s linear; }
     </style>
 
     {{-- ================= SCRIPT ================= --}}
@@ -371,7 +372,7 @@
             const cancelToolsBtn = document.getElementById('btnCancelToolsModal');
             const searchInput = document.getElementById('searchToolsModal');
 
-            // ================= NOTIF SYSTEM =================
+            // ================= NOTIF SYSTEM (SESUAI CONTOH KATEGORI) =================
             const notifWrap = document.getElementById('notifWrap');
             const notifBox = document.getElementById('notifBox');
             const notifIcon = document.getElementById('notifIcon');
@@ -385,10 +386,11 @@
                 notifWrap.classList.remove('hidden', 'hiding');
 
                 if (type === 'success') {
-                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                    notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                    notifBar.style.background = '#34d399';
+                    // NOTIF HIJAU FULL (SESUAI CONTOH)
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
+                    notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#22c55e';
                 } else {
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -398,36 +400,23 @@
 
                 notifText.textContent = message;
                 notifBar.style.transition = 'none';
-                notifBar.style.width = '0%';
-
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        notifBar.style.transition = 'width 3.5s linear';
-                        notifBar.style.width = '100%';
-                    });
-                });
-
+                notifBar.style.width = '100%';
+                requestAnimationFrame(() => { requestAnimationFrame(() => { notifBar.style.transition = 'width 3.5s linear'; notifBar.style.width = '0%'; }); });
                 notifTimer = setTimeout(() => hideNotif(), 3500);
             };
 
             function hideNotif() {
                 notifWrap.classList.add('hiding');
-                setTimeout(() => {
-                    notifWrap.classList.add('hidden');
-                    notifWrap.classList.remove('hiding');
-                }, 250);
+                setTimeout(() => { notifWrap.classList.add('hidden'); notifWrap.classList.remove('hiding'); }, 250);
             }
 
-            notifClose.addEventListener('click', () => {
-                if (notifTimer) clearTimeout(notifTimer);
-                hideNotif();
-            });
+            notifClose.addEventListener('click', () => { if (notifTimer) clearTimeout(notifTimer); hideNotif(); });
 
             @if(session('success'))
-                window.showNotif('{{ session("success") }}', 'success');
+                showNotif('{{ session("success") }}', 'success');
             @endif
             @if(session('error'))
-                window.showNotif('{{ session("error") }}', 'error');
+                showNotif('{{ session("error") }}', 'error');
             @endif
 
 

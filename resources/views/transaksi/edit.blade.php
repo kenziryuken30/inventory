@@ -6,7 +6,8 @@
         {{-- ================= TITLE ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-[#1CA7B6] tracking-tight">Edit Consumable</h2>
+                {{-- WARNA JUDUL DIUBAH JADI BIRU (#5EA6FF) --}}
+                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Edit Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Edit Proses Transaksi dan Daftar Consumable</p>
             </div>
 
@@ -27,7 +28,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-                <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+                {{-- Bar animasi di-reset via JS --}}
+                <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
             </div>
         </div>
 
@@ -42,13 +44,13 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Karyawan</label>
                         <input type="text" name="borrower_name" value="{{ $transaction->borrower_name }}"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal</label>
                         <input type="date" name="date" value="{{ $transaction->date->format('Y-m-d') }}"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
                     <div class="hidden md:block">
@@ -59,21 +61,21 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Nama Client</label>
                         <input type="text" name="client" value="{{ $transaction->client }}" placeholder="Masukan nama klien"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Proyek</label>
                         <input type="text" name="project" value="{{ $transaction->project }}"
                             placeholder="Masukan Keterangan"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Keperluan</label>
                         <input type="text" name="purpose" value="{{ $transaction->purpose }}"
                             placeholder="Masukan Keperluan"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#1CA7B6] focus:border-transparent transition duration-200 text-sm">
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                     </div>
                 </div>
 
@@ -84,9 +86,10 @@
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-gray-800 text-lg">Daftar Consumable yang Di Edit</h3>
 
+                        {{-- TOMBOL PILIH CONSUMABLE (WARNA DIUBAH JADI BIRU) --}}
                         <button type="button" id="openConsumableBtn"
                             class="text-white px-5 py-2 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 text-sm tracking-wide"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             + Pilih Consumable
                         </button>
                     </div>
@@ -95,7 +98,7 @@
                         <table class="w-full text-sm" id="tableConsumables">
                             <thead>
                                 <tr class="text-white text-xs uppercase tracking-wider"
-                                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                     <th class="py-3 px-4 font-semibold text-center w-10">NO</th>
                                     <th class="py-3 px-4 font-semibold text-center w-20">Foto</th>
                                     <th class="py-3 px-4 font-semibold text-center">Nama Consumable</th>
@@ -132,7 +135,7 @@
 
                                         <td class="text-center py-4 px-4">
                                             <input type="number" value="{{ $item->qty }}" min="1" max="{{ $item->consumable->stock ?? 0 }}" onchange="updateQty(this)"
-                                                class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#1CA7B6]">
+                                                class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#5EA6FF]">
 
                                             <input type="hidden" name="items[{{ $i }}][consumable_id]"
                                                 value="{{ $item->consumable_id }}">
@@ -141,8 +144,14 @@
                                         </td>
 
                                         <td class="text-center py-4 px-4">
-                                            <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            {{-- TOMBOL HAPUS STYLE BARU (SEPERTI CONTOH TOOLS) --}}
+                                            <button type="button" onclick="removeRow(this)" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg 
+                                                bg-red-50 hover:bg-red-100 
+                                                border border-red-200 hover:border-red-300 
+                                                transition-all duration-200 hover:scale-105"
+                                                title="Hapus item">
+                                                <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                                 </svg>
                                             </button>
@@ -160,7 +169,7 @@
                 <div class="flex justify-end pt-4 mt-6 border-t border-gray-100">
                     <button type="button" id="btnSave"
                         class="text-white px-8 py-3 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                        style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         Save Transaksi
                     </button>
                 </div>
@@ -177,7 +186,7 @@
             <div class="bg-white w-11/12 max-w-3xl rounded-2xl shadow-2xl relative overflow-hidden flex flex-col">
 
                 <div class="px-6 py-4 flex justify-between items-center text-white"
-                    style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                     <div>
                         <h3 class="text-lg font-bold">Pilih Consumable Tersedia</h3>
                     </div>
@@ -200,14 +209,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
-                            <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+                            <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:100%"></div>
                         </div>
                     </div>
                     {{-- ========== END NOTIF MODAL ========== --}}
 
                     <div class="mb-6">
                         <input type="text" id="searchConsumableModal" placeholder="Cari nama consumable..."
-                            class="w-full bg-white border-0 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#1CA7B6] focus:outline-none text-sm">
+                            class="w-full bg-white border-0 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:outline-none text-sm">
                     </div>
 
                     <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm max-h-[350px] overflow-y-auto">
@@ -215,7 +224,7 @@
                         <table class="w-full text-sm" id="popupTable">
 
                             <thead class="sticky top-0 text-white text-xs uppercase tracking-wider"
-                                style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <tr>
                                     <th class="py-3 px-4 w-10"></th>
                                     <th class="py-3 px-4 text-left font-semibold">Nama Consumable</th>
@@ -230,7 +239,7 @@
 
                                         <td class="py-3 px-4 text-center">
                                             <input type="checkbox"
-                                                class="pick-consumable w-5 h-5 rounded border-gray-300 text-[#1CA7B6] focus:ring-[#1CA7B6]"
+                                                class="pick-consumable w-5 h-5 rounded border-gray-300 text-[#5EA6FF] focus:ring-[#5EA6FF]"
                                                 data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}">
                                         </td>
 
@@ -253,7 +262,7 @@
 
                                         <td class="py-3 px-4 text-center">
                                             <input type="number" min="1" max="{{ $c->stock }}" value="1"
-                                                class="w-16 border rounded-lg text-center qty-input shadow-sm focus:ring-2 focus:ring-[#1CA7B6]">
+                                                class="w-16 border rounded-lg text-center qty-input shadow-sm focus:ring-2 focus:ring-[#5EA6FF]">
                                         </td>
 
                                     </tr>
@@ -272,7 +281,7 @@
 
                         <button type="button" id="btnAddConsumable"
                             class="text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md hover:opacity-90 transition"
-                            style="background: linear-gradient(180deg, #5FD0DF, #1CA7B6);">
+                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             + Tambahkan
                         </button>
                     </div>
@@ -295,7 +304,8 @@
 
                 <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Item?</h3>
                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
-                <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#1CA7B6] mb-5"></p>
+                {{-- WARNA TEXT DIUBAH JADI BIRU --}}
+                <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#5EA6FF] mb-5"></p>
 
                 <div class="flex gap-3">
                     <button id="cancelDeleteItem" class="flex-1 px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-xs sm:text-sm font-semibold hover:bg-[#c5c5c5] transition">
@@ -338,26 +348,6 @@
                 25% { transform: translateX(-5px); }
                 75% { transform: translateX(5px); }
             }
-            .btn-delete-icon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 32px;
-                height: 32px;
-                border-radius: 8px;
-                background: #fef2f2;
-                color: #ef4444;
-                border: none;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            .btn-delete-icon:hover {
-                background: #fee2e2;
-                transform: scale(1.1);
-            }
-            .btn-delete-icon:active {
-                transform: scale(0.95);
-            }
         </style>
 
         {{-- ================= SCRIPT ================= --}}
@@ -391,30 +381,31 @@
                     notifWrap.classList.remove('hidden', 'hiding');
 
                     if (type === 'success') {
-                        notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                        notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                        notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                        notifBar.style.background = '#34d399';
+                        // WARNA HIJAU (SESUAI CONTOH BARU)
+                        notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
+                        notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
+                        notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                        notifBar.style.background = '#22c55e';
                     } else if (type === 'warning') {
                         notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
                         notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
-                        notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                        notifIcon.innerHTML = '<svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
                         notifBar.style.background = '#fbbf24';
                     } else {
                         notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                         notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
-                        notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                        notifIcon.innerHTML = '<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
                         notifBar.style.background = '#f87171';
                     }
 
                     notifText.textContent = message;
                     notifBar.style.transition = 'none';
-                    notifBar.style.width = '0%';
+                    notifBar.style.width = '100%';
 
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             notifBar.style.transition = 'width 3.5s linear';
-                            notifBar.style.width = '100%';
+                            notifBar.style.width = '0%';
                         });
                     });
 
@@ -440,30 +431,31 @@
                     modalNotifWrap.classList.remove('hidden', 'hiding');
 
                     if (type === 'success') {
-                        modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-emerald-50 border-emerald-200 text-emerald-800';
-                        modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100';
-                        modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-                        modalNotifBar.style.background = '#34d399';
+                        // WARNA HIJAU (SESUAI CONTOH BARU)
+                        modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
+                        modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
+                        modalNotifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                        modalNotifBar.style.background = '#22c55e';
                     } else if (type === 'warning') {
                         modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
                         modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
-                        modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                        modalNotifIcon.innerHTML = '<svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
                         modalNotifBar.style.background = '#fbbf24';
                     } else {
                         modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                         modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
-                        modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+                        modalNotifIcon.innerHTML = '<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
                         modalNotifBar.style.background = '#f87171';
                     }
 
                     modalNotifText.textContent = message;
                     modalNotifBar.style.transition = 'none';
-                    modalNotifBar.style.width = '0%';
+                    modalNotifBar.style.width = '100%';
 
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             modalNotifBar.style.transition = 'width 3.5s linear';
-                            modalNotifBar.style.width = '100%';
+                            modalNotifBar.style.width = '0%';
                         });
                     });
 
@@ -707,14 +699,19 @@
                                     <td class="text-center py-4 px-4 font-semibold text-blue-600 stock-display">${stock}</td>
                                     <td class="text-center py-4 px-4">
                                         <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
-                                               class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#1CA7B6]">
+                                               class="w-20 h-9 text-center border rounded-lg qty-input-main shadow-sm focus:ring-2 focus:ring-[#5EA6FF]">
 
                                         <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
                                         <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
                                     </td>
                                     <td class="text-center py-4 px-4">
-                                        <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <button type="button" onclick="removeRow(this)" 
+                                            class="inline-flex items-center justify-center w-9 h-9 rounded-lg 
+                                            bg-red-50 hover:bg-red-100 
+                                            border border-red-200 hover:border-red-300 
+                                            transition-all duration-200 hover:scale-105"
+                                            title="Hapus item">
+                                            <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                             </svg>
                                         </button>
