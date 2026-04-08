@@ -39,13 +39,18 @@ class ToolController extends Controller
         $tools = $query->latest()->paginate(5)->withQueryString();
 
         foreach ($tools as $tool) {
-            $tool->isPending = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
-                ->where('status', 'PENDING')
-                ->exists();
 
-            $tool->isDipinjam = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
-                ->where('status', 'DIPINJAM')
-                ->exists();
+            $condition = $tool->latestCondition->condition ?? 'baik';
+
+            if ($tool->isPending) {
+                $tool->status_label = 'pending';
+            } elseif ($tool->isDipinjam) {
+                $tool->status_label = 'dipinjam';
+            } elseif ($condition == 'rusak') {
+                $tool->status_label = 'tidak tersedia';
+            } else {
+                $tool->status_label = 'tersedia';
+            }
         }
 
         return view('tools.index', [

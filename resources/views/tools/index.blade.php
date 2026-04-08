@@ -158,18 +158,29 @@
 
                                 {{-- STATUS --}}
                                 <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle">
-                                    @php
-                                        $status = trim(strtolower($tool->status));
+                                   @php
+                                        $condition = $tool->latestCondition->condition ?? 'baik';
                                     @endphp
 
-                                    @if ($tool->isDipinjam)
-                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">Dipinjam</span>
+                                    @if ($tool->isPending)
+                                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs">
+                                            Pending
+                                        </span>
 
-                                    @elseif ($tool->isPending)
-                                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs">Pending</span>
+                                    @elseif ($tool->isDipinjam)
+                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">
+                                            Dipinjam
+                                        </span>
+
+                                    @elseif ($condition == 'rusak')
+                                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">
+                                            Tidak tersedia
+                                        </span>
 
                                     @else
-                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">Tersedia</span>
+                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
+                                            Tersedia
+                                        </span>
                                     @endif
                                 </td>
 
@@ -183,7 +194,7 @@
                                             class="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full border border-red-400 text-red-700 bg-red-50 whitespace-nowrap">Rusak</span>
                                     @else
                                         <span
-                                            class="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full border border-gray-400 text-gray-600 bg-gray-50 whitespace-nowrap">Maintenance</span>
+                                            class="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full border border-yellow-400 text-yellow-600 bg-yellow-100 whitespace-nowrap">Maintenance</span>
                                     @endif
                                 </td>
 
