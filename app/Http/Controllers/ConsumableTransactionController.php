@@ -375,60 +375,67 @@ class ConsumableTransactionController extends Controller
         }
     }
 
-    public function kembali(Request $request, $id)
-    {   
+public function kembali(Request $request, $id)
+{   
+    try {
+
         $request->validate([
-        'return_date' => 'required|date' 
-    ]);
-
-    DB::transaction(function () use ($request, $id) {
-        $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
-
-        foreach ($request->items as $itemId => $data) {
-            if (!empty($data['qty']) && $data['qty'] > 0) {
-
-                $item = InvConsumableTransactionItem::findOrFail($itemId);
-
-                $sisa = $item->qty - $item->qty_return;
-
-                if ($data['qty'] > $sisa) {
-                    throw new \Exception("Qty melebihi sisa");
-                }
-
-                $item->increment('qty_return', $data['qty']);
-
-                $item->update([
-                    'note' => $data['note'] ?? '-'
-                ]);
-
-                InvConsumable::where('id', $item->consumable_id)
-                    ->increment('stock', $data['qty']);
-            }
-        }
-
-        $trx->load('items');
-
-        $trx->update([
-            'return_date' => $request->return_date
+            'return_date' => 'required|date' 
         ]);
 
-        $allReturned = $trx->items->every(function ($i) {
-            return $i->qty == $i->qty_return;
+        DB::transaction(function () use ($request, $id) {
+
+            $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
+
+            foreach ($request->items as $itemId => $data) {
+                if (!empty($data['qty']) && $data['qty'] > 0) {
+
+                    $item = InvConsumableTransactionItem::findOrFail($itemId);
+
+                    $sisa = $item->qty - $item->qty_return;
+
+                    if ($data['qty'] > $sisa) {
+                        throw new \Exception("Qty melebihi sisa");
+                    }
+
+                    $item->increment('qty_return', $data['qty']);
+
+                    $item->update([
+                        'note' => $data['note'] ?? '-'
+                    ]);
+
+                    InvConsumable::where('id', $item->consumable_id)
+                        ->increment('stock', $data['qty']);
+                }
+            }
+
+            $trx->load('items');
+
+            $trx->update([
+                'return_date' => $request->return_date
+            ]);
+
+            $allReturned = $trx->items->every(function ($i) {
+                return $i->qty == $i->qty_return;
+            });
+
+            if ($allReturned) {
+                $trx->update([
+                    'is_return' => true
+                ]);
+            }
         });
 
-        if ($allReturned) {
-            $trx->update([
-                'is_return' => true
-            ]);
-        }
-
+        // ✅ RETURN HARUS DI SINI (LUAR TRANSACTION)
         return redirect()
             ->route('transaksi.index')
             ->with('success', 'Consumable berhasil dikembalikan');
-        }
-    );
 
+    } catch (\Exception $e) {
+
+        return back()->with('error', $e->getMessage());
     }
+}
 
     public function storeItem(Request $request, $id)
     {
