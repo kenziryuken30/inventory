@@ -106,11 +106,11 @@
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
                 <button type="button" id="togglePengeluaran"
                     class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengeluaran' ? 'bg-white shadow text-[#5EA6FF]' : 'text-gray-600 hover:text-gray-800' }}">
-                    📤 Pengeluaran
+                    ⇄ Pengeluaran
                 </button>
                 <button type="button" id="togglePengembalian"
                     class="px-4 py-2 rounded-lg text-sm font-semibold transition {{ $type == 'pengembalian' ? 'bg-white shadow text-[#5EA6FF]' : 'text-gray-600 hover:text-gray-800' }}">
-                    📥 Pengembalian
+                    ↺ Pengembalian
                 </button>
             </div>
             <div class="text-sm text-gray-500">
@@ -206,9 +206,16 @@
 
                                     @if($type == 'pengeluaran')
                                         <td class="py-4 px-6 text-center">
+                                            {{-- Tombol Detail Diubah Sesuai Gambar --}}
                                             <button @click="openDetail = {{ $row->id }}"
-                                                class="px-3 py-1 bg-blue-500 text-white rounded">
-                                                Detail
+                                                class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                                style="background: linear-gradient(135deg, #7FC4FF, #5EA6FF); box-shadow: 0 3px 12px rgba(94,166,255,0.35);">
+                                                <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <span class="relative z-10">Detail</span>
+                                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
                                             </button>
                                         </td>
                                     @else
@@ -256,7 +263,6 @@
                     <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         @click.stop>
 
-                        {{-- PERBAIKAN: DITAMBAHKAN TUTUP KURUNG (">") --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <div>
@@ -298,7 +304,6 @@
 
                             <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                                 <table class="w-full text-sm">
-                                    {{-- PERBAIKAN: DITAMBAHKAN TUTUP KURUNG (">") --}}
                                     <thead class="text-white text-xs uppercase tracking-wider"
                                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                         <tr>
@@ -333,7 +338,7 @@
             @endforeach
         @endif
 
-        {{-- ================= MODAL PENGEMBALIAN (PERBAIKAN WARNA) ================= --}}
+        {{-- ================= MODAL PENGEMBALIAN ================= --}}
         @if($type == 'pengembalian')
             @foreach($data as $row)
                 <div x-show="openDetail === {{ $row->id }}" x-transition:enter="transition ease-out duration-200"
@@ -346,7 +351,6 @@
                     <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         @click.stop>
 
-                        {{-- PERBAIKAN WARNA JADI BIRU --}}
                         <div class="px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <div>
@@ -362,8 +366,7 @@
                                     <p class="text-gray-800 font-semibold">{{ $row->transaction->transaction_code }}</p>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian
-                                    </p>
+                                    <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian</p>
                                     <p class="text-gray-800">
                                         {{ \Carbon\Carbon::parse($row->transaction->return_date)->format('d M Y') }}
                                     </p>
@@ -446,13 +449,11 @@
 
                 // Update tampilan toggle
                 if (type === 'pengeluaran') {
-                    // PERBAIKAN WARNA JS KE BIRU
                     togglePengeluaran.classList.add('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengeluaran.classList.remove('text-gray-600');
                     togglePengembalian.classList.remove('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengembalian.classList.add('text-gray-600');
                 } else {
-                    // PERBAIKAN WARNA JS KE BIRU
                     togglePengembalian.classList.add('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengembalian.classList.remove('text-gray-600');
                     togglePengeluaran.classList.remove('bg-white', 'shadow', 'text-[#5EA6FF]');
