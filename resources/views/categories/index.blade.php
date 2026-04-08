@@ -5,25 +5,11 @@
     <div class="px-8 pt-6 pb-10">
 
         {{-- ================= HEADER ================= --}}
-        <div class="flex justify-between items-center mb-6">
-            <div>
-                {{-- GANTI WARNA JUDUL MENJADI BIRU (#5EA6FF) --}}
-                <h1 class="text-3xl font-bold text-[#5EA6FF] tracking-wide">Kategori</h1>
-                <p class="text-sm text-gray-500 mt-1">Daftar dan Input Kategori</p>
-            </div>
-            
-            {{-- GANTI TOMBOL MENJADI GRADASI BIRU SESUAI CONTOH --}}
-            <button type="button" id="openTambahKategori"
-    class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
-    
-    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-    </svg>
-    
-    Tambah Kategori
-</button>
+        <div class="mb-4 sm:mb-5">
+            <h1 class="text-3xl font-bold text-[#5EA6FF] tracking-wide">Kategori</h1>
+            <p class="text-sm text-gray-500 mt-1">Daftar dan Input Kategori</p>
         </div>
-
+        
         {{-- ================= NOTIF TOAST ================= --}}
         <div id="notifWrap" class="hidden mb-5">
             <div id="notifBox"
@@ -39,28 +25,50 @@
             </div>
         </div>
 
-        {{-- ================= SEARCH ================= --}}
-        <form method="GET" action="{{ route('categories.index') }}" class="mb-5">
-            <div class="relative max-w-sm">
-                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8" />
-                        <path stroke-linecap="round" d="m21 21-4.35-4.35" />
+        {{-- ================= SEARCH + TOMBOL TAMBAH (UPDATED) ================= --}}
+        <div class="bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] p-3 sm:p-5 rounded-2xl shadow-md mb-4 sm:mb-6">
+            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center">
+                
+                {{-- FORM SEARCH --}}
+                <form method="GET" action="{{ route('categories.index') }}"
+                    class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 flex-1 w-full sm:w-auto">
+                    
+                    <div class="relative flex-1">
+                        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" />
+                                <path stroke-linecap="round" d="m21 21-4.35-4.35" />
+                            </svg>
+                        </div>
+                        {{-- Input Style disesuaikan agar tingginya sama dengan tombol --}}
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..."
+                            class="w-full h-10 sm:h-[42px] bg-white rounded-xl pl-10 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20 focus:border-[#5EA6FF] transition">
+                        
+                        @if(request('search'))
+                            <a href="{{ route('categories.index') }}"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                        @endif
+                    </div>
+
+                </form>
+
+                {{-- TOMBOL TAMBAH (DIPINDAHKAN KESINI) --}}
+                <button type="button" id="openTambahKategori"
+                    class="group inline-flex items-center justify-center px-5 h-10 sm:h-[42px] rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+                    
+                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                     </svg>
-                </div>
-                {{-- GANTI WARNA FOCUS RING MENJADI BIRU --}}
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..."
-                    class="w-full pl-10 pr-10 py-2.5 bg-white rounded-xl shadow-inner border-0 text-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20">
-                @if(request('search'))
-                    <a href="{{ route('categories.index') }}"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </a>
-                @endif
+                    
+                    Tambah Kategori
+                </button>
+
             </div>
-        </form>
+        </div>
 
         {{-- ================= TABEL ================= --}}
         <div class="rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-100">
@@ -68,7 +76,6 @@
             <table class="w-full text-sm" style="table-layout: fixed;">
 
                 <thead>
-                    {{-- GANTI HEADER TABEL MENJADI GRADASI BIRU SESUAI CONTOH --}}
                     <tr class="text-white text-xs uppercase tracking-wider"
                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <th class="py-3 px-4 text-center" style="width: 12%;">No</th>
@@ -201,7 +208,7 @@
 
     </div>
 
-    {{-- ================= STYLE (DIUBAH WARNA JADI BIRU) ================= --}}
+    {{-- ================= STYLE ================= --}}
     <style>
         #notifWrap { animation: notifSlideIn 0.3s ease-out; }
         @keyframes notifSlideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
@@ -237,7 +244,6 @@
         
         .kategori-btn-submit {
             padding: .6rem 1.2rem;
-            /* GRADASI BIRU SESUAI CONTOH */
             background: linear-gradient(180deg, #7FC4FF, #5EA6FF);
             color: white; border-radius: .75rem; font-weight: 600; font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
@@ -247,7 +253,7 @@
         .kategori-btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     </style>
 
-    {{-- ================= SCRIPT (DIUBAH NOTIF JADI BIRU) ================= --}}
+    {{-- ================= SCRIPT ================= --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
