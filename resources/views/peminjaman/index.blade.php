@@ -60,18 +60,19 @@
                 {{-- TOMBOL FILTER (STYLE BARU ROUNDED FULL) --}}
                 <button type="submit"
                     class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
-                           transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                        transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
+
                     <span>Filter</span>
+
                     <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
                         <svg class="w-3 h-3 text-gray-500 group-hover:text-gray-700 transition"
-                             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M3 4h18M6 12h12M10 20h4"/>
+                                d="M3 4h18M6 12h12M10 20h4"/>
                         </svg>
                     </span>
                 </button>
-
                 {{-- TOMBOL RESET (STYLE BARU ROUNDED FULL) --}}
                 <a href="{{ route('peminjaman.index') }}"
                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
