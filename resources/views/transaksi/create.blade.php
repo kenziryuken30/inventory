@@ -7,7 +7,6 @@
         {{-- HEADER PAGE --}}
         <div class="flex justify-between items-end mb-6">
             <div>
-                {{-- PERBAIKI WARNA JUDUL --}}
                 <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Permintaan Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Proses permintaan barang dan kelola daftar</p>
             </div>
@@ -119,17 +118,18 @@
                 <div class="mt-10">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-gray-800">Daftar Consumable</h3>
-                        {{-- PERBAIKI WARNA TOMBOL --}}
+                        {{-- TOMBOL PILIH CONSUMABLE (STYLE PUTIH) --}}
                         <button type="button" @click.stop="openModal = true"
-                            class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
-                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                            + Pilih Consumable
+                            class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+                            <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Pilih Consumable
                         </button>
                     </div>
                     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
                         <table class="w-full text-sm" id="tableConsumables">
                             <thead>
-                                {{-- PERBAIKI WARNA HEADER TABEL --}}
                                 <tr class="text-white text-xs uppercase tracking-wider"
                                     style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                     <th class="py-3 px-4 font-semibold text-center w-12">No</th>
@@ -153,10 +153,9 @@
 
                 {{-- SAVE BUTTON --}}
                 <div class="pt-8 border-t border-gray-200 flex justify-end">
-                    {{-- PERBAIKI WARNA TOMBOL SAVE --}}
+                    {{-- TOMBOL SAVE (STYLE PUTIH) --}}
                     <button type="button" id="btnSave"
-                        class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
+                        class="px-10 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
                         Save Transaksi
                     </button>
                 </div>
@@ -180,7 +179,7 @@
 
                 <div class="p-6 flex-1 overflow-auto">
 
-                    {{-- ========== NOTIF ERROR DI DALAM MODAL ========== --}}
+                    {{-- NOTIF ERROR DI DALAM MODAL --}}
                     <div id="modalNotifWrap" class="hidden mb-4">
                         <div id="modalNotifBox"
                             class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
@@ -194,7 +193,6 @@
                             <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
                         </div>
                     </div>
-                    {{-- ========== END NOTIF MODAL ========== --}}
 
                     <div class="mb-5">
                         <div class="relative">
@@ -204,7 +202,6 @@
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </span>
-                            {{-- PERBAIKI FOCUS COLOR --}}
                             <input type="text" id="searchConsumable" placeholder="Cari Nama Consumable"
                                 class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition text-sm">
                         </div>
@@ -215,7 +212,6 @@
                             <thead class="sticky top-0 bg-gray-50">
                                 <tr class="text-gray-600 border-b border-gray-200">
                                     <th class="py-3 px-4 text-center w-10">
-                                        {{-- PERBAIKI ACCENT COLOR CHECKBOX --}}
                                         <input type="checkbox" id="selectAllCons"
                                             class="w-4 h-4 accent-[#5EA6FF] rounded border-gray-300">
                                     </th>
@@ -229,7 +225,6 @@
                                     <tr class="border-b hover:bg-blue-50/30 transition cursor-pointer cons-row"
                                         data-name="{{ strtolower($c->name) }}">
                                         <td class="text-center py-3 px-4">
-                                            {{-- PERBAIKI ACCENT COLOR CHECKBOX --}}
                                             <input type="checkbox"
                                                 class="pick-consumable w-4 h-4 accent-[#5EA6FF] rounded border-gray-300"
                                                 data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}">
@@ -266,12 +261,11 @@
                         class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                         Batal
                     </button>
-                    {{-- PERBAIKI WARNA TOMBOL TAMBAH --}}
+                    {{-- TOMBOL TAMBAHKAN (STYLE PUTIH) --}}
                     <button type="button" id="btnAddConsumable"
-                        class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
-                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        class="group px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 flex items-center gap-2">
+                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Tambahkan
                     </button>
@@ -294,7 +288,6 @@
                 </div>
                 <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Item?</h3>
                 <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
-                {{-- PERBAIKI WARNA TEXT DELETE ITEM NAME --}}
                 <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#5EA6FF] mb-5"></p>
                 <div class="flex gap-3">
                     <button id="cancelDeleteItem"
@@ -427,20 +420,16 @@
             const modalNotifClose = document.getElementById('modalNotifClose');
             let modalNotifTimer = null;
 
-            // ===== FUNGSI NOTIF HALAMAN UTAMA (PERBAIKI WARNA SUKSES JADI BIRU) =====
+            // ===== FUNGSI NOTIF HALAMAN UTAMA =====
             function showNotif(message, type) {
                 if (notifTimer) clearTimeout(notifTimer);
                 notifWrap.classList.remove('hidden', 'hiding');
 
                 if (type === 'success') {
-    // NOTIF HIJAU FULL
-    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
-
-    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
-
-    notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-
-    notifBar.style.background = '#22c55e'; // hijau tailwind
+                    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
+                    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
+                    notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                    notifBar.style.background = '#22c55e';
                 } else if (type === 'warning') {
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
@@ -480,13 +469,12 @@
                 hideNotif();
             });
 
-            // ===== FUNGSI NOTIF MODAL (PERBAIKI WARNA SUKSES JADI BIRU) =====
+            // ===== FUNGSI NOTIF MODAL =====
             function showModalNotif(message, type) {
                 if (modalNotifTimer) clearTimeout(modalNotifTimer);
                 modalNotifWrap.classList.remove('hidden', 'hiding');
 
                 if (type === 'success') {
-                    // PERBAIKI: Warna Biru
                     modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-blue-50 border-blue-200 text-blue-800';
                     modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100';
                     modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
@@ -538,7 +526,7 @@
                 showNotif('{{ session("error") }}', 'error');
             @endif
 
-            // ===== VALIDASI SAVE — HANYA CEK STOCK, QTY KOSONG AUTO ISI 1 =====
+            // ===== VALIDASI SAVE =====
             btnSave.addEventListener('click', function () {
                 const employeeId = form.querySelector('input[name="employee_id"]');
                 const items = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
@@ -565,7 +553,6 @@
                     let qty = parseInt(qtyInput.value);
                     const itemName = row.querySelector('.item-name').textContent.trim();
 
-                    // Kalau qty kosong atau 0, auto isi 1 tanpa notif
                     if (isNaN(qty) || qty <= 0) {
                         qty = 1;
                         qtyInput.value = 1;
@@ -573,7 +560,6 @@
 
                     if (hiddenQty) hiddenQty.value = qty;
 
-                    // Cuma cek stock overflow
                     if (qty > stock) {
                         stockErrors.push(itemName + " - stock hanya " + stock + ", Anda meminta " + qty);
                         row.classList.add('row-error');
@@ -621,7 +607,7 @@
                 });
             });
 
-            // ===== LOGIC QTY — HANYA CEK STOCK, HAPUS CEK "TIDAK VALID" =====
+            // ===== LOGIC QTY =====
             window.updateQty = function (input) {
                 const row = input.closest('tr');
                 const qty = parseInt(input.value);
@@ -629,14 +615,12 @@
 
                 row.classList.remove('row-error');
 
-                // Kalau kosong atau 0, biarin aja — nanti di save yang handle
                 if (isNaN(qty) || qty <= 0) {
                     const hiddenQty = row.querySelector('.hidden-qty');
                     if (hiddenQty) hiddenQty.value = input.value;
                     return;
                 }
 
-                // Cuma cek kalau qty melebihi stock
                 if (qty > stock) {
                     const itemName = row.querySelector('.item-name').textContent.trim();
                     showNotif("Stock " + itemName + " hanya tersedia " + stock, "warning");
