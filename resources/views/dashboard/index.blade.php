@@ -91,7 +91,7 @@
         {{-- Header --}}
         <div class="mb-4 sm:mb-6 md:mb-8">
             {{-- DIUBAH: Warna teks judul menjadi #113561 --}}
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#5EA6FF] mb-0.5 leading-tight break-words">Dashboard
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#113561] mb-0.5 leading-tight break-words">Dashboard
             </h2>
             <p class="text-xs sm:text-sm text-gray-500 break-words">Selamat datang di Sistem Inventory Management</p>
         </div>
