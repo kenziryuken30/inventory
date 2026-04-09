@@ -70,7 +70,7 @@ class ToolTransactionController extends Controller
         return view('peminjaman.index', compact('transactions'));
     }
 
-
+    
     public function create()
     {
         $serials = InvSerialNumber::with('toolkit')

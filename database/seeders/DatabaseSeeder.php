@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             InvToolkitSeeder::class,
             SerialNumberSeeder::class,
             ConsumableSeeder::class,
+            userSeeder::class,
         ]);
 
         User::factory()->create([
