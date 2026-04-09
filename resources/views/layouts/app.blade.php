@@ -274,7 +274,7 @@
         <button
             @click="sidebarOpen = !sidebarOpen"
             :class="sidebarOpen ? 'left-[232px]' : 'left-[60px]'"
-            class="sidebar-toggle-btn fixed top-[50px] bg-cyan-500 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white transition-all duration-300">
+            class="sidebar-toggle-btn fixed top-[50px] bg-[#5EA6FF] text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center border-2 border-white transition-all duration-300">
             <i class="ph ph-list text-sm"></i>
         </button>
 
