@@ -6,7 +6,7 @@
 
         {{-- ================= HEADER ================= --}}
         <div class="mb-4 sm:mb-5">
-            <h1 class="text-3xl font-bold text-[#5EA6FF] tracking-wide">Kategori</h1>
+            <h1 class="text-3xl font-bold text-[#113561] tracking-wide">Kategori</h1>
             <p class="text-sm text-gray-500 mt-1">Daftar dan Input Kategori</p>
         </div>
         

@@ -7,7 +7,7 @@
         {{-- ================= HEADER ================= --}}
         <div class="mb-4 sm:mb-6">
             {{-- WARNA JUDUL DISAMAKAN DENGAN TEMA BARU (#5EA6FF) --}}
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#5EA6FF] tracking-wide leading-tight">
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#113561] tracking-wide leading-tight">
                 Data Consumable
             </h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola data Consumable</p>

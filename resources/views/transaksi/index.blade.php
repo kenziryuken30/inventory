@@ -7,7 +7,7 @@
         {{-- HEADER --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">
+                <h1 class="text-3xl font-bold text-[#113561] tracking-tight">
                     Transaksi Consumable
                 </h1>
                 <p class="text-sm text-gray-500 mt-1">

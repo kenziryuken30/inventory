@@ -7,7 +7,7 @@
         {{-- ================= HEADER ================= --}}
         <div class="mb-4 sm:mb-5">
             {{-- WARNA JUDUL DIUBAH JADI BIRU TEMA --}}
-            <h1 class="text-2xl sm:text-[26px] font-extrabold text-[#5EA6FF] tracking-tight leading-tight">
+            <h1 class="text-2xl sm:text-[26px] font-extrabold text-[#113561] tracking-tight leading-tight">
                 Data Tools
             </h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-1 leading-snug">

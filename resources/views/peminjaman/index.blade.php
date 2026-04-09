@@ -7,7 +7,7 @@
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Peminjaman Tools</h2>
+                <h2 class="text-3xl font-bold text-[#113561] tracking-tight">Peminjaman Tools</h2>
                 <p class="text-sm text-gray-500 mt-1">Kelola data transaksi peminjaman alat</p>
             </div>
 
