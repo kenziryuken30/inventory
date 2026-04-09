@@ -9,7 +9,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    
 
     <style>
         [x-cloak] {
@@ -24,6 +23,11 @@
             background: #e9edf2;
             overflow-x: hidden;
             overflow-y: auto;
+        }
+
+        /* TAMBAHAN: Matikan semua transition saat halaman pertama kali load */
+        body.page-loading * {
+            transition: none !important;
         }
 
         .sidebar-bg {
@@ -53,10 +57,6 @@
 
         .divider {
             border-top: 1px solid rgba(15, 23, 42, 0.1);
-        }
-
-        .bg-tools-shift {
-            transition: left 0.3s ease, right 0.3s ease;
         }
 
         .sidebar-toggle-btn {
@@ -144,8 +144,26 @@
     </style>
 </head>
 
-<body x-data="{ sidebarOpen: window.innerWidth >= 1024 }"
-      x-init="$store.modal = {open: false}">
+<!-- TAMBAHAN: class page-loading di body saat pertama kali load -->
+<body class="page-loading"
+      x-data="{ 
+        sidebarOpen: localStorage.getItem('sidebarOpen') !== null 
+            ? localStorage.getItem('sidebarOpen') === 'true' 
+            : window.innerWidth >= 1024 
+      }"
+      x-init="
+        $watch('sidebarOpen', (val) => {
+            localStorage.setItem('sidebarOpen', val);
+        });
+        $store.modal = {open: false};
+        
+        // HAPUS class page-loading setelah Alpine selesai render posisi awal
+        $nextTick(() => {
+            setTimeout(() => {
+                document.body.classList.remove('page-loading');
+            }, 50);
+        });
+      ">
 
     <div class="relative flex min-h-screen w-full">
 
@@ -261,15 +279,15 @@
         </button>
 
         <!-- Main Content -->
-        <div class="flex-1 transition-all duration-300 min-h-screen overflow-y-auto relative z-10 lg:pl-[256px] pl-20">
+        <div class="flex-1 transition-all duration-300 min-h-screen overflow-y-auto relative z-10"
+             :style="{ paddingLeft: sidebarOpen ? '256px' : '80px' }">
 
             <img src="{{ asset('images/kiri.png') }}"
-                :style="'left: ' + (sidebarOpen ? '256px' : '80px') + 'px'"
-                class="hidden lg:block fixed bottom-0 w-[380px] pointer-events-none -z-10 opacity-60 bg-tools-shift">
+                :style="{ left: sidebarOpen ? '256px' : '80px', transition: 'left 0.3s ease' }"
+                class="hidden lg:block fixed bottom-0 w-[380px] pointer-events-none -z-10 opacity-60">
 
             <img src="{{ asset('images/kana1.png') }}"
                 class="hidden lg:block fixed right-0 bottom-0 w-[380px] pointer-events-none -z-10 opacity-60">
-                
 
             <main class="px-3 py-2 sm:px-5 sm:py-3 lg:px-8 lg:pt-3 lg:pb-8">
                 @yield('content')
