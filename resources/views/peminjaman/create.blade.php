@@ -5,7 +5,6 @@
         {{-- Header Page --}}
         <div class="flex justify-between items-end mb-6">
             <div>
-                {{-- PERBAIKI WARNA JUDUL --}}
                 <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Peminjaman Tools</h2>
                 <p class="text-sm text-gray-500 mt-1">Proses peminjaman alat dan kelola daftar tools</p>
             </div>
@@ -28,7 +27,6 @@
                 <div id="notifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
             </div>
         </div>
-
 
         <form method="POST" action="{{ route('peminjaman.store') }}" id="formPeminjaman">
             @csrf
@@ -87,7 +85,6 @@
                         <div class="space-y-0 mt-10">
                             <div class="flex justify-between items-center mb-6">
                                 <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
-                                {{-- PERBAIKI WARNA TOMBOL (STYLE PUTIH BORDER BIRU) --}}
                                 <button type="button" id="openToolsBtn"
                                     class="group inline-flex items-center px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-xs text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
                                     <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +97,6 @@
                             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                                 <table class="w-full">
                                     <thead>
-                                        {{-- PERBAIKI WARNA HEADER TABEL --}}
                                         <tr class="text-white text-xs uppercase tracking-wider"
                                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                             <th class="py-4 px-6 font-semibold text-center">No</th>
@@ -122,8 +118,7 @@
                         </div>
 
                         <div class="pt-8 border-t border-gray-200 flex justify-end">
-                            {{-- PERBAIKI WARNA TOMBOL SAVE (STYLE PUTIH BORDER BIRU) --}}
-                            <button type="submit"
+                            <button type="submit" id="submitBtn"
                                 class="group inline-flex items-center px-10 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
                                 Save Transaksi
                             </button>
@@ -137,7 +132,6 @@
     {{-- ================= MODAL TOOLS ================= --}}
     <div id="toolsModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
-            {{-- PERBAIKI WARNA HEADER MODAL --}}
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center text-white"
                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                 <h3 class="text-lg font-bold">Pilih Tools Tersedia</h3>
@@ -153,7 +147,6 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </span>
-                        {{-- PERBAIKI FOCUS COLOR --}}
                         <input type="text" id="searchTools" placeholder="Cari nama tools..."
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition text-sm">
                     </div>
@@ -163,7 +156,6 @@
                         <thead class="sticky top-0 bg-gray-50">
                             <tr class="text-gray-600 border-b border-gray-200">
                                 <th class="py-3 px-4 text-center w-12">
-                                    {{-- PERBAIKI ACCENT COLOR CHECKBOX --}}
                                     <input type="checkbox" id="selectAllTools"
                                         class="w-4 h-4 accent-[#5EA6FF] rounded border-gray-300">
                                 </th>
@@ -177,7 +169,6 @@
                                 <tr class="hover:bg-blue-50/30 transition cursor-pointer tool-row"
                                     data-name="{{ strtolower($serial->toolkit->toolkit_name) }}">
                                     <td class="py-3 px-4 text-center">
-                                        {{-- PERBAIKI ACCENT COLOR CHECKBOX --}}
                                         <input type="checkbox"
                                             class="tool-checkbox w-4 h-4 accent-[#5EA6FF] rounded border-gray-300"
                                             value="{{ $serial->id }}" data-name="{{ $serial->toolkit->toolkit_name }}"
@@ -203,7 +194,6 @@
                     class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                     Batal
                 </button>
-                {{-- PERBAIKI WARNA TOMBOL TAMBAH (STYLE PUTIH BORDER BIRU) --}}
                 <button type="button" id="btnAddTool"
                     class="group inline-flex items-center px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
                     <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +209,6 @@
     <div id="imagePreviewModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[9999] p-4">
         <div class="relative max-w-4xl w-full">
-            {{-- PERBAIKI WARNA HOVER CLOSE BUTTON --}}
             <button id="closePreview"
                 class="absolute -top-10 right-0 text-white text-3xl hover:text-[#5EA6FF] transition">✕</button>
             <img id="previewImage" class="max-h-[85vh] max-w-full mx-auto rounded-xl shadow-2xl">
@@ -315,6 +304,7 @@
         let selectedTools = new Set();
         let pendingDeleteRow = null;
         let pendingDeleteId = null;
+        let isSubmitting = false;
 
         const toolsModal = document.getElementById('toolsModal');
         const openToolsBtn = document.getElementById('openToolsBtn');
@@ -331,6 +321,8 @@
         const deleteToolName = document.getElementById('deleteToolName');
         const deleteCancelBtn = document.getElementById('deleteCancelBtn');
         const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+        const formPeminjaman = document.getElementById('formPeminjaman');
+        const submitBtn = document.getElementById('submitBtn');
 
         // ===== AUTOCOMPLETE EMPLOYEE =====
         const employees = @json($employees);
@@ -341,9 +333,16 @@
         inputEmp.addEventListener('input', function () {
             let value = this.value.toLowerCase();
             box.innerHTML = '';
-            if (!value) { box.classList.add('hidden'); hiddenEmp.value = ''; return; }
+            if (!value) {
+                box.classList.add('hidden');
+                hiddenEmp.value = '';
+                return;
+            }
             let filtered = employees.filter(emp => emp.full_name.toLowerCase().includes(value));
-            if (filtered.length === 0) { box.classList.add('hidden'); return; }
+            if (filtered.length === 0) {
+                box.classList.add('hidden');
+                return;
+            }
             box.classList.remove('hidden');
             filtered.forEach(emp => {
                 let item = document.createElement('div');
@@ -358,11 +357,23 @@
             });
         });
 
+        // Clear employee_id saat user edit nama manual setelah pilih
+        inputEmp.addEventListener('input', function () {
+            const currentValue = this.value.trim();
+            const employeeId = hiddenEmp.value;
+            if (employeeId) {
+                const selectedEmp = employees.find(emp => emp.id == employeeId);
+                if (selectedEmp && selectedEmp.full_name !== currentValue) {
+                    hiddenEmp.value = '';
+                }
+            }
+        });
+
         document.addEventListener('click', function (e) {
             if (!e.target.closest('#employee_name')) box.classList.add('hidden');
         });
 
-        // ===== NOTIF SYSTEM (PERBAIKAN WARNA SUKSES JADI BIRU) =====
+        // ===== NOTIF SYSTEM =====
         const notifWrap = document.getElementById('notifWrap');
         const notifBox = document.getElementById('notifBox');
         const notifIcon = document.getElementById('notifIcon');
@@ -375,16 +386,11 @@
             if (notifTimer) clearTimeout(notifTimer);
             notifWrap.classList.remove('hidden');
 
-           if (type === 'success') {
-    // NOTIF HIJAU FULL
-    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
-
-    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
-
-    notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-
-    notifBar.style.background = '#22c55e'; // hijau tailwind
-           
+            if (type === 'success') {
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
+                notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                notifBar.style.background = '#22c55e';
             } else {
                 notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                 notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -394,7 +400,6 @@
 
             notifText.textContent = message;
 
-            // bar dari 0% ke 100%
             notifBar.style.transition = 'none';
             notifBar.style.width = '0%';
             requestAnimationFrame(() => {
@@ -455,9 +460,13 @@
                 const cb = row.querySelector('.tool-checkbox');
                 if (!cb) return;
                 const name = row.dataset.name || '';
-                if (selectedTools.has(cb.value)) { row.style.display = 'none'; }
-                else if (name.includes(keyword)) { row.style.display = ''; }
-                else { row.style.display = 'none'; }
+                if (selectedTools.has(cb.value)) {
+                    row.style.display = 'none';
+                } else if (name.includes(keyword)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
 
@@ -473,7 +482,10 @@
         // ===== TAMBAH TOOL =====
         btnAddTool?.addEventListener('click', function () {
             const selected = document.querySelectorAll('.tool-checkbox:checked');
-            if (selected.length === 0) { showNotif('Pilih minimal satu tool terlebih dahulu', 'error'); return; }
+            if (selected.length === 0) {
+                showNotif('Pilih minimal satu tool terlebih dahulu', 'error');
+                return;
+            }
 
             const tableBody = document.getElementById('tableSelectedTools');
             const emptyRow = document.getElementById('emptyRow');
@@ -541,7 +553,9 @@
         }
 
         deleteCancelBtn?.addEventListener('click', closeDeleteModal);
-        deleteConfirmModal?.addEventListener('click', function (e) { if (e.target === deleteConfirmModal) closeDeleteModal(); });
+        deleteConfirmModal?.addEventListener('click', function (e) {
+            if (e.target === deleteConfirmModal) closeDeleteModal();
+        });
 
         deleteConfirmBtn?.addEventListener('click', function () {
             if (!pendingDeleteRow || !pendingDeleteId) return;
@@ -599,6 +613,82 @@
             }
         });
 
+        // ===== VALIDASI FORM SUBMIT =====
+        formPeminjaman.addEventListener('submit', function (e) {
+
+            // Cegah double submit
+            if (isSubmitting) {
+                e.preventDefault();
+                return;
+            }
+
+            // 1. Validasi Employee harus dipilih dari autocomplete
+            const employeeId = hiddenEmp.value;
+            const employeeName = inputEmp.value.trim();
+
+            if (!employeeId || !employeeName) {
+                e.preventDefault();
+                showNotif('Pilih nama peminjam dari daftar karyawan', 'error');
+                inputEmp.focus();
+                return;
+            }
+
+            // Cek nama yang diketik cocok dengan data yang tersimpan
+            const selectedEmp = employees.find(emp => emp.id == employeeId);
+            if (selectedEmp && selectedEmp.full_name !== employeeName) {
+                e.preventDefault();
+                showNotif('Nama peminjam tidak valid, pilih dari daftar', 'error');
+                inputEmp.focus();
+                return;
+            }
+
+            // 2. Validasi minimal 1 tool dipilih
+            const selectedCount = document.querySelectorAll('#tableSelectedTools tr[id^="row-"]').length;
+            if (selectedCount === 0) {
+                e.preventDefault();
+                showNotif('Pilih minimal 1 tool untuk dipinjam', 'error');
+                return;
+            }
+
+            // 3. Validasi tanggal tidak boleh masa lalu
+            const dateInput = document.querySelector('input[name="date"]');
+            if (dateInput) {
+                const selectedDate = new Date(dateInput.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    e.preventDefault();
+                    showNotif('Tanggal peminjaman tidak boleh di masa lalu', 'error');
+                    dateInput.focus();
+                    return;
+                }
+            }
+
+            // 4. Set loading state & cegah double submit
+            isSubmitting = true;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Menyimpan...
+            `;
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            submitBtn.classList.remove('hover:bg-[#5EA6FF]', 'hover:text-white', 'hover:-translate-y-0.5');
+
+            // Fallback reset 10 detik kalau gagal redirect
+            setTimeout(() => {
+                isSubmitting = false;
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                submitBtn.classList.add('hover:bg-[#5EA6FF]', 'hover:text-white', 'hover:-translate-y-0.5');
+            }, 10000);
+        });
+
         // ===== KEYBOARD =====
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
@@ -612,4 +702,4 @@
             }
         });
     });
-</script> 
+</script>

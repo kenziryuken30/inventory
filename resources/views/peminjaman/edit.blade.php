@@ -6,7 +6,6 @@
     {{-- ================= TITLE ================= --}}
     <div class="flex justify-between items-center mb-6">
         <div>
-            {{-- WARNA JUDUL DIUBAH JADI BIRU (#5EA6FF) --}}
             <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Edit Peminjaman Tools</h2>
             <p class="text-sm text-gray-500 mt-1">Edit Proses Peminjaman dan Daftar Tools yang dipinjam</p>
         </div>
@@ -46,21 +45,25 @@
 
                 {{-- Kolom 1: Nama Peminjam --}}
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Nama Peminjam</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        Nama Peminjam <span class="text-red-500">*</span>
+                    </label>
                     <input type="text"
+                        id="borrower_name"
                         name="borrower_name"
                         value="{{ $transaction->borrower_name }}"
-                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
                 {{-- Kolom 2: Tanggal --}}
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        Tanggal <span class="text-red-500">*</span>
+                    </label>
                     <input type="date"
+                        id="dateInput"
                         name="date"
                         value="{{ $transaction->date->format('Y-m-d') }}"
-                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
@@ -76,7 +79,6 @@
                     <input type="text"
                         name="client_name"
                         value="{{ $transaction->client_name }}"
-                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
@@ -86,7 +88,6 @@
                     <input type="text"
                         name="project"
                         value="{{ $transaction->project }}"
-                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
@@ -96,7 +97,6 @@
                     <input type="text"
                         name="purpose"
                         value="{{ $transaction->purpose }}"
-                        {{-- WARNA FOCUS DIUBAH JADI BIRU --}}
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-md focus:ring-2 focus:ring-[#5EA6FF] focus:border-transparent transition duration-200 text-sm">
                 </div>
 
@@ -111,7 +111,6 @@
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-gray-800 text-lg">Daftar Alat yang Di Edit</h3>
 
-                {{-- TOMBOL PILIH TOOLS (WARNA DIUBAH JADI BIRU) --}}
                 <button type="button"
                     id="openToolsBtn"
                     class="text-white px-5 py-2 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 text-sm tracking-wide"
@@ -124,7 +123,6 @@
                 <table class="w-full text-sm" id="tableTools">
                     <thead>
                         <tr class="text-white text-xs uppercase tracking-wider"
-                            {{-- HEADER TABEL DIUBAH JADI BIRU --}}
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <th class="py-3 px-4 font-semibold text-center w-10">NO</th>
                             <th class="py-3 px-4 font-semibold text-center w-20">Image</th>
@@ -182,7 +180,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr>
+                        <tr id="emptyRow">
                             <td colspan="5" class="text-center text-gray-400 py-10 bg-white">
                                 Belum ada tools yang dipinjam.
                             </td>
@@ -197,8 +195,8 @@
 
         {{-- ================= SAVE BUTTON ================= --}}
         <div class="flex justify-end pt-4 border-t border-gray-100">
-            {{-- TOMBOL SAVE (WARNA DIUBAH JADI BIRU) --}}
             <button type="submit"
+                id="submitBtn"
                 form="updateForm"
                 class="text-white px-8 py-3 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
@@ -215,7 +213,7 @@
 
         <div class="bg-white w-11/12 max-w-3xl rounded-2xl shadow-2xl relative overflow-hidden flex flex-col">
 
-            {{-- HEADER MODAL (WARNA DIUBAH JADI BIRU) --}}
+            {{-- HEADER MODAL --}}
             <div class="px-6 py-4 flex justify-between items-center text-white"
                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                 <div>
@@ -236,8 +234,7 @@
                         class="w-full bg-white border-0 rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:outline-none text-sm">
                 </div>
 
-                <form action="{{ route('peminjaman.item.add', $transaction->id) }}"
-                    method="POST">
+                <form id="addToolsForm" action="{{ route('peminjaman.item.add', $transaction->id) }}" method="POST">
                     @csrf
 
                     <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm max-h-[350px] overflow-y-auto">
@@ -245,7 +242,6 @@
                         <table class="w-full text-sm">
 
                             <thead class="sticky top-0 text-white text-xs uppercase tracking-wider"
-                                {{-- HEADER TABEL MODAL (WARNA DIUBAH JADI BIRU) --}}
                                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <tr>
                                     <th class="py-3 px-4 w-10"></th>
@@ -264,7 +260,6 @@
                                         <input type="checkbox"
                                             name="serial_ids[]"
                                             value="{{ $serial->id }}"
-                                            {{-- CHECKBOX COLOR DIUBAH JADI BIRU --}}
                                             class="w-5 h-5 rounded border-gray-300 text-[#5EA6FF] focus:ring-[#5EA6FF]">
                                     </td>
 
@@ -306,8 +301,8 @@
                             Batal
                         </button>
 
-                        {{-- TOMBOL TAMBAHKAN (WARNA DIUBAH JADI BIRU) --}}
                         <button type="submit"
+                            id="btnAddTools"
                             class="text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md hover:opacity-90 transition"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             + Tambahkan
@@ -336,7 +331,6 @@
 
             <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-2">Hapus Item?</h3>
             <p class="text-xs sm:text-sm text-gray-500 mb-1">Anda yakin ingin menghapus</p>
-            {{-- WARNA TEXT DIUBAH JADI BIRU --}}
             <p id="deleteItemNameModal" class="text-xs sm:text-sm font-semibold text-[#5EA6FF] mb-5"></p>
 
             <div class="flex gap-3">
@@ -371,8 +365,12 @@
             const closeBtns = document.querySelectorAll('#closeToolsBtn');
             const cancelToolsBtn = document.getElementById('btnCancelToolsModal');
             const searchInput = document.getElementById('searchToolsModal');
+            const updateForm = document.getElementById('updateForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const addToolsForm = document.getElementById('addToolsForm');
+            let isSubmitting = false;
 
-            // ================= NOTIF SYSTEM (SESUAI CONTOH KATEGORI) =================
+            // ================= NOTIF SYSTEM =================
             const notifWrap = document.getElementById('notifWrap');
             const notifBox = document.getElementById('notifBox');
             const notifIcon = document.getElementById('notifIcon');
@@ -386,7 +384,6 @@
                 notifWrap.classList.remove('hidden', 'hiding');
 
                 if (type === 'success') {
-                    // NOTIF HIJAU FULL (SESUAI CONTOH)
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
                     notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
@@ -477,6 +474,11 @@
                         row.style.display = '';
                     });
                 }
+
+                // Uncheck semua checkbox saat tutup modal
+                document.querySelectorAll('#toolsTableBody input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
             }
 
             closeBtns.forEach(btn => {
@@ -491,6 +493,18 @@
                 if (e.target === modal) closeToolsModal();
             });
 
+
+            // ================= VALIDASI TAMBAH TOOLS (CEK MINIMAL 1 CHECKBOX) =================
+            addToolsForm.addEventListener('submit', function(e) {
+                const checked = document.querySelectorAll('#toolsTableBody input[type="checkbox"]:checked');
+                if (checked.length === 0) {
+                    e.preventDefault();
+                    showNotif('Pilih minimal 1 tool untuk ditambahkan', 'error');
+                    return;
+                }
+            });
+
+
             // ================= LIVE SEARCH =================
             if (searchInput) {
                 searchInput.addEventListener('keyup', function() {
@@ -502,11 +516,86 @@
                 });
             }
 
+
+            // ================= VALIDASI FORM UPDATE (SAVE TRANSAKSI) =================
+            updateForm.addEventListener('submit', function(e) {
+
+                // Cegah double submit
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return;
+                }
+
+                // 1. Validasi Nama Peminjam tidak kosong
+                const borrowerName = document.getElementById('borrower_name').value.trim();
+                if (!borrowerName) {
+                    e.preventDefault();
+                    showNotif('Nama peminjam wajib diisi', 'error');
+                    document.getElementById('borrower_name').focus();
+                    return;
+                }
+
+                // 2. Validasi Tanggal tidak boleh kosong & tidak masa lalu
+                const dateInput = document.getElementById('dateInput');
+                if (!dateInput.value) {
+                    e.preventDefault();
+                    showNotif('Tanggal peminjaman wajib diisi', 'error');
+                    dateInput.focus();
+                    return;
+                }
+
+                const selectedDate = new Date(dateInput.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    e.preventDefault();
+                    showNotif('Tanggal peminjaman tidak boleh di masa lalu', 'error');
+                    dateInput.focus();
+                    return;
+                }
+
+                // 3. Validasi minimal 1 tool ada di tabel
+                const toolRows = document.querySelectorAll('#tableTools tbody tr[data-id]');
+                if (toolRows.length === 0) {
+                    e.preventDefault();
+                    showNotif('Pilih minimal 1 tool untuk dipinjam', 'error');
+                    return;
+                }
+
+                // 4. Set loading state & cegah double submit
+                isSubmitting = true;
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin w-5 h-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Menyimpan...
+                `;
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+                submitBtn.style.pointerEvents = 'none';
+
+                // Fallback reset 10 detik kalau gagal redirect
+                setTimeout(() => {
+                    isSubmitting = false;
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    submitBtn.style.pointerEvents = '';
+                }, 10000);
+            });
+
+
             // ================= ESC KEY =================
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    closeToolsModal();
-                    closeDeleteItemModal();
+                    if (!deleteItemModal.classList.contains('hidden')) {
+                        closeDeleteItemModal();
+                    } else if (!modal.classList.contains('hidden')) {
+                        closeToolsModal();
+                    }
                 }
             });
 
