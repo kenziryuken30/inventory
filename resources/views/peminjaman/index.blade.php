@@ -451,12 +451,13 @@
                     notifBar.style.transition = 'none';
                     notifBar.style.width = '0%';
 
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            notifBar.style.transition = 'width 3.5s linear';
-                            notifBar.style.width = '100%';
-                        });
-                    });
+                    // paksa render dulu
+                    notifBar.offsetWidth;
+
+                    setTimeout(() => {
+                        notifBar.style.transition = 'width 3.5s linear';
+                        notifBar.style.width = '100%';
+                    }, 50);
 
                     notifTimer = setTimeout(() => hideNotif(), 3500);
                 };
