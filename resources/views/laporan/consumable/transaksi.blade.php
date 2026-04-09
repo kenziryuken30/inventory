@@ -16,7 +16,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 {{-- PERBAIKI WARNA JUDUL --}}
-                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Laporan Transaksi Consumable</h2>
+                <h2 class="text-3xl font-bold text-[#113561] tracking-tight">Laporan Transaksi Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Rekap data pengeluaran dan pengembalian barang consumable</p>
             </div>
         </div>
