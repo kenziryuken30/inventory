@@ -6,7 +6,7 @@
     {{-- ================= TITLE ================= --}}
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Edit Peminjaman Tools</h2>
+            <h2 class="text-3xl font-bold text-[#113561] tracking-tight">Edit Peminjaman Tools</h2>
             <p class="text-sm text-gray-500 mt-1">Edit Proses Peminjaman dan Daftar Tools yang dipinjam</p>
         </div>
 
@@ -111,12 +111,18 @@
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-gray-800 text-lg">Daftar Alat yang Di Edit</h3>
 
-                <button type="button"
-                    id="openToolsBtn"
-                    class="text-white px-5 py-2 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 text-sm tracking-wide"
-                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                    + Pilih Tools
-                </button>
+               <button type="button"
+    id="openToolsBtn"
+    class="group inline-flex items-center gap-1.5 px-5 py-2 rounded-xl font-bold text-sm tracking-wide border-2 border-[#5EA6FF] bg-white text-[#5EA6FF] shadow-sm transition-all duration-200 hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/30 hover:-translate-y-0.5">
+    
+    <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M5 12h14M12 5v14" />
+    </svg>
+
+    Pilih Tools
+</button>
             </div>
 
             <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
@@ -195,13 +201,19 @@
 
         {{-- ================= SAVE BUTTON ================= --}}
         <div class="flex justify-end pt-4 border-t border-gray-100">
-            <button type="submit"
-                id="submitBtn"
-                form="updateForm"
-                class="text-white px-8 py-3 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                Save Transaksi
-            </button>
+           <button type="submit"
+    id="submitBtn"
+    form="updateForm"
+    class="group inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold tracking-wide border-2 border-[#5EA6FF] bg-white text-[#5EA6FF] shadow-sm transition-all duration-200 hover:bg-[#5EA6FF] hover:text-white hover:-translate-y-0.5">
+    
+    <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M5 12h14M12 5v14" />
+    </svg>
+
+    Save Transaksi
+</button>
         </div>
 
     </div>
@@ -294,21 +306,35 @@
 
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-6 mt-4 bg-transparent">
-                        <button type="button"
-                            id="btnCancelToolsModal"
-                            class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
-                            Batal
-                        </button>
+                   <div class="flex justify-end gap-3 pt-6 mt-4 bg-transparent">
 
-                        <button type="submit"
-                            id="btnAddTools"
-                            class="text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md hover:opacity-90 transition"
-                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                            + Tambahkan
-                        </button>
+    <button type="button"
+        id="btnCancelToolsModal"
+        class="group inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-semibold text-sm border-2 border-[#5EA6FF] bg-white text-[#5EA6FF] shadow-sm transition-all duration-200 hover:bg-[#5EA6FF] hover:text-white hover:-translate-y-0.5">
+        
+        <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M6 18L18 6M6 6l12 12" />
+        </svg>
 
-                    </div>
+        Batal
+    </button>
+
+    <button type="submit"
+        id="btnAddTools"
+        class="group inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-semibold text-sm border-2 border-[#5EA6FF] bg-white text-[#5EA6FF] shadow-sm transition-all duration-200 hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/30 hover:-translate-y-0.5">
+
+        <svg class="w-4 h-4 transition-transform duration-200 group-hover:scale-110"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M5 12h14M12 5v14" />
+        </svg>
+
+        Tambahkan
+    </button>
+
+</div>
 
                 </form>
 
