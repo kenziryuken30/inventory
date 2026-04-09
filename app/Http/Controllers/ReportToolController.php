@@ -42,7 +42,7 @@ class ReportToolController extends Controller
                 });
             }
             if ($start && $end && $end < $start) {
-                $data = collect(); // kosongkan data
+                $data = ToolTransactionItem::whereRaw('1=0')->paginate(10);
                 return view('laporan.tools.transaksi', compact('data', 'type'));
             }
 
@@ -104,7 +104,7 @@ class ReportToolController extends Controller
                 $query->whereDate('return_date', '<=', $request->end_date);
             }
 
-            $data = $query->latest()->get();
+            $data = $query->orderBy('return_date', 'desc')->get();
         } else {
 
             $query = ToolTransaction::with([
@@ -120,7 +120,7 @@ class ReportToolController extends Controller
                 $query->whereDate('date', '<=', $request->end_date);
             }
 
-            $data = $query->latest()->get();
+            $data = $query->orderBy('date', 'desc')->get();
         }
 
         $pdf = Pdf::loadView('laporan.tools.export_pdf', compact('data', 'type'))

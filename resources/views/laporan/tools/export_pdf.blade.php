@@ -107,13 +107,9 @@
                 @foreach($data as $row)
 
                     <tr>
-
                         <td>{{ $loop->iteration }}</td>
-
                         <td>{{ $row->transaction_code }}</td>
-
                         <td>{{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}</td>
-
                         <td>{{ $row->borrower_name }}</td>
 
                         <td>
@@ -129,56 +125,24 @@
                         </td>
 
                         <td>{{ $row->client_name ?? '-' }}</td>
-
                         <td>{{ $row->project ?? '-' }}</td>
-
                     </tr>
 
                 @endforeach
 
-
             @else
 
-                @php
-                    $group = $data->groupBy('transaction_id');
-                @endphp
-
-                @foreach($group as $items)
+                @foreach($data as $item)
 
                     <tr>
-
                         <td>{{ $loop->iteration }}</td>
-
-                        <td>{{ $items->first()->transaction->transaction_code }}</td>
-
-                        <td>{{ \Carbon\Carbon::parse($items->first()->return_date)->format('d M Y') }}</td>
-
-                        <td>{{ $items->first()->transaction->borrower_name }}</td>
-
-                        <td>
-                            @foreach($items as $item)
-                                {{ $item->toolkit->toolkit_name ?? '-' }}<br>
-                            @endforeach
-                        </td>
-
-                        <td>
-                            @foreach($items as $item)
-                                {{ $item->serial->serial_number ?? '-' }}<br>
-                            @endforeach
-                        </td>
-
-                        <td>
-                            @foreach($items as $item)
-                                {{ $item->return_condition ?? '-' }}<br>
-                            @endforeach
-                        </td>
-
-                        <td>
-                            @foreach($items as $item)
-                                {{ $item->return_note ?? '-' }}<br>
-                            @endforeach
-                        </td>
-
+                        <td>{{ $item->transaction->transaction_code }}</td>
+                        <td>{{ \Carbon\Carbon::parse($item->return_date)->format('d M Y') }}</td>
+                        <td>{{ $item->transaction->borrower_name }}</td>
+                        <td>{{ $item->toolkit->toolkit_name ?? '-' }}</td>
+                        <td>{{ $item->serial->serial_number ?? '-' }}</td>
+                        <td>{{ $item->return_condition ?? '-' }}</td>
+                        <td>{{ $item->return_note ?? '-' }}</td>
                     </tr>
 
                 @endforeach
