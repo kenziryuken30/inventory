@@ -87,11 +87,13 @@
                         <div class="space-y-0 mt-10">
                             <div class="flex justify-between items-center mb-6">
                                 <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
-                                {{-- PERBAIKI WARNA TOMBOL --}}
+                                {{-- PERBAIKI WARNA TOMBOL (STYLE PUTIH BORDER BIRU) --}}
                                 <button type="button" id="openToolsBtn"
-                                    class="text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all"
-                                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                                    + Pilih Tools
+                                    class="group inline-flex items-center px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-xs text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                     Pilih Tools
                                 </button>
                             </div>
 
@@ -120,10 +122,9 @@
                         </div>
 
                         <div class="pt-8 border-t border-gray-200 flex justify-end">
-                            {{-- PERBAIKI WARNA TOMBOL SAVE --}}
+                            {{-- PERBAIKI WARNA TOMBOL SAVE (STYLE PUTIH BORDER BIRU) --}}
                             <button type="submit"
-                                class="text-white px-10 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 transition-all duration-200 tracking-wide"
-                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
+                                class="group inline-flex items-center px-10 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
                                 Save Transaksi
                             </button>
                         </div>
@@ -202,12 +203,11 @@
                     class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                     Batal
                 </button>
-                {{-- PERBAIKI WARNA TOMBOL TAMBAH --}}
+                {{-- PERBAIKI WARNA TOMBOL TAMBAH (STYLE PUTIH BORDER BIRU) --}}
                 <button type="button" id="btnAddTool"
-                    class="px-6 py-2.5 text-white rounded-xl hover:opacity-90 transition font-medium text-sm shadow-md flex items-center gap-2"
-                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    class="group inline-flex items-center px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                     </svg>
                     Tambahkan
                 </button>
@@ -612,4 +612,4 @@
             }
         });
     });
-</script>
+</script> 
