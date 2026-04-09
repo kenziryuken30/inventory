@@ -70,14 +70,14 @@ class ToolTransactionController extends Controller
         return view('peminjaman.index', compact('transactions'));
     }
 
-    
+
     public function create()
     {
         $serials = InvSerialNumber::with('toolkit')
             ->where('status', 'TERSEDIA')
             ->get();
 
-            $employees = InvEmployee::all();
+        $employees = InvEmployee::all();
 
         return view('peminjaman.create', compact('serials', 'employees'));
     }
@@ -129,8 +129,6 @@ class ToolTransactionController extends Controller
                     'serial_id'      => $serial->id,
                     'status'         => 'PENDING',
                 ]);
-
-                
             }
         });
 
@@ -144,15 +142,19 @@ class ToolTransactionController extends Controller
         $transaction = ToolTransaction::with('items.serial')
             ->findOrFail($id);
 
-        // Hanya tampilkan serial yang masih tersedia
+        // ✅ ambil serial yang sudah dipilih di transaksi ini
+        $selectedSerialIds = $transaction->items->pluck('serial_id')->toArray();
+
+        // ✅ ambil serial tersedia TAPI exclude yang sudah dipilih
         $serials = InvSerialNumber::with('toolkit')
             ->where('status', 'TERSEDIA')
+            ->whereNotIn('id', $selectedSerialIds)
             ->get();
 
         return view('peminjaman.edit', compact('transaction', 'serials'));
     }
 
-        public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $transaction = ToolTransaction::with('items')->findOrFail($id);
 
@@ -221,8 +223,6 @@ class ToolTransactionController extends Controller
                     'serial_id'      => $serial->id,
                     'status'         => 'PENDING',
                 ]);
-
-                
             }
         });
 
@@ -282,42 +282,41 @@ class ToolTransactionController extends Controller
     }
 
     public function confirm($id)
-{
-    try {
-        $transaction = ToolTransaction::with('items.serial')
-            ->findOrFail($id);
+    {
+        try {
+            $transaction = ToolTransaction::with('items.serial')
+                ->findOrFail($id);
 
-        DB::transaction(function () use ($transaction) {
+            DB::transaction(function () use ($transaction) {
 
-            foreach ($transaction->items as $item) {
+                foreach ($transaction->items as $item) {
 
-                $isUsed = ToolTransactionItem::where('serial_id', $item->serial_id)
-                    ->where('status', 'DIPINJAM')
-                    ->where('transaction_id', '!=', $transaction->id)
-                    ->exists();
+                    $isUsed = ToolTransactionItem::where('serial_id', $item->serial_id)
+                        ->where('status', 'DIPINJAM')
+                        ->where('transaction_id', '!=', $transaction->id)
+                        ->exists();
 
-                if ($isUsed) {
-                    throw new \Exception('Serial ' . $item->serial->serial_number . ' sedang dipinjam!');
+                    if ($isUsed) {
+                        throw new \Exception('Serial ' . $item->serial->serial_number . ' sedang dipinjam!');
+                    }
                 }
-            }
 
-            $transaction->update([
-                'is_confirm' => true
-            ]);
+                $transaction->update([
+                    'is_confirm' => true
+                ]);
 
-            foreach ($transaction->items as $item) {
-                $item->update(['status' => 'DIPINJAM']);
-                $item->serial->update(['status' => 'DIPINJAM']);
-            }
-        });
+                foreach ($transaction->items as $item) {
+                    $item->update(['status' => 'DIPINJAM']);
+                    $item->serial->update(['status' => 'DIPINJAM']);
+                }
+            });
 
-        return back()->with('success', 'Transaksi berhasil dikonfirmasi');
+            return back()->with('success', 'Transaksi berhasil dikonfirmasi');
+        } catch (\Exception $e) {
 
-    } catch (\Exception $e) {
-
-        return back()->with('error', $e->getMessage());
+            return back()->with('error', $e->getMessage());
+        }
     }
-}
     public function returnProcess(Request $request, $id)
     {
         $transaction = ToolTransaction::with('items.serial')->findOrFail($id);
