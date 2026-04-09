@@ -142,10 +142,10 @@ class ToolTransactionController extends Controller
         $transaction = ToolTransaction::with('items.serial')
             ->findOrFail($id);
 
-        // ✅ ambil serial yang sudah dipilih di transaksi ini
+        // ambil serial yang sudah dipilih di transaksi ini
         $selectedSerialIds = $transaction->items->pluck('serial_id')->toArray();
 
-        // ✅ ambil serial tersedia TAPI exclude yang sudah dipilih
+        // ambil serial tersedia TAPI exclude yang sudah dipilih
         $serials = InvSerialNumber::with('toolkit')
             ->where('status', 'TERSEDIA')
             ->whereNotIn('id', $selectedSerialIds)
