@@ -7,7 +7,7 @@
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-[#5EA6FF] tracking-tight">Peminjaman Tools</h2>
+                <h2 class="text-3xl font-bold text-[#113561] tracking-tight">Peminjaman Tools</h2>
                 <p class="text-sm text-gray-500 mt-1">Kelola data transaksi peminjaman alat</p>
             </div>
 
@@ -154,13 +154,16 @@
                                             </svg>
                                         </button>
 
-                                        <form action="{{ route('peminjaman.confirm', $transaction->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button class="text-white px-3 py-1.5 rounded-lg font-semibold text-xs transition"
-                                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                                                Confirm
-                                            </button>
-                                        </form>
+                                       <form action="{{ route('peminjaman.confirm', $transaction->id) }}" method="POST" class="inline">
+    @csrf
+    <button
+        class="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:scale-[1.02]"
+        style="background: linear-gradient(180deg, #7BE495 0%, #43C463 100%);
+               border: 1px solid #43C463;
+               box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 6px rgba(67,196,99,0.35);">
+        Confirm
+    </button>
+</form>
                                     @else
                                         @if ($transaction->items->whereNull('return_date')->count() > 0)
                                             <button @click="openReturn = '{{ $transaction->id }}'"
