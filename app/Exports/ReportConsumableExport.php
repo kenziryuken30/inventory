@@ -117,15 +117,22 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
                 $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
                 // Row 2: Periode
-                $startLabel = $this->startDate
-                    ? \Carbon\Carbon::parse($this->startDate)->format('d F Y')
-                    : 'Awal';
-                $endLabel = $this->endDate
-                    ? \Carbon\Carbon::parse($this->endDate)->format('d F Y')
-                    : 'Sekarang';
+                if ($this->startDate || $this->endDate) {
+                    $startLabel = $this->startDate
+                        ? \Carbon\Carbon::parse($this->startDate)->format('d M Y')
+                        : '-';
+
+                    $endLabel = $this->endDate
+                        ? \Carbon\Carbon::parse($this->endDate)->format('d M Y')
+                        : '-';
+
+                    $periodeText = "Periode: $startLabel s/d $endLabel";
+                } else {
+                    $periodeText = "Periode: Semua Data";
+                }
 
                 $sheet->mergeCells('A2:' . $lastCol . '2');
-                $sheet->setCellValue('A2', 'Periode: ' . $startLabel . ' — ' . $endLabel . '  |  Pengambilan: ' . now()->format('d F Y'));
+                $sheet->setCellValue('A2', $periodeText . '  |  Tanggal Cetak: ' . now()->format('d M Y'));
                 $sheet->getStyle('A2')->getFont()->setSize(9);
 
                 // Auto-width
