@@ -227,7 +227,7 @@
                                         <td class="text-center py-3 px-4">
                                             <input type="checkbox"
                                                 class="pick-consumable w-4 h-4 accent-[#5EA6FF] rounded border-gray-300"
-                                                data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}">
+                                                data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}" data-unit="{{ $c->unit }}">
                                         </td>
                                         <td class="py-3 px-4">
                                             <div class="flex items-center gap-3">
@@ -240,6 +240,7 @@
                                             <span class="font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
                                                 {{ $c->stock }}
                                             </span>
+                                            <div class="text-xs text-gray-400">{{ $c->unit }}</div>
                                             @if($c->stock <= $c->minimum_stock)
                                                 <div class="text-xs text-red-400">Min: {{ $c->minimum_stock }}</div>
                                             @endif
@@ -728,6 +729,7 @@
                     const id = selected.dataset.id;
                     const name = selected.dataset.name;
                     const stock = parseInt(selected.dataset.stock);
+                    const unit = selected.dataset.unit;
                     const image = row.querySelector('img').src;
                     const qty = parseInt(row.querySelector('.qty-input').value);
 
@@ -739,6 +741,8 @@
                         exist.dataset.stock = stock;
                         const stockDisplay = exist.querySelector('.stock-display');
                         if (stockDisplay) stockDisplay.textContent = stock;
+                        const unitDisplay = exist.querySelector('.unit-display');
+                        if (unitDisplay) unitDisplay.textContent = unit;
                         updatedCount++;
                     } else {
                         startNo++;
@@ -754,7 +758,10 @@
                                 <td class="py-3 px-4">
                                     <span class="font-semibold text-gray-800 item-name">${name}</span>
                                 </td>
-                                <td class="text-center py-3 px-4 font-medium text-blue-600 w-24 stock-display">${stock}</td>
+                                <td class="text-center py-3 px-4 w-24">
+                                    <div class="font-medium text-blue-600 stock-display">${stock}</div>
+                                    <div class="text-xs text-gray-400 unit-display">${unit}</div>
+                                </td>
                                 <td class="text-center py-3 px-4 w-32">
                                     <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
                                         class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">

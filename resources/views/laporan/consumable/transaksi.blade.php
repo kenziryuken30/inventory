@@ -15,7 +15,6 @@
         {{-- ================= HEADER ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
-                {{-- PERBAIKI WARNA JUDUL --}}
                 <h2 class="text-3xl font-bold text-[#113561] tracking-tight">Laporan Transaksi Consumable</h2>
                 <p class="text-sm text-gray-500 mt-1">Rekap data pengeluaran dan pengembalian barang consumable</p>
             </div>
@@ -26,7 +25,6 @@
             class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-end"
             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
-            {{-- Hidden type akan di-update oleh JS saat toggle diklik --}}
             <input type="hidden" name="type" id="filterType" value="{{ $type }}">
 
             <div class="flex-1 min-w-[200px]">
@@ -47,10 +45,7 @@
                     class="px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:outline-none text-sm">
             </div>
 
-
             <div class="flex gap-2 items-end">
-                
-                {{-- TOMBOL FILTER (Putih/Abu) --}}
                 <button type="submit" id="filterBtn"
                     class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
@@ -64,7 +59,6 @@
                     </span>
                 </button>
 
-                {{-- TOMBOL RESET (Ungu) --}}
                 <a href="{{ route('laporan.consumable.transaksi', ['type' => $type]) }}"
                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                    style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
@@ -78,7 +72,6 @@
                     </span>
                 </a>
 
-                {{-- TOMBOL PDF (Merah) --}}
                 <a href="{{ route('laporan.consumable.export.pdf', array_merge(request()->query(), ['type' => $type])) }}"
                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                    style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white;">
@@ -90,7 +83,6 @@
                     </span>
                 </a>
 
-                {{-- TOMBOL EXCEL (Hijau) --}}
                 <a href="{{ route('laporan.consumable.export.excel', array_merge(request()->query(), ['type' => $type])) }}"
                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                    style="background: linear-gradient(135deg, #34D399, #059669); color: white;">
@@ -101,7 +93,6 @@
                         </svg>
                     </span>
                 </a>
-
             </div>
         </form>
 
@@ -148,16 +139,13 @@
                             $invalidDate = request('start_date') && request('end_date') && request('end_date') < request('start_date');
                         @endphp
 
-                        {{-- ❌ Kalau tanggal salah --}}
                         @if($invalidDate)
-
                             <tr>
                                 <td colspan="7" class="py-12 text-center text-red-500 font-semibold">
                                     ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
                                 </td>
                             </tr>
 
-                            {{-- ✅ Kalau data ada --}}
                         @elseif($data->count() > 0)
 
                             @foreach($data as $row)
@@ -200,19 +188,21 @@
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-6 text-center font-bold text-[#5EA6FF]">
+                                    <td class="py-4 px-6 text-center">
                                         @if($type == 'pengeluaran')
-                                            {{ $row->items->sum('qty') }}
+                                            @foreach($row->items as $item)
+                                                <div><span class="font-bold text-[#5EA6FF]">{{ $item->qty }}</span> <span class="text-gray-500 text-xs">{{ $item->consumable->unit }}</span></div>
+                                            @endforeach
                                         @else
-                                            {{ $row->qty_return }}
+                                            <span class="font-bold text-[#5EA6FF]">{{ $row->qty_return }}</span> <span class="text-gray-500 text-xs">{{ $row->consumable->unit }}</span>
                                         @endif
                                     </td>
 
                                     @if($type == 'pengeluaran')
                                         <td class="py-4 px-6 text-center">
-                                           <button @click="openDetail = {{ $row->id }}"
-    class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-    style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+                                            <button @click="openDetail = {{ $row->id }}"
+                                                class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                                style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
                                                 <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -229,7 +219,6 @@
                                 </tr>
                             @endforeach
 
-                            {{-- ⚪ Kalau kosong --}}
                         @else
 
                             <tr>
@@ -240,7 +229,6 @@
 
                         @endif
 
-                    </tbody>
                     </tbody>
                 </table>
             </div>
@@ -311,7 +299,7 @@
                                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                         <tr>
                                             <th class="py-3 px-4 font-semibold text-left">NAMA CONSUMABLE</th>
-                                            <th class="py-3 px-4 font-semibold text-center">QTY</th>
+                                            <th class="py-3 px-4 font-semibold text-center">JUMLAH</th>
                                             <th class="py-3 px-4 font-semibold text-left">UNIT</th>
                                         </tr>
                                     </thead>
@@ -329,18 +317,13 @@
                         </div>
 
                         <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
-                           <button @click="openDetail = null"
-    class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
-    style="
-        background: #ffffff;
-        color: #3b82f6;
-        border: 2px solid #60a5fa;
-        box-shadow: 0 4px 10px rgba(96,165,250,0.2);
-    "
-    onmouseover="this.style.background='#eff6ff'"
-    onmouseout="this.style.background='#ffffff'">
-    Tutup
-</button>
+                            <button @click="openDetail = null"
+                                class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
+                                style="background: #ffffff; color: #3b82f6; border: 2px solid #60a5fa; box-shadow: 0 4px 10px rgba(96,165,250,0.2);"
+                                onmouseover="this.style.background='#eff6ff'"
+                                onmouseout="this.style.background='#ffffff'">
+                                Tutup
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -390,9 +373,7 @@
                                 </div>
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Jumlah Dikembalikan</p>
-                                    <p class="text-[#5EA6FF] font-bold text-lg">
-                                        {{ $row->qty_return }} {{ $row->consumable->unit }}
-                                    </p>
+                                    <p class="text-[#5EA6FF] font-bold text-lg">{{ $row->qty_return }} <span class="text-gray-500 text-sm font-normal">{{ $row->consumable->unit }}</span></p>
                                 </div>
                             </div>
                         </div>
@@ -422,14 +403,11 @@
             const togglePengeluaran = document.getElementById('togglePengeluaran');
             const togglePengembalian = document.getElementById('togglePengembalian');
 
-            // ★ VALIDASI TANGGAL ★
             filterForm?.addEventListener('submit', function (e) {
                 const start = startDate.value;
                 const end = endDate.value;
 
-                // Kalau keduanya diisi, cek logic
                 if (start && end && end < start) {
-
                     endDate.classList.add('ring-2', 'ring-red-400');
                     return;
                 }
@@ -437,7 +415,6 @@
                 endDate.classList.remove('ring-2', 'ring-red-400');
             });
 
-            // Auto-hide error saat user rubah tanggal
             endDate?.addEventListener('change', function () {
                 const start = startDate.value;
                 if (start && this.value && this.value >= start) {
@@ -452,11 +429,9 @@
                 }
             });
 
-            // ★ TOGGLE TYPE (pakai form submit, bukan link) ★
             function switchType(type) {
                 filterType.value = type;
 
-                // Update tampilan toggle
                 if (type === 'pengeluaran') {
                     togglePengeluaran.classList.add('bg-white', 'shadow', 'text-[#5EA6FF]');
                     togglePengeluaran.classList.remove('text-gray-600');
@@ -469,7 +444,6 @@
                     togglePengeluaran.classList.add('text-gray-600');
                 }
 
-                // Submit form dengan type baru
                 filterForm.submit();
             }
 

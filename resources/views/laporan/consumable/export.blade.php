@@ -34,6 +34,29 @@
         .text-left {
             text-align: left;
         }
+
+        .item-row {
+            border-bottom: 1px dashed #ccc;
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            text-align: left;
+            flex: 1;
+        }
+
+        .item-qty {
+            text-align: right;
+            white-space: nowrap;
+            min-width: 60px;
+        }
     </style>
 
 </head>
@@ -112,37 +135,48 @@
             @if($type == 'pengeluaran')
 
                 @foreach($data as $transaction)
-                    @foreach($transaction->items as $item)
+                    <tr>
+                        <td>{{ $no++ }}</td>
+                        <td>{{ $transaction->transaction_code }}</td>
+                        <td>{{ $transaction->date ? \Carbon\Carbon::parse($transaction->date)->format('d M Y') : '-' }}</td>
+                        <td class="text-left">{{ $transaction->borrower_name }}</td>
 
-                        <tr>
-                            <td>{{ $no++ }}</td>
-                            <td>{{ $transaction->transaction_code }}</td>
-                            <td>{{ $transaction->date ? \Carbon\Carbon::parse($transaction->date)->format('d M Y') : '-' }}</td>
-                            <td class="text-left">{{ $transaction->borrower_name }}</td>
-                            <td class="text-left">{{ $item->consumable->name ?? '-' }}</td>
-                            <td>{{ $item->qty }}</td>
-                            <td class="text-left">{{ $transaction->client ?? '-' }}</td>
-                            <td class="text-left">{{ $transaction->project ?? '-' }}</td>
-                            <td class="text-left">{{ $transaction->purpose ?? '-' }}</td>
-                        </tr>
+                        <!-- Consumable gabung -->
+                        <td style="text-align:left; padding:4px 8px;">
+                            @foreach($transaction->items as $item)
+                                <div class="item-row">
+                                    <span class="item-name">{{ $item->consumable->name ?? '-' }}</span>
+                                </div>
+                            @endforeach
+                        </td>
 
-                    @endforeach
+                        <!-- Jumlah gabung + unit -->
+                        <td style="padding:4px 8px;">
+                            @foreach($transaction->items as $item)
+                                <div class="item-row">
+                                    <span class="item-qty">{{ $item->qty }} unit</span>
+                                </div>
+                            @endforeach
+                        </td>
+
+                        <td class="text-left">{{ $transaction->client ?? '-' }}</td>
+                        <td class="text-left">{{ $transaction->project ?? '-' }}</td>
+                        <td class="text-left">{{ $transaction->purpose ?? '-' }}</td>
+                    </tr>
                 @endforeach
 
             @else
 
                 @foreach($data as $item)
-
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $item->transaction->transaction_code }}</td>
                         <td>{{ $item->transaction->return_date ? \Carbon\Carbon::parse($item->transaction->return_date)->format('d M Y') : '-' }}</td>
                         <td class="text-left">{{ $item->transaction->borrower_name }}</td>
                         <td class="text-left">{{ $item->consumable->name ?? '-' }}</td>
-                        <td>{{ $item->qty_return }}</td>
+                        <td>{{ $item->qty_return }} unit</td>
                         <td class="text-left">{{ $item->note ?? '-' }}</td>
                     </tr>
-
                 @endforeach
 
             @endif

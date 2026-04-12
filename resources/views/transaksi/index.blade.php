@@ -316,7 +316,7 @@
                                             <tr>
                                                 <th class="py-3 px-4 text-center w-16 font-semibold">Pilih</th>
                                                 <th class="py-3 px-4 text-left font-semibold">Consumable</th>
-                                                <th class="py-3 px-4 text-center font-semibold">Sisa</th>
+                                                <th class="py-3 px-4 text-center font-semibold">terpakai</th>
                                                 <th class="py-3 px-4 text-center font-semibold">Qty Return</th>
                                                 <th class="py-3 px-4 text-left font-semibold">Keterangan</th>
                                             </tr>

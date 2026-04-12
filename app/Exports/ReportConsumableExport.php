@@ -43,19 +43,25 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
         if ($this->type == 'pengeluaran') {
 
             foreach ($this->data as $trx) {
+                $detailItems = [];
+                $detailQty = [];
+
                 foreach ($trx->items as $item) {
-                    $rows[] = [
-                        $no++,
-                        $trx->transaction_code,
-                        $trx->date ? \Carbon\Carbon::parse($trx->date)->format('d-m-Y') : '-',
-                        $trx->borrower_name,
-                        $item->consumable->name ?? '-',
-                        $item->qty,
-                        $trx->client ?? '-',
-                        $trx->project ?? '-',
-                        $trx->purpose ?? '-',
-                    ];
+                    $detailItems[] = $item->consumable->name ?? '-';
+                    $detailQty[]   = $item->qty . ' unit';
                 }
+
+                $rows[] = [
+                    $no++,
+                    $trx->transaction_code,
+                    $trx->date ? \Carbon\Carbon::parse($trx->date)->format('d-m-Y') : '-',
+                    $trx->borrower_name,
+                    implode("\n", $detailItems),   // kolom E → Consumable gabung
+                    implode("\n", $detailQty),     // kolom F → Jumlah gabung
+                    $trx->client ?? '-',
+                    $trx->project ?? '-',
+                    $trx->purpose ?? '-',
+                ];
             }
         } else {
 
@@ -68,7 +74,7 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
                         : '-',
                     $item->transaction->borrower_name,
                     $item->consumable->name ?? '-',
-                    $item->qty_return,
+                    $item->qty_return . ' unit',
                     $item->note ?? '-',
                 ];
             }
@@ -121,11 +127,9 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
                     $startLabel = $this->startDate
                         ? \Carbon\Carbon::parse($this->startDate)->format('d M Y')
                         : '-';
-
                     $endLabel = $this->endDate
                         ? \Carbon\Carbon::parse($this->endDate)->format('d M Y')
                         : '-';
-
                     $periodeText = "Periode: $startLabel s/d $endLabel";
                 } else {
                     $periodeText = "Periode: Semua Data";
@@ -140,7 +144,7 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                 }
 
-                // Header row bold + background
+                // Header bold + background
                 $sheet->getStyle("A4:{$lastCol}4")
                     ->getFont()->setBold(true);
                 $sheet->getStyle("A4:{$lastCol}4")
@@ -149,7 +153,6 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
                     ->getStartColor()
                     ->setRGB('E8F4F8');
 
-                // Hitung baris data terakhir
                 $rowCount = count($this->collection());
                 $lastRow = 4 + $rowCount;
 
@@ -158,6 +161,19 @@ class ReportConsumableExport implements FromCollection, WithHeadings, WithTitle,
                     ->getBorders()
                     ->getAllBorders()
                     ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+                // === Wrap text untuk kolom E (Consumable) & F (Jumlah) ===
+                foreach (['E', 'F'] as $col) {
+                    $sheet->getStyle("{$col}5:{$col}{$lastRow}")
+                        ->getAlignment()
+                        ->setWrapText(true)
+                        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+                }
+
+                // Auto row height
+                for ($row = 5; $row <= $lastRow; $row++) {
+                    $sheet->getRowDimension($row)->setRowHeight(-1);
+                }
             },
         ];
     }
