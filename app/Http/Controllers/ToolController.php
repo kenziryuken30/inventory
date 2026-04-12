@@ -21,6 +21,32 @@ class ToolController extends Controller
             'latestCondition'
         ]);
 
+        // 🔥 1. FILTER TAB (INI YANG BARU)
+        if ($request->tab == 'rusak') {
+
+            // 👉 Kalau tab = rusak → ambil hanya rusak
+            $query->whereHas('latestCondition', function ($q) {
+                $q->where('condition', 'rusak');
+            });
+        } else {
+
+            // 👉 Default → sembunyikan rusak
+            $query->where(function ($q) {
+                $q->whereHas('latestCondition', function ($sub) {
+                    $sub->whereIn('condition', ['baik', 'maintenance']);
+                })
+                    ->orWhereDoesntHave('latestCondition'); // 🔥 INI PENTING
+            });
+
+            // 🔥 2. DROPDOWN CONDITION (hanya jalan kalau bukan tab rusak)
+            if ($request->condition) {
+                $query->whereHas('latestCondition', function ($q) use ($request) {
+                    $q->where('condition', $request->condition);
+                });
+            }
+        }
+
+        // 🔍 SEARCH (tetap jalan)
         if ($request->search) {
             $query->where(function ($q) use ($request) {
                 $q->where('serial_number', 'like', '%' . $request->search . '%')
@@ -30,24 +56,17 @@ class ToolController extends Controller
             });
         }
 
-        if ($request->condition) {
-            $query->whereHas('latestCondition', function ($q) use ($request) {
-                $q->where('condition', $request->condition);
-            });
-        }
-
         $tools = $query->latest()->paginate(5)->withQueryString();
 
+        // 🔥 STATUS LOGIC (punya kamu, tidak diubah)
         foreach ($tools as $tool) {
 
             $condition = $tool->latestCondition->condition ?? 'baik';
 
-            // 🔥 AMBIL TRANSAKSI TERAKHIR TOOL
             $lastItem = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
                 ->latest()
                 ->first();
 
-            // 🔥 SET STATUS
             $tool->isPending = $lastItem && $lastItem->status === 'PENDING';
             $tool->isDipinjam = $lastItem && $lastItem->status === 'DIPINJAM';
 
@@ -62,9 +81,14 @@ class ToolController extends Controller
             }
         }
 
+        $rusakCount = InvSerialNumber::whereHas('latestCondition', function ($q) {
+            $q->where('condition', 'rusak');
+        })->count();
+
         return view('tools.index', [
             'tools'      => $tools,
             'categories' => InvCategory::orderBy('category_name')->get(),
+            'rusakCount' => $rusakCount,
         ]);
     }
 

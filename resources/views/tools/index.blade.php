@@ -32,10 +32,10 @@
 
         {{-- ================= SEARCH + FILTER + TAMBAH ================= --}}
         <div class="bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] p-3 sm:p-5 rounded-2xl shadow-md mb-4 sm:mb-6">
-            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center">
+            <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
 
                 <form method="GET" action="{{ route('tools.index') }}"
-                    class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 flex-1 w-full sm:w-auto">
+                    class="flex flex-col sm:flex-row gap-3 flex-1 items-stretch sm:items-center">
 
                     {{-- SEARCH --}}
                     <div class="relative flex-1">
@@ -45,9 +45,10 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                            placeholder="Cari barang..."
-                            class="w-full h-10 sm:h-[42px] bg-white rounded-xl pl-10 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20 focus:border-[#5EA6FF] transition">
+
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari barang..."
+                            class="w-full h-[42px] bg-white rounded-xl pl-10 pr-10 text-sm font-medium text-gray-700 shadow-sm outline-none focus:ring-2 focus:ring-[#5EA6FF]/20">
+
                         @if(request('search'))
                             <button type="button" id="clearSearch"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 text-sm font-bold">
@@ -56,16 +57,35 @@
                         @endif
                     </div>
 
+                    {{-- TAB --}}
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('tools.index', ['tab' => 'rusak']) }}" class="h-[42px] px-4 flex items-center gap-2 rounded-xl text-sm font-semibold transition
+                                        {{ request('tab') == 'rusak'
+        ? 'bg-red-500 text-white shadow-md shadow-red-200'
+        : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+
+                            ❗ Barang Rusak
+
+                            <span class="ml-1 px-2 py-0.5 text-xs rounded-full
+                                            {{ request('tab') == 'rusak'
+        ? 'bg-white/20 text-white'
+        : 'bg-red-100 text-red-600' }}">
+                                {{ $rusakCount ?? 0 }}
+                            </span>
+                        </a>
+                    </div>
+
                     {{-- FILTER --}}
                     <div class="relative">
                         <select name="condition" onchange="this.form.submit()"
-                            class="w-full sm:w-[180px] h-10 sm:h-[42px] bg-white rounded-xl pl-3.5 pr-9 text-sm font-medium text-gray-700 shadow-sm outline-none appearance-none cursor-pointer transition focus:ring-2 focus:ring-[#5EA6FF]/20 focus:border-[#5EA6FF]">
+                            class="w-[180px] h-[42px] bg-white rounded-xl pl-3.5 pr-9 text-sm font-medium text-gray-700 shadow-sm appearance-none cursor-pointer focus:ring-2 focus:ring-[#5EA6FF]/20">
                             <option value="">Semua Kondisi</option>
                             <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>Baik</option>
-                            <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>Rusak</option>
+                            <option value="rusak" {{ request('tab') == 'rusak' || request('condition') === 'rusak' ? 'selected' : '' }}>Rusak</option>
                             <option value="maintenance" {{ request('condition') === 'maintenance' ? 'selected' : '' }}>
                                 Maintenance</option>
                         </select>
+
                         <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
                             <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="1.5"
                                 viewBox="0 0 24 24">
@@ -76,14 +96,10 @@
 
                 </form>
 
-                {{-- TOMBOL TAMBAH (GAYA BARU SESUAI CONTOH KATEGORI) --}}
+                {{-- BUTTON --}}
                 <button type="button" id="openTambahBarang"
-                    class="group inline-flex items-center justify-center px-5 h-10 sm:h-[42px] rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
-                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Tambah Barang
+                    class="h-[42px] px-5 rounded-xl font-bold shadow-lg border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white transition whitespace-nowrap">
+                    + Tambah Barang
                 </button>
 
             </div>
@@ -136,7 +152,7 @@
                                     @endphp
 
                                     <img src="{{ $image ? asset('storage/' . $image) : asset('images/no-image.png') }}"
-                                        class="tools-img w-10 h-10 object-contain bg-white rounded-lg shadow p-1"
+                                        class="tools-img previewImage w-10 h-10 object-contain bg-white rounded-lg shadow p-1"
                                         onerror="this.src='{{ asset('images/error-image.png') }}'">
                                 </td>
 
@@ -207,17 +223,17 @@
                                     <div class="flex justify-center items-center gap-1.5 sm:gap-2.5">
 
                                         @if(($tool->latestCondition->condition ?? '') === 'maintenance')
-                                            <form action="{{ route('tools.finishMaintenance', $tool->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" title="Selesai Maintenance"
-                                                    class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-green-50 text-green-600 hover:bg-green-100 hover:scale-110 transition flex items-center justify-center">
-                                                    <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
-                                                        stroke="currentColor" stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                onclick="openMaintenanceModal('{{ route('tools.finishMaintenance', $tool->id) }}')"
+                                                title="Selesai Maintenance"
+                                                class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-green-50 text-green-600 hover:bg-green-100 hover:scale-110 transition flex items-center justify-center">
+
+                                                <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </button>
                                         @endif
 
                                         <button type="button"
@@ -253,7 +269,7 @@
                                                         stroke="currentColor" stroke-width="1.8">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 
-                                                                                            .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                                                                             .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                                     </svg>
                                                 </button>
                                             </form>
@@ -427,6 +443,36 @@
                     <button id="confirmDelete" class="flex-1 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
                         Ya, Hapus
                     </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="maintenanceModal"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[10001]">
+
+            <div class="bg-white rounded-2xl shadow-xl p-6 w-[350px] text-center">
+
+                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    🛠️
+                </div>
+
+                <h2 class="text-lg font-bold mb-2">Selesaikan Maintenance?</h2>
+                <p class="text-sm text-gray-500 mb-5">
+                    Barang akan kembali menjadi tersedia
+                </p>
+
+                <div class="flex gap-3">
+                    <button id="cancelMaintenance" class="flex-1 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+                        Batal
+                    </button>
+
+                    <form id="maintenanceForm" method="POST" class="flex-1">
+                        @csrf
+                        <button type="submit" class="w-full py-2 rounded-lg bg-green-500 text-white hover:bg-green-600">
+                            Ya, Selesai
+                        </button>
+                    </form>
                 </div>
 
             </div>
@@ -618,7 +664,7 @@
             // ★ MODAL PREVIEW ★
             const previewModal = document.getElementById("imagePreviewModal");
             const previewImg = document.getElementById("previewImg");
-            document.querySelectorAll(".previewImage").forEach(img => {
+            document.querySelectorAll(".tools-img").forEach(img => {
                 img.addEventListener("click", function () {
                     previewImg.src = this.src;
                     openModal(previewModal);
@@ -676,7 +722,27 @@
                 deleteModal.classList.add('hidden');
                 deleteModal.classList.remove('flex');
             });
+
+            maintenanceModal = document.getElementById('maintenanceModal');
+            maintenanceForm = document.getElementById('maintenanceForm');
+
+            document.getElementById('cancelMaintenance').addEventListener('click', function () {
+                maintenanceModal.classList.add('hidden');
+                maintenanceModal.classList.remove('flex');
+            });
+
+
         });
+
+        let maintenanceModal;
+        let maintenanceForm;
+
+        function openMaintenanceModal(url) {
+            maintenanceModal.classList.remove('hidden');
+            maintenanceModal.classList.add('flex');
+
+            maintenanceForm.action = url;
+        }
     </script>
 
 @endsection
