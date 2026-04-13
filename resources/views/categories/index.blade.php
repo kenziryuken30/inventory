@@ -151,7 +151,17 @@
                     <input name="category_name" placeholder="Nama Kategori" class="kategori-input" required>
                     <div class="flex justify-end gap-3 mt-5">
                         <button type="button" id="cancelTambahKategori" class="kategori-btn-cancel">Batal</button>
-                        <button type="submit" id="tambahSubmitBtn" class="kategori-btn-submit">Simpan</button>
+                        <button type="submit" id="tambahSubmitBtn"
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-md transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+    
+    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M12 4v16m8-8H4"></path>
+    </svg>
+
+    Simpan
+</button>
                     </div>
                 </form>
             </div>
@@ -172,7 +182,17 @@
                     <input name="category_name" id="editKategoriName" placeholder="Nama Kategori" class="kategori-input" required>
                     <div class="flex justify-end gap-3 mt-5">
                         <button type="button" id="cancelEditKategori" class="kategori-btn-cancel">Batal</button>
-                        <button type="submit" id="editSubmitBtn" class="kategori-btn-submit">Update</button>
+                        <button type="submit" id="editSubmitBtn"
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+
+    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M12 4v16m8-8H4"></path>
+    </svg>
+
+    Update
+</button>
                     </div>
                 </form>
             </div>
