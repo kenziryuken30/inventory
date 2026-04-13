@@ -380,8 +380,21 @@
                                         </td>
 
                                         <td class="py-4 px-6 text-gray-700">
-                                            <span
-                                                class="px-2 py-1 rounded-lg text-xs font-semibold {{ $row->return_condition == 'BAIK' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                            @php
+                                                $kondisi = strtoupper($row->return_condition);
+                                            @endphp
+
+                                            <span class="px-2 py-1 rounded-lg text-xs font-semibold
+                                                @if($kondisi == 'BAIK')
+                                                    bg-green-100 text-green-700
+                                                @elseif($kondisi == 'MAINTENANCE')
+                                                    bg-yellow-100 text-yellow-700
+                                                @elseif($kondisi == 'RUSAK')
+                                                    bg-red-100 text-red-700
+                                                @else
+                                                    bg-gray-100 text-gray-700
+                                                @endif
+                                            ">
                                                 {{ $row->return_condition ?? '-' }}
                                             </span>
                                         </td>
