@@ -65,7 +65,8 @@ class ToolTransactionController extends Controller
 
         $transactions = $query
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('peminjaman.index', compact('transactions'));
     }

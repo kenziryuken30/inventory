@@ -47,48 +47,49 @@
                     style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
                     <span>Filter</span>
                     <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
-                        <svg class="w-3 h-3 text-gray-500 group-hover:text-gray-700 transition"
-                            fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 4h18M6 12h12M10 20h4"/>
+                        <svg class="w-3 h-3 text-gray-500 group-hover:text-gray-700 transition" fill="none"
+                            stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M6 12h12M10 20h4" />
                         </svg>
                     </span>
                 </button>
 
                 {{-- TOMBOL RESET (Ungu) --}}
                 <a href="{{ route('laporan.tools.transaksi', ['type' => $type]) }}"
-                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-                   style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
+                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
                     <span>Reset</span>
                     <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
-                        <svg class="w-3 h-3 text-purple-500 transition"
-                             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <svg class="w-3 h-3 text-purple-500 transition" fill="none" stroke="currentColor" stroke-width="2.2"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0 0 14-7M19 5a9 9 0 0 0-14 7"/>
+                                d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0 0 14-7M19 5a9 9 0 0 0-14 7" />
                         </svg>
                     </span>
                 </a>
 
                 {{-- TOMBOL PDF (Merah) --}}
                 <a href="{{ route('laporan.tools.export.pdf', ['type' => $type, 'start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
-                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-                   style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white;">
+                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white;">
                     <span>PDF</span>
                     <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
                         <svg class="w-3 h-3 text-red-500 transition" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm3-7h6v1.5H9V13zm0 3h6v1.5H9V16zm0-6h3v1.5H9V10z" />
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm3-7h6v1.5H9V13zm0 3h6v1.5H9V16zm0-6h3v1.5H9V10z" />
                         </svg>
                     </span>
                 </a>
 
                 {{-- TOMBOL EXCEL (Hijau) --}}
                 <a href="{{ route('laporan.tools.export.excel', ['type' => $type, 'start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
-                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-                   style="background: linear-gradient(135deg, #34D399, #059669); color: white;">
+                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    style="background: linear-gradient(135deg, #34D399, #059669); color: white;">
                     <span>Excel</span>
                     <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
                         <svg class="w-3 h-3 text-green-600 transition" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h3v1.5H8V14zm0 3h3v1.5H8V17zm5-6h3v1.5h-3V11zm0 3h3v1.5h-3V14zm0 3h3v1.5h-3V17z" />
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h3v1.5H8V14zm0 3h3v1.5H8V17zm5-6h3v1.5h-3V11zm0 3h3v1.5h-3V14zm0 3h3v1.5h-3V17z" />
                         </svg>
                     </span>
                 </a>
@@ -155,53 +156,56 @@
                                     </td>
                                 </tr>
 
-                            {{-- ✅ Kalau data ada --}}
+                                {{-- ✅ Kalau data ada --}}
                             @elseif($data->count() > 0)
 
-                            @foreach($data as $row)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                        {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
-                                    </td>
+                                @foreach($data as $row)
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="py-4 px-6 text-center font-medium text-gray-600">
+                                            {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
+                                        </td>
 
-                                    <td class="py-4 px-6 font-bold text-[#5EA6FF]">
-                                        {{ $row->transaction_code }}
-                                    </td>
+                                        <td class="py-4 px-6 font-bold text-[#5EA6FF]">
+                                            {{ $row->transaction_code }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
-                                        {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700">
+                                            {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
-                                        {{ $row->borrower_name }}
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700">
+                                            {{ $row->borrower_name }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700 text-xs">
-                                        @foreach($row->items as $item)
-                                            <div>{{ $item->toolkit->toolkit_name ?? '-' }}</div>
-                                        @endforeach
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700 text-xs">
+                                            @foreach($row->items as $item)
+                                                <div class="mb-1 flex items-start gap-2">
+                                                    <span class="text-lg leading-none">•</span>
+                                                    <span>{{ $item->toolkit->toolkit_name ?? '-' }}</span>
+                                                </div>
+                                            @endforeach
+                                        </td>
 
-                                    <td class="py-4 px-6 text-center">
-                                        <button @click="openDetail = {{ $row->id }}"
-    class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
-    style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
-                                            <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110"
-                                                fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                            <span class="relative z-10">Detail</span>
-                                            <div
-                                                class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300">
-                                            </div>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                             {{-- ⚪ Kalau kosong --}}
+                                        <td class="py-4 px-6 text-center">
+                                            <button @click="openDetail = {{ $row->id }}"
+                                                class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                                style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+                                                <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110"
+                                                    fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <span class="relative z-10">Detail</span>
+                                                <div
+                                                    class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300">
+                                                </div>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                {{-- ⚪ Kalau kosong --}}
                             @else
 
                                 <tr>
@@ -282,7 +286,8 @@
                                         @foreach($row->items as $item)
                                             <tr class="hover:bg-gray-50 transition">
                                                 <td class="px-4 py-3 text-gray-600 font-mono text-xs">
-                                                    {{ $item->serial->serial_number ?? '-' }}</td>
+                                                    {{ $item->serial->serial_number ?? '-' }}
+                                                </td>
                                                 <td class="px-4 py-3 text-gray-800">{{ $item->toolkit->toolkit_name ?? '-' }}</td>
                                             </tr>
                                         @endforeach
@@ -291,18 +296,17 @@
                             </div>
                         </div>
 
-                       <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
-   <button @click="openDetail = null"
-    class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
-    style="
-        background: #ffffff;
-        color: #3b82f6;
-        border: 2px solid #60a5fa;
-        box-shadow: 0 4px 10px rgba(96,165,250,0.2);
-    ">
-    Tutup
-</button>
-</div>
+                        <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
+                            <button @click="openDetail = null"
+                                class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
+                                style="
+                                            background: #ffffff;
+                                            color: #3b82f6;
+                                            border: 2px solid #60a5fa;
+                                            box-shadow: 0 4px 10px rgba(96,165,250,0.2);">
+                                Tutup
+                            </button>
+                        </div>
 
                     </div>
                 </div>
@@ -346,48 +350,48 @@
                                     </td>
                                 </tr>
 
-                            {{-- ✅ Kalau data ada --}}
+                                {{-- ✅ Kalau data ada --}}
                             @elseif($data->count() > 0)
 
-                            @foreach($data as $row)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                        {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
-                                    </td>
+                                @foreach($data as $row)
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="py-4 px-6 text-center font-medium text-gray-600">
+                                            {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
+                                        </td>
 
-                                    <td class="py-4 px-6 font-bold text-[#5EA6FF]">
-                                        {{ $row->transaction->transaction_code }}
-                                    </td>
+                                        <td class="py-4 px-6 font-bold text-[#5EA6FF]">
+                                            {{ $row->transaction->transaction_code }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
-                                        {{ \Carbon\Carbon::parse($row->return_date)->format('d M Y') }}
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700">
+                                            {{ \Carbon\Carbon::parse($row->return_date)->format('d M Y') }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
-                                        {{ $row->transaction->borrower_name }}
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700">
+                                            {{ $row->transaction->borrower_name }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
-                                        {{ $row->toolkit->toolkit_name ?? '-' }}
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700 text-xs">
+                                            <span class="text-lg">•</span> {{ $row->toolkit->toolkit_name ?? '-' }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-500 font-mono text-xs">
-                                        {{ $row->serial->serial_number ?? '-' }}
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-500 font-mono text-xs">
+                                            {{ $row->serial->serial_number ?? '-' }}
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
-                                        <span
-                                            class="px-2 py-1 rounded-lg text-xs font-semibold {{ $row->return_condition == 'BAIK' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                            {{ $row->return_condition ?? '-' }}
-                                        </span>
-                                    </td>
+                                        <td class="py-4 px-6 text-gray-700">
+                                            <span
+                                                class="px-2 py-1 rounded-lg text-xs font-semibold {{ $row->return_condition == 'BAIK' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                {{ $row->return_condition ?? '-' }}
+                                            </span>
+                                        </td>
 
-                                    <td class="py-4 px-6 text-gray-500">
-                                        {{ $row->return_note ?? '-' }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                            {{-- ⚪ Kalau data kosong --}}
+                                        <td class="py-4 px-6 text-gray-500">
+                                            {{ $row->return_note ?? '-' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                {{-- ⚪ Kalau data kosong --}}
                             @else
 
                                 <tr>
@@ -419,43 +423,43 @@
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-    const filterForm = document.getElementById('filterForm');
-    const startDate = document.getElementById('startDate');
-    const endDate = document.getElementById('endDate');
+            const filterForm = document.getElementById('filterForm');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
 
-    filterForm?.addEventListener('submit', function (e) {
+            filterForm?.addEventListener('submit', function (e) {
 
-    const start = startDate.value;
-    const end = endDate.value;
+                const start = startDate.value;
+                const end = endDate.value;
 
-    if (start && end && end < start) {
+                if (start && end && end < start) {
 
-        endDate.classList.add('ring-2', 'ring-red-400');
-        return;
+                    endDate.classList.add('ring-2', 'ring-red-400');
+                    return;
 
-    } else {
+                } else {
 
-        endDate.classList.remove('ring-2', 'ring-red-400');
+                    endDate.classList.remove('ring-2', 'ring-red-400');
 
-    }
+                }
 
-});
+            });
 
-    endDate?.addEventListener('change', function () {
-        if (this.value >= startDate.value) {
-            this.classList.remove('ring-2', 'ring-red-400');
-        }
-    });
+            endDate?.addEventListener('change', function () {
+                if (this.value >= startDate.value) {
+                    this.classList.remove('ring-2', 'ring-red-400');
+                }
+            });
 
-    startDate?.addEventListener('change', function () {
-        if (endDate.value >= this.value) {
-            endDate.classList.remove('ring-2', 'ring-red-400');
-        }
-    });
+            startDate?.addEventListener('change', function () {
+                if (endDate.value >= this.value) {
+                    endDate.classList.remove('ring-2', 'ring-red-400');
+                }
+            });
 
-});
-</script>
+        });
+    </script>
 @endsection
