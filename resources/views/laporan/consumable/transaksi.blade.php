@@ -29,7 +29,7 @@
 
             <div class="flex-1 min-w-[200px]">
                 <label class="text-white text-sm font-semibold block mb-1">Nama Peminta</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama Peminta..."
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama Pengambil..."
                     class="w-full px-4 py-2.5 rounded-xl bg-white border-0 shadow-inner focus:ring-2 focus:ring-white focus:outline-none text-sm">
             </div>
 
@@ -114,22 +114,22 @@
         </div>
 
         {{-- ================= TABLE ================= --}}
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <div class="max-h-[420px] overflow-y-auto">
-                <table class="min-w-full text-sm text-gray-700">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="max-h-[420px] overflow-auto">
+                <table class="w-full text-sm text-gray-700 table-fixed">
                     <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <tr>
-                            <th class="py-4 px-6 font-semibold text-center">No</th>
-                            <th class="py-4 px-6 font-semibold text-left">Kode</th>
-                            <th class="py-4 px-6 font-semibold text-left">Tanggal</th>
-                            <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
-                            <th class="py-4 px-6 font-semibold text-left">Consumable</th>
-                            <th class="py-4 px-6 font-semibold text-center">Jumlah</th>
+                            <th class="py-4 px-4 font-semibold text-center w-12">No</th>
+                            <th class="py-4 px-4 font-semibold text-left w-28">Kode</th>
+                            <th class="py-4 px-4 font-semibold text-left w-28">Tanggal</th>
+                            <th class="py-4 px-4 font-semibold text-left">Karyawan</th>
+                            <th class="py-4 px-4 font-semibold text-left">Consumable</th>
+                            <th class="py-4 px-4 font-semibold text-center w-24">Jumlah</th>
                             @if($type == 'pengeluaran')
-                                <th class="py-4 px-6 font-semibold text-center">Detail</th>
+                                <th class="py-4 px-4 font-semibold text-center w-28">Detail</th>
                             @else
-                                <th class="py-4 px-6 font-semibold text-left">Keterangan</th>
+                                <th class="py-4 px-4 font-semibold text-left">Keterangan</th>
                             @endif
                         </tr>
                     </thead>
@@ -150,11 +150,11 @@
 
                             @foreach($data as $row)
                                 <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-4 px-6 text-center font-medium text-gray-600">
+                                    <td class="py-4 px-4 text-center font-medium text-gray-600 truncate">
                                         {{ $data->firstItem() + $loop->index }}
                                     </td>
 
-                                    <td class="py-4 px-6 font-bold text-[#5EA6FF]">
+                                    <td class="py-4 px-4 font-bold text-[#5EA6FF] truncate">
                                         @if($type == 'pengeluaran')
                                             {{ $row->transaction_code }}
                                         @else
@@ -162,7 +162,7 @@
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
+                                    <td class="py-4 px-4 text-gray-700 truncate">
                                         @if($type == 'pengeluaran')
                                             {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
                                         @else
@@ -170,7 +170,7 @@
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
+                                    <td class="py-4 px-4 text-gray-700 truncate" title="@if($type == 'pengeluaran') {{ $row->borrower_name }} @else {{ $row->transaction->borrower_name }} @endif">
                                         @if($type == 'pengeluaran')
                                             {{ $row->borrower_name }}
                                         @else
@@ -178,20 +178,26 @@
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-6 text-gray-700">
+                                    <td class="py-4 px-4 text-gray-700">
                                         @if($type == 'pengeluaran')
                                             @foreach($row->items as $item)
-                                                <div>{{ $item->consumable->name }}</div>
+                                                <div class="flex items-center gap-2 py-0.5 truncate">
+                                                    <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
+                                                    <span class="truncate" title="{{ $item->consumable->name }}">{{ $item->consumable->name }}</span>
+                                                </div>
                                             @endforeach
                                         @else
-                                            {{ $row->consumable->name }}
+                                            <div class="flex items-center gap-2 truncate">
+                                                <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
+                                                <span class="truncate" title="{{ $row->consumable->name }}">{{ $row->consumable->name }}</span>
+                                            </div>
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-6 text-center">
+                                    <td class="py-4 px-4 text-center">
                                         @if($type == 'pengeluaran')
                                             @foreach($row->items as $item)
-                                                <div><span class="font-bold text-[#5EA6FF]">{{ $item->qty }}</span> <span class="text-gray-500 text-xs">{{ $item->consumable->unit }}</span></div>
+                                                <div class="py-0.5"><span class="font-bold text-[#5EA6FF]">{{ $item->qty }}</span> <span class="text-gray-500 text-xs">{{ $item->consumable->unit }}</span></div>
                                             @endforeach
                                         @else
                                             <span class="font-bold text-[#5EA6FF]">{{ $row->qty_return }}</span> <span class="text-gray-500 text-xs">{{ $row->consumable->unit }}</span>
@@ -199,20 +205,19 @@
                                     </td>
 
                                     @if($type == 'pengeluaran')
-                                        <td class="py-4 px-6 text-center">
+                                        <td class="py-4 px-4 text-center">
                                             <button @click="openDetail = {{ $row->id }}"
-                                                class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                                                 style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
-                                                <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 </svg>
-                                                <span class="relative z-10">Detail</span>
-                                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
+                                                Detail
                                             </button>
                                         </td>
                                     @else
-                                        <td class="py-4 px-6 text-gray-500">
+                                        <td class="py-4 px-4 text-gray-500 truncate">
                                             {{ $row->note ?? '-' }}
                                         </td>
                                     @endif
@@ -244,17 +249,19 @@
         {{-- ================= MODAL PENGELUARAN ================= --}}
         @if($type == 'pengeluaran')
             @foreach($data as $row)
-                <div x-show="openDetail === {{ $row->id }}" x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
-                    x-transition:leave-end="opacity-0 scale-95"
-                    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                    @click.self="openDetail = null">
+                <div x-show="openDetail === {{ $row->id }}" 
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+                     @click.self="openDetail = null">
 
-                    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-                        @click.stop>
+                    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
+                         @click.stop>
 
-                        <div class="px-6 py-4 flex justify-between items-center text-white"
+                        <div class="flex-shrink-0 px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <div>
                                 <h3 class="text-lg font-bold">Detail Transaksi Consumable</h3>
@@ -263,11 +270,11 @@
                             <button @click="openDetail = null" class="text-2xl text-white/80 hover:text-white transition">✕</button>
                         </div>
 
-                        <div class="p-6 overflow-auto flex-1 bg-[#F0F7FF]">
+                        <div class="flex-1 p-6 overflow-y-auto bg-[#F0F7FF]">
                             <div class="grid grid-cols-2 gap-6 text-sm mb-6">
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Kode Transaksi</p>
-                                    <p class="text-gray-800 font-semibold">{{ $row->transaction_code }}</p>
+                                    <p class="text-gray-800 font-semibold break-words">{{ $row->transaction_code }}</p>
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal</p>
@@ -275,19 +282,19 @@
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Karyawan</p>
-                                    <p class="text-gray-800">{{ $row->borrower_name }}</p>
+                                    <p class="text-gray-800 break-words">{{ $row->borrower_name }}</p>
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Client</p>
-                                    <p class="text-gray-800">{{ $row->client ?? '-' }}</p>
+                                    <p class="text-gray-800 break-words">{{ $row->client ?? '-' }}</p>
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Project</p>
-                                    <p class="text-gray-800">{{ $row->project ?? '-' }}</p>
+                                    <p class="text-gray-800 break-words">{{ $row->project ?? '-' }}</p>
                                 </div>
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Keperluan</p>
-                                    <div class="bg-blue-50 rounded-xl px-4 py-3 shadow-inner text-gray-700 border border-blue-200">
+                                    <div class="bg-blue-50 rounded-xl px-4 py-3 shadow-inner text-gray-700 border border-blue-200 break-words">
                                         {{ $row->purpose ?? '-' }}
                                     </div>
                                 </div>
@@ -306,7 +313,12 @@
                                     <tbody class="bg-white divide-y divide-gray-100">
                                         @foreach($row->items as $item)
                                             <tr class="hover:bg-gray-50 transition">
-                                                <td class="px-4 py-3 text-gray-800">{{ $item->consumable->name }}</td>
+                                                <td class="px-4 py-3 text-gray-800 break-words">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
+                                                        <span>{{ $item->consumable->name }}</span>
+                                                    </div>
+                                                </td>
                                                 <td class="px-4 py-3 text-center font-semibold text-[#5EA6FF]">{{ $item->qty }}</td>
                                                 <td class="px-4 py-3 text-gray-600">{{ $item->consumable->unit }}</td>
                                             </tr>
@@ -316,7 +328,7 @@
                             </div>
                         </div>
 
-                        <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
+                        <div class="flex-shrink-0 px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
                                 class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
                                 style="background: #ffffff; color: #3b82f6; border: 2px solid #60a5fa; box-shadow: 0 4px 10px rgba(96,165,250,0.2);"
@@ -333,17 +345,19 @@
         {{-- ================= MODAL PENGEMBALIAN ================= --}}
         @if($type == 'pengembalian')
             @foreach($data as $row)
-                <div x-show="openDetail === {{ $row->id }}" x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
-                    x-transition:leave-end="opacity-0 scale-95"
-                    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                    @click.self="openDetail = null">
+                <div x-show="openDetail === {{ $row->id }}" 
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+                     @click.self="openDetail = null">
 
-                    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-                        @click.stop>
+                    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
+                         @click.stop>
 
-                        <div class="px-6 py-4 flex justify-between items-center text-white"
+                        <div class="flex-shrink-0 px-6 py-4 flex justify-between items-center text-white"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <div>
                                 <h3 class="text-lg font-bold">Detail Pengembalian Consumable</h3>
@@ -351,11 +365,11 @@
                             <button @click="openDetail = null" class="text-2xl text-white/80 hover:text-white transition">✕</button>
                         </div>
 
-                        <div class="p-6 overflow-auto flex-1 bg-gray-50">
+                        <div class="flex-1 p-6 overflow-y-auto bg-gray-50">
                             <div class="grid grid-cols-2 gap-6 text-sm mb-4">
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Kode Transaksi</p>
-                                    <p class="text-gray-800 font-semibold">{{ $row->transaction->transaction_code }}</p>
+                                    <p class="text-gray-800 font-semibold break-words">{{ $row->transaction->transaction_code }}</p>
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Tanggal Pengembalian</p>
@@ -365,11 +379,16 @@
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Karyawan</p>
-                                    <p class="text-gray-800">{{ $row->transaction->borrower_name }}</p>
+                                    <p class="text-gray-800 break-words">{{ $row->transaction->borrower_name }}</p>
                                 </div>
                                 <div>
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Consumable</p>
-                                    <p class="text-gray-800">{{ $row->consumable->name }}</p>
+                                    <p class="text-gray-800 break-words">
+                                        <span class="inline-flex items-center gap-2">
+                                            <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
+                                            {{ $row->consumable->name }}
+                                        </span>
+                                    </p>
                                 </div>
                                 <div class="col-span-2">
                                     <p class="font-bold text-gray-500 text-xs uppercase tracking-wider mb-1">Jumlah Dikembalikan</p>
@@ -378,12 +397,11 @@
                             </div>
                         </div>
 
-                        <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
+                        <div class="flex-shrink-0 px-6 py-4 bg-white border-t border-gray-100 flex justify-end">
                             <button @click="openDetail = null"
-                                class="group relative px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
+                                class="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                                 style="background: linear-gradient(135deg, #7FC4FF, #5EA6FF); box-shadow: 0 3px 12px rgba(94,166,255,0.35);">
-                                <span class="relative z-10">Tutup</span>
-                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300"></div>
+                                Tutup
                             </button>
                         </div>
                     </div>

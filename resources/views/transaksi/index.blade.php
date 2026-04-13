@@ -15,7 +15,6 @@
                 </p>
             </div>
             <div class="flex gap-3">
-                {{-- TOMBOL PERMINTAAN --}}
                 <a href="{{ route('transaksi.create') }}"
                     class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
                     <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,8 +40,8 @@
             </div>
         </div>
         
-        {{-- FILTER SECTION (UPDATED) --}}
-        <form method="GET" action="{{ route('transaksi.index') }}" class="mb-6">
+        {{-- FILTER SECTION --}}
+        <form method="GET" action="{{ route('transaksi.index') }}" id="filterForm" class="mb-6">
             <div class="p-4 rounded-2xl shadow-lg flex flex-wrap items-center gap-3 backdrop-blur-md"
                  style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
 
@@ -51,179 +50,180 @@
 
                 <span class="text-white font-semibold text-sm">Tanggal</span>
 
-                <input type="date" name="start_date" value="{{ request('start_date') }}"
+                <input type="date" name="start_date" id="startDate" value="{{ request('start_date') }}" max="{{ date('Y-m-d') }}"
                     class="px-4 py-2.5 rounded-xl bg-white text-gray-700 text-sm shadow-inner border-0 focus:outline-none">
 
                 <span class="text-white font-bold text-sm">s/d</span>
 
-                <input type="date" name="end_date" value="{{ request('end_date') }}"
+                <input type="date" name="end_date" id="endDate" value="{{ request('end_date') }}" max="{{ date('Y-m-d') }}"
                     class="px-4 py-2.5 rounded-xl bg-white text-gray-700 text-sm shadow-inner border-0 focus:outline-none">
 
-                {{-- BUTTON FILTER (UPDATED) --}}
-              <button type="submit"
-    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
-           transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-    style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
+                <button type="submit"
+                    class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
+                           transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                    style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
+                    <span>Filter</span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                        <svg class="w-3 h-3 text-gray-500 group-hover:text-gray-700 transition"
+                             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3 4h18M6 12h12M10 20h4"/>
+                        </svg>
+                    </span>
+                </button>
 
-    <span>Filter</span>
-
-    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
-        <svg class="w-3 h-3 text-gray-500 group-hover:text-gray-700 transition"
-             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 4h18M6 12h12M10 20h4"/>
-        </svg>
-    </span>
-</button>
-
-                {{-- BUTTON RESET (UPDATED) --}}
-             <a href="{{ route('transaksi.index') }}"
-   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
-          transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
-  style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
-
-    <span>Reset</span>
-
-    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
-        <svg class="w-3 h-3 text-gray-400 group-hover:text-gray-600 transition"
-             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0 0 14-7M19 5a9 9 0 0 0-14 7"/>
-        </svg>
-    </span>
-</a>
+                <a href="{{ route('transaksi.index') }}"
+                   class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm
+                          transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                   style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
+                    <span>Reset</span>
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white shadow">
+                        <svg class="w-3 h-3 text-gray-400 group-hover:text-gray-600 transition"
+                             fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0 0 14-7M19 5a9 9 0 0 0-14 7"/>
+                        </svg>
+                    </span>
+                </a>
             </div>
         </form>
 
 
         {{-- TABLE --}}
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="text-white text-xs uppercase tracking-wider"
+            <div class="max-h-[500px] overflow-auto">
+                <table class="w-full text-sm">
+                    <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                        <th class="py-4 px-6 font-semibold text-center">No</th>
-                        <th class="py-4 px-6 font-semibold text-left">Kode</th>
-                        <th class="py-4 px-6 font-semibold text-left">Tanggal</th>
-                        <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
-                        <th class="py-4 px-6 font-semibold text-left">Consumable</th>
-                        <th class="py-4 px-6 font-semibold text-center">Minta</th>
-                        <th class="py-4 px-6 font-semibold text-center">Kembali</th>
-                        <th class="py-4 px-6 font-semibold text-center">Terpakai</th>
-                        <th class="py-4 px-6 font-semibold text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700 divide-y divide-gray-100">
-                    @forelse($transactions as $trx)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="py-4 px-6 text-center font-medium text-gray-600">
-                                {{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}
-                            </td>
-                            <td class="py-4 px-6 font-bold text-[#5EA6FF]">
-                                {{ $trx->transaction_code }}
-                            </td>
-                            <td class="py-4 px-6 text-gray-700">
-                                {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
-                            </td>
-                            <td class="py-4 px-6 text-gray-700">
-                                {{ $trx->borrower_name }}
-                            </td>
-                            <td class="py-4 px-6 text-gray-700">
-                                @foreach($trx->items as $item)
-                                    <div>{{ $item->consumable->name }}</div>
-                                @endforeach
-                            </td>
-                            <td class="py-4 px-6 text-center text-gray-700">
-                                @foreach($trx->items as $item)
-                                    <div>{{ $item->qty }} {{ $item->consumable->unit }}</div>
-                                @endforeach
-                            </td>
-                            <td class="py-4 px-6 text-center text-gray-700">
-                                @foreach($trx->items as $item)
-                                    <div>{{ ($item->qty_return ?? 0) == 0 ? '-' : $item->qty_return }}</div>
-                                @endforeach
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                @foreach($trx->items as $item)
-                                    @php
-                                        $sisa = $item->qty - ($item->qty_return ?? 0);
-                                    @endphp
-                                    @if($sisa == $item->qty)
-                                        <div class="text-yellow-600 font-semibold">-</div>
-                                    @elseif($sisa == 0)
-                                        <div class="text-green-600 font-semibold">Selesai</div>
+                        <tr>
+                            <th class="py-4 px-6 font-semibold text-center">No</th>
+                            <th class="py-4 px-6 font-semibold text-left">Kode</th>
+                            <th class="py-4 px-6 font-semibold text-left">Tanggal</th>
+                            <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
+                            <th class="py-4 px-6 font-semibold text-left">Consumable</th>
+                            <th class="py-4 px-6 font-semibold text-center">Permintaan</th>
+                            <th class="py-4 px-6 font-semibold text-center">Pengembalian</th>
+                            <th class="py-4 px-6 font-semibold text-center">Pemakaian</th>
+                            <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700 divide-y divide-gray-100">
+
+                        @forelse($transactions as $trx)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="py-4 px-6 text-center font-medium text-gray-600">
+                                    {{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}
+                                </td>
+                                <td class="py-4 px-6 font-bold text-[#5EA6FF]">
+                                    {{ $trx->transaction_code }}
+                                </td>
+                                <td class="py-4 px-6 text-gray-700">
+                                    {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
+                                </td>
+                                <td class="py-4 px-6 text-gray-700">
+                                    {{ $trx->borrower_name }}
+                                </td>
+                                {{-- CONSUMABLE --}}
+                                <td class="py-4 px-6 text-gray-700">
+                                    @foreach($trx->items as $item)
+                                        <div class="flex items-center gap-2 py-0.5">
+                                            <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
+                                            <span>{{ $item->consumable->name }}</span>
+                                        </div>
+                                    @endforeach
+                                </td>
+                                {{-- MINTA --}}
+                                <td class="py-4 px-6 text-center text-gray-700">
+                                    @foreach($trx->items as $item)
+                                        <div class="py-0.5">{{ $item->qty }} {{ $item->consumable->unit }}</div>
+                                    @endforeach
+                                </td>
+                                {{-- KEMBALI --}}
+                                <td class="py-4 px-6 text-center text-gray-700">
+                                    @foreach($trx->items as $item)
+                                        <div class="py-0.5">{{ ($item->qty_return ?? 0) == 0 ? '-' : $item->qty_return }}</div>
+                                    @endforeach
+                                </td>
+                                {{-- PEMAKAIAN --}}
+                                <td class="py-4 px-6 text-center">
+                                    @foreach($trx->items as $item)
+                                        @php
+                                            $sisa = $item->qty - ($item->qty_return ?? 0);
+                                        @endphp
+                                        @if($sisa == $item->qty)
+                                            <div class="py-0.5 text-yellow-600 font-semibold">-</div>
+                                        @elseif($sisa == 0)
+                                            <div class="py-0.5 text-green-600 font-semibold">Selesai</div>
+                                        @else
+                                            <div class="py-0.5 text-orange-600 font-semibold">{{ $sisa }}</div>
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    @if(!$trx->is_confirm)
+                                        <div class="flex justify-center gap-2 items-center">
+                                            <a href="{{ route('transaksi.edit', $trx->id) }}"
+                                                class="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition"
+                                                title="Edit">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
+                                                </svg>
+                                            </a>
+                                            <button type="button"
+                                                @click="deleteId = '{{ $trx->id }}'; deleteCode = '{{ $trx->transaction_code }}'; deleteConfirm = true"
+                                                class="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                                                title="Hapus">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                </svg>
+                                            </button>
+                                            <form action="{{ route('transaksi.confirm', $trx->id) }}" method="POST">
+                                                @csrf
+                                                <button
+                                                    class="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:scale-[1.02]"
+                                                    style="
+                                                        background: linear-gradient(180deg, #7BE495 0%, #43C463 100%);
+                                                        border: 1px solid #43C463;
+                                                        box-shadow:
+                                                            inset 0 1px 0 rgba(255,255,255,0.45),
+                                                            0 2px 6px rgba(67,196,99,0.35);
+                                                    ">
+                                                    Confirm
+                                                </button>
+                                            </form>
+                                        </div>
                                     @else
-                                        <div class="text-orange-600 font-semibold">
-                                            {{ $sisa }}
+                                        <div class="flex justify-center gap-2 flex-wrap">
+                                            <button @click="openReturn = '{{ $trx->id }}'"
+                                                class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-semibold text-xs transition shadow-sm">
+                                                Pengembalian
+                                            </button>
+                                            <span class="inline-flex items-center gap-1.5 text-green-600 font-semibold text-xs relative">
+                                                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
+                                                    <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                                                    </svg>
+                                                </span>
+                                                <span class="tracking-wide">Confirmed</span>
+                                            </span>
                                         </div>
                                     @endif
-                                @endforeach
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                @if(!$trx->is_confirm)
-                                    <div class="flex justify-center gap-2 items-center">
-                                        {{-- TOMBOL EDIT (ICON) --}}
-                                        <a href="{{ route('transaksi.edit', $trx->id) }}"
-                                            class="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition"
-                                            title="Edit">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
-                                            </svg>
-                                        </a>
-                                        {{-- TOMBOL HAPUS (ICON) --}}
-                                        <button type="button"
-                                            @click="deleteId = '{{ $trx->id }}'; deleteCode = '{{ $trx->transaction_code }}'; deleteConfirm = true"
-                                            class="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
-                                            title="Hapus">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                            </svg>
-                                        </button>
-                                       <form action="{{ route('transaksi.confirm', $trx->id) }}" method="POST">
-    @csrf
-    <button
-        class="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:scale-[1.02]"
-        style="
-            background: linear-gradient(180deg, #7BE495 0%, #43C463 100%);
-            border: 1px solid #43C463;
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.45),
-                0 2px 6px rgba(67,196,99,0.35);
-        ">
-        Confirm
-    </button>
-</form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="py-12 text-center text-gray-400">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                        <span>Belum ada transaksi</span>
                                     </div>
-                                @else
-                                    <div class="flex justify-center gap-2 flex-wrap">
-                                        <button @click="openReturn = '{{ $trx->id }}'"
-                                            class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-semibold text-xs transition shadow-sm">
-                                            Pengembalian
-                                        </button>
-                                        <span class="inline-flex items-center gap-1.5 text-green-600 font-semibold text-xs relative">
-                                            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100">
-                                                <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
-                                                </svg>
-                                            </span>
-                                            <span class="tracking-wide">Confirmed</span>
-                                        </span>
-                                    </div>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="py-12 text-center text-gray-400">
-                                <div class="flex flex-col items-center gap-2">
-                                    <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                                    <span>Belum ada transaksi</span>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                        @endforelse
+
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         {{-- ================= MODAL KONFIRMASI HAPUS ================= --}}
@@ -273,12 +273,12 @@
             </div>
         </div>
 
-        {{-- ================= POPUP RETURN ================= --}}
+        {{-- ================= POPUP RETURN (MULTI SELECT) ================= --}}
         @foreach($transactions as $trx)
             @if($trx->is_confirm)
                 <div x-show="openReturn === '{{ $trx->id }}'" 
                      x-cloak 
-                     x-data="{ selected: null }"
+                     x-data="{ selectedItems: [], toggleItem(id) { let idx = this.selectedItems.indexOf(id); if(idx > -1) { this.selectedItems.splice(idx, 1); } else { this.selectedItems.push(id); } } }"
                      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[1000] p-4">
                     <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                         <form action="{{ route('transaksi.return', $trx->id) }}" method="POST">
@@ -288,7 +288,7 @@
                                  style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <div>
                                     <h3 class="text-lg font-bold">Proses Pengembalian</h3>
-                                    <p class="text-sm text-white/80">Pilih item yang akan dikembalikan</p>
+                                    <p class="text-sm text-white/80">Pilih item yang akan dikembalikan (bisa lebih dari satu)</p>
                                 </div>
                                 <button type="button" @click="openReturn = null" class="text-2xl text-white/80 hover:text-white transition">
                                     ✕
@@ -304,7 +304,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-1">Tanggal Return</label>
-                                        <input type="date" name="return_date" value="{{ date('Y-m-d') }}"
+                                        <input type="date" name="return_date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"
                                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-inner focus:ring-2 focus:ring-[#5EA6FF] focus:outline-none text-sm">
                                     </div>
                                 </div>
@@ -316,7 +316,7 @@
                                             <tr>
                                                 <th class="py-3 px-4 text-center w-16 font-semibold">Pilih</th>
                                                 <th class="py-3 px-4 text-left font-semibold">Consumable</th>
-                                                <th class="py-3 px-4 text-center font-semibold">terpakai</th>
+                                                <th class="py-3 px-4 text-center font-semibold">Permintaan</th>
                                                 <th class="py-3 px-4 text-center font-semibold">Qty Return</th>
                                                 <th class="py-3 px-4 text-left font-semibold">Keterangan</th>
                                             </tr>
@@ -327,26 +327,31 @@
                                                     $sisa = $item->qty - ($item->qty_return ?? 0);
                                                 @endphp
                                                 @if($sisa > 0)
-                                                    <tr class="hover:bg-gray-50 transition">
+                                                    <tr class="hover:bg-gray-50 transition"
+                                                        :class="selectedItems.includes('{{ $item->id }}') ? 'bg-blue-50/60' : ''">
                                                         <td class="px-4 py-3 text-center">
-                                                            <input type="radio" name="selected_item" value="{{ $item->id }}" x-model="selected"
-                                                                   class="w-4 h-4 accent-[#5EA6FF] border-gray-300">
+                                                            <input type="checkbox" name="selected_items[]" value="{{ $item->id }}"
+                                                                   @change="toggleItem('{{ $item->id }}')"
+                                                                   class="w-4 h-4 accent-[#5EA6FF] border-gray-300 rounded cursor-pointer">
                                                         </td>
                                                         <td class="px-4 py-3 font-medium text-gray-800">
-                                                            {{ $item->consumable->name }}
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
+                                                                {{ $item->consumable->name }}
+                                                            </div>
                                                         </td>
                                                         <td class="px-4 py-3 text-center text-gray-600">
-                                                            {{ $sisa }}
+                                                            {{ $sisa }} {{ $item->consumable->unit }}
                                                         </td>
                                                         <td class="px-4 py-3 text-center">
                                                             <input type="number" name="items[{{ $item->id }}][qty]" min="1" max="{{ $sisa }}"
-                                                                class="w-20 border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#5EA6FF] focus:outline-none text-center"
-                                                                :disabled="selected != '{{ $item->id }}'">
+                                                                class="w-20 border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#5EA6FF] focus:outline-none text-center disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                                                :disabled="!selectedItems.includes('{{ $item->id }}')">
                                                         </td>
                                                         <td class="px-4 py-3">
                                                             <input type="text" name="items[{{ $item->id }}][note]" placeholder="Keterangan"
-                                                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#5EA6FF] focus:outline-none"
-                                                                :disabled="selected != '{{ $item->id }}'">
+                                                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-inner focus:ring-1 focus:ring-[#5EA6FF] focus:outline-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                                                :disabled="!selectedItems.includes('{{ $item->id }}')">
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -356,17 +361,25 @@
                                 </div>
                             </div>
                             {{-- BUTTON --}}
-                            <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-end gap-3">
-                                <button type="button" @click="openReturn = null" 
-                                        class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
-                                    Batal
-                                </button>
-                                <button type="submit" :disabled="!selected"
-                                        :class="!selected ? 'bg-gray-300 cursor-not-allowed' : 'hover:opacity-90'"
-                                        class="px-5 py-2.5 text-white rounded-xl font-semibold text-sm shadow-md transition"
-                                        style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                                    Kembalikan
-                                </button>
+                            <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-between items-center">
+                                <span class="text-xs text-gray-400" x-show="selectedItems.length > 0">
+                                    <span class="font-bold text-[#5EA6FF]" x-text="selectedItems.length"></span> item dipilih
+                                </span>
+                                <span class="text-xs text-gray-400" x-show="selectedItems.length === 0">
+                                    Belum ada item dipilih
+                                </span>
+                                <div class="flex gap-3">
+                                    <button type="button" @click="openReturn = null" 
+                                            class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
+                                        Batal
+                                    </button>
+                                    <button type="submit" :disabled="selectedItems.length === 0"
+                                            :class="selectedItems.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'hover:opacity-90 hover:shadow-lg'"
+                                            class="px-5 py-2.5 text-white rounded-xl font-semibold text-sm shadow-md transition"
+                                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
+                                        Kembalikan
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -374,8 +387,13 @@
             @endif
         @endforeach
 
+        {{-- ============ PAGINATION DENGAN APPEND FILTER ============ --}}
         <div class="mt-6 flex justify-center">
-            {{ $transactions->links() }}
+            {{ $transactions->appends([
+                'search' => request('search'),
+                'start_date' => request('start_date'),
+                'end_date' => request('end_date')
+            ])->links() }}
         </div>
     </div>
 
@@ -399,6 +417,11 @@
         #notifBar {
             transition: width 3.5s linear;
         }
+        
+        /* Style untuk error state tanggal */
+        input[type="date"].ring-2 {
+            outline: none;
+        }
     </style>
 
     <script>
@@ -417,15 +440,15 @@
             notifWrap.classList.remove('hidden', 'hiding');
 
             if (type === 'success') {
-    // NOTIF HIJAU FULL
-    notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
-
-    notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
-
-    notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
-
-    notifBar.style.background = '#22c55e'; // hijau tailwind
-
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
+                notifIcon.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>';
+                notifBar.style.background = '#22c55e';
+            } else if (type === 'warning') {
+                notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-amber-50 border-amber-200 text-amber-800';
+                notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-100';
+                notifIcon.innerHTML = '<svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>';
+                notifBar.style.background = '#f59e0b';
             } else {
                 notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-red-50 border-red-200 text-red-800';
                 notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-100';
@@ -435,17 +458,14 @@
 
             notifText.textContent = message;
             
-            // Bar animation
             notifBar.style.transition = 'none';
-                notifBar.style.width = '0%';
+            notifBar.style.width = '0%';
+            notifBar.offsetWidth;
 
-                // paksa render dulu
-                notifBar.offsetWidth;
-
-                setTimeout(() => {
-                    notifBar.style.transition = 'width 3.5s linear';
-                    notifBar.style.width = '100%';
-                }, 50);
+            setTimeout(() => {
+                notifBar.style.transition = 'width 3.5s linear';
+                notifBar.style.width = '100%';
+            }, 50);
 
             notifTimer = setTimeout(() => hideNotif(), 3500);
         }
@@ -470,7 +490,105 @@
             showNotif('{{ session("error") }}', 'error');
         @endif
 
+        // ===== VALIDASI TANGGAL FILTER =====
+        const filterForm = document.getElementById('filterForm');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+
+        function clearDateError() {
+            endDate.classList.remove('ring-2', 'ring-red-400');
+            startDate.classList.remove('ring-2', 'ring-red-400');
+        }
+
+        function setDateError(element) {
+            element.classList.add('ring-2', 'ring-red-400');
+        }
+
+        filterForm?.addEventListener('submit', function(e) {
+            clearDateError();
+            
+            const start = startDate.value;
+            const end = endDate.value;
+
+            // Validasi jika kedua tanggal diisi
+            if (start && end) {
+                const startDateObj = new Date(start + 'T00:00:00');
+                const endDateObj = new Date(end + 'T00:00:00');
+
+                // End date tidak boleh kurang dari start date
+                if (endDateObj < startDateObj) {
+                    e.preventDefault();
+                    setDateError(endDate);
+                    showNotif('Tanggal akhir harus sama atau lebih besar dari tanggal awal', 'warning');
+                    return;
+                }
+
+                // Validasi tanggal tidak boleh lebih dari hari ini
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+                
+                if (startDateObj > today) {
+                    e.preventDefault();
+                    setDateError(startDate);
+                    showNotif('Tanggal awal tidak boleh lebih dari hari ini', 'warning');
+                    return;
+                }
+
+                if (endDateObj > today) {
+                    e.preventDefault();
+                    setDateError(endDate);
+                    showNotif('Tanggal akhir tidak boleh lebih dari hari ini', 'warning');
+                    return;
+                }
+            }
+            
+            // Validasi jika hanya start date yang diisi
+            if (start && !end) {
+                const startDateObj = new Date(start + 'T00:00:00');
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+                
+                if (startDateObj > today) {
+                    e.preventDefault();
+                    setDateError(startDate);
+                    showNotif('Tanggal awal tidak boleh lebih dari hari ini', 'warning');
+                    return;
+                }
+            }
+            
+            // Validasi jika hanya end date yang diisi
+            if (!start && end) {
+                const endDateObj = new Date(end + 'T00:00:00');
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+                
+                if (endDateObj > today) {
+                    e.preventDefault();
+                    setDateError(endDate);
+                    showNotif('Tanggal akhir tidak boleh lebih dari hari ini', 'warning');
+                    return;
+                }
+            }
+        });
+
+        // Clear error saat user mengubah tanggal
+        endDate?.addEventListener('change', function() {
+            clearDateError();
+        });
+
+        startDate?.addEventListener('change', function() {
+            clearDateError();
+        });
+
+        // Auto-set max end date saat start date berubah
+        startDate?.addEventListener('change', function() {
+            if (this.value) {
+                endDate.setAttribute('min', this.value);
+            } else {
+                endDate.removeAttribute('min');
+            }
+        });
     });
     </script>
 
-@endsection 
+@endsection

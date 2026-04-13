@@ -28,9 +28,9 @@ class ConsumableTransactionController extends Controller
         }
 
         $transactions = $query
-        ->orderByDesc('date')
-        ->orderByDesc('id') 
-        ->paginate(10);
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->paginate(10);
 
         return view('transaksi.index', compact('transactions'));
     }
@@ -119,14 +119,14 @@ class ConsumableTransactionController extends Controller
     }
 
     public function edit($id)
-{
-    $transaction = InvConsumableTransaction::with('items.consumable')
-        ->findOrFail($id);
+    {
+        $transaction = InvConsumableTransaction::with('items.consumable')
+            ->findOrFail($id);
 
-    $consumables = InvConsumable::all();
+        $consumables = InvConsumable::all();
 
-    return view('transaksi.edit', compact('transaction', 'consumables'));
-}
+        return view('transaksi.edit', compact('transaction', 'consumables'));
+    }
 
     public function update(Request $request, $id)
     {
@@ -263,42 +263,51 @@ class ConsumableTransactionController extends Controller
     public function returnProcess(Request $request, $id)
     {
         $request->validate([
-            'return_date' => 'required|date'
+            'return_date' => 'required|date',
+            'selected_items' => 'required|array',
+            'selected_items.*' => 'exists:inv_consumable_transaction_items,id',
         ]);
 
         DB::transaction(function () use ($request, $id) {
 
             $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
-            foreach ($request->items as $itemId => $data) {
+            foreach ($request->selected_items as $itemId) {
+
+                $data = $request->items[$itemId] ?? null;
+
+                if (!$data) continue;
+
+                $qtyReturn = (int) ($data['qty'] ?? 0);
+
+                if ($qtyReturn <= 0) continue;
 
                 $item = InvConsumableTransactionItem::findOrFail($itemId);
 
-                $qtyReturn = $data['qty_return'] ?? 0;
-
-                if ($qtyReturn > 0) {
-
-                    $sisa = $item->qty - $item->qty_return;
-
-                    if ($qtyReturn > $sisa) {
-                        throw new \Exception("Qty melebihi sisa");
-                    }
-
-                    $item->increment('qty_return', $qtyReturn);
-
-                    InvConsumable::where('id', $item->consumable_id)
-                        ->increment('stock', $qtyReturn);
+                if ($item->transaction_id != $trx->id) {
+                    throw new \Exception("Item tidak valid");
                 }
+
+                $sisa = $item->qty - $item->qty_return;
+
+                if ($qtyReturn > $sisa) {
+                    throw new \Exception("Qty return {$item->consumable->name} melebihi sisa pemakaian (sisa: {$sisa})");
+                }
+
+                $item->increment('qty_return', $qtyReturn);
+
+                InvConsumable::where('id', $item->consumable_id)
+                    ->increment('stock', $qtyReturn);
+
             }
 
             $allReturned = $trx->items->every(function ($i) {
-                return $i->qty == $i->qty_return;
+                return $i->fresh()->qty == $i->fresh()->qty_return;
             });
 
             if ($allReturned) {
                 $trx->update([
-                    'is_confirm' => true,
-                    'return_date' => $request->return_date
+                    'return_date' => $request->return_date,
                 ]);
             }
         });
@@ -375,67 +384,66 @@ class ConsumableTransactionController extends Controller
         }
     }
 
-public function kembali(Request $request, $id)
-{   
-    try {
+    public function kembali(Request $request, $id)
+    {
+        try {
 
-        $request->validate([
-            'return_date' => 'required|date' 
-        ]);
-
-        DB::transaction(function () use ($request, $id) {
-
-            $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
-
-            foreach ($request->items as $itemId => $data) {
-                if (!empty($data['qty']) && $data['qty'] > 0) {
-
-                    $item = InvConsumableTransactionItem::findOrFail($itemId);
-
-                    $sisa = $item->qty - $item->qty_return;
-
-                    if ($data['qty'] > $sisa) {
-                        throw new \Exception("Qty melebihi sisa");
-                    }
-
-                    $item->increment('qty_return', $data['qty']);
-
-                    $item->update([
-                        'note' => $data['note'] ?? '-'
-                    ]);
-
-                    InvConsumable::where('id', $item->consumable_id)
-                        ->increment('stock', $data['qty']);
-                }
-            }
-
-            $trx->load('items');
-
-            $trx->update([
-                'return_date' => $request->return_date
+            $request->validate([
+                'return_date' => 'required|date'
             ]);
 
-            $allReturned = $trx->items->every(function ($i) {
-                return $i->qty == $i->qty_return;
+            DB::transaction(function () use ($request, $id) {
+
+                $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
+
+                foreach ($request->items as $itemId => $data) {
+                    if (!empty($data['qty']) && $data['qty'] > 0) {
+
+                        $item = InvConsumableTransactionItem::findOrFail($itemId);
+
+                        $sisa = $item->qty - $item->qty_return;
+
+                        if ($data['qty'] > $sisa) {
+                            throw new \Exception("Qty melebihi sisa");
+                        }
+
+                        $item->increment('qty_return', $data['qty']);
+
+                        $item->update([
+                            'note' => $data['note'] ?? '-'
+                        ]);
+
+                        InvConsumable::where('id', $item->consumable_id)
+                            ->increment('stock', $data['qty']);
+                    }
+                }
+
+                $trx->load('items');
+
+                $trx->update([
+                    'return_date' => $request->return_date
+                ]);
+
+                $allReturned = $trx->items->every(function ($i) {
+                    return $i->qty == $i->qty_return;
+                });
+
+                if ($allReturned) {
+                    $trx->update([
+                        'is_return' => true
+                    ]);
+                }
             });
 
-            if ($allReturned) {
-                $trx->update([
-                    'is_return' => true
-                ]);
-            }
-        });
+            // ✅ RETURN HARUS DI SINI (LUAR TRANSACTION)
+            return redirect()
+                ->route('transaksi.index')
+                ->with('success', 'Consumable berhasil dikembalikan');
+        } catch (\Exception $e) {
 
-        // ✅ RETURN HARUS DI SINI (LUAR TRANSACTION)
-        return redirect()
-            ->route('transaksi.index')
-            ->with('success', 'Consumable berhasil dikembalikan');
-
-    } catch (\Exception $e) {
-
-        return back()->with('error', $e->getMessage());
+            return back()->with('error', $e->getMessage());
+        }
     }
-}
 
     public function storeItem(Request $request, $id)
     {
