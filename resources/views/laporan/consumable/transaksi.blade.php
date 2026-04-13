@@ -113,23 +113,23 @@
             </div>
         </div>
 
-        {{-- ================= TABLE ================= --}}
+        {{-- ================= TABLE (DIRAPIHKAN & PERBAGUS) ================= --}}
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             <div class="max-h-[420px] overflow-auto">
-                <table class="w-full text-sm text-gray-700 table-fixed">
-                    <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
+                <table class="min-w-full text-sm text-left text-gray-700">
+                    <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-50 shadow-sm"
                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <tr>
-                            <th class="py-4 px-4 font-semibold text-center w-12">No</th>
-                            <th class="py-4 px-4 font-semibold text-left w-28">Kode</th>
-                            <th class="py-4 px-4 font-semibold text-left w-28">Tanggal</th>
-                            <th class="py-4 px-4 font-semibold text-left">Karyawan</th>
-                            <th class="py-4 px-4 font-semibold text-left">Consumable</th>
-                            <th class="py-4 px-4 font-semibold text-center w-24">Jumlah</th>
+                            <th class="py-4 px-6 font-semibold text-center align-middle w-16">No</th>
+                            <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Kode</th>
+                            <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Tanggal</th>
+                            <th class="py-4 px-6 font-semibold text-left align-middle">Karyawan</th>
+                            <th class="py-4 px-6 font-semibold text-left align-middle">Consumable</th>
+                            <th class="py-4 px-6 font-semibold text-center align-middle w-24">Jumlah</th>
                             @if($type == 'pengeluaran')
-                                <th class="py-4 px-4 font-semibold text-center w-28">Detail</th>
+                                <th class="py-4 px-6 font-semibold text-center align-middle w-32">Detail</th>
                             @else
-                                <th class="py-4 px-4 font-semibold text-left">Keterangan</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Keterangan</th>
                             @endif
                         </tr>
                     </thead>
@@ -141,7 +141,7 @@
 
                         @if($invalidDate)
                             <tr>
-                                <td colspan="7" class="py-12 text-center text-red-500 font-semibold">
+                                <td colspan="7" class="py-12 text-center text-red-500 font-medium align-middle">
                                     ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
                                 </td>
                             </tr>
@@ -149,20 +149,22 @@
                         @elseif($data->count() > 0)
 
                             @foreach($data as $row)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="py-4 px-4 text-center font-medium text-gray-600 truncate">
+                                <tr class="hover:bg-blue-50/40 transition duration-200">
+                                    <td class="py-4 px-6 text-center align-middle font-medium text-gray-400">
                                         {{ $data->firstItem() + $loop->index }}
                                     </td>
 
-                                    <td class="py-4 px-4 font-bold text-[#5EA6FF] truncate">
-                                        @if($type == 'pengeluaran')
-                                            {{ $row->transaction_code }}
-                                        @else
-                                            {{ $row->transaction->transaction_code }}
-                                        @endif
+                                    <td class="py-4 px-6 align-middle whitespace-nowrap">
+                                        <span class="inline-block bg-blue-50 text-[#5EA6FF] px-2.5 py-1 rounded text-xs font-bold border border-blue-100">
+                                            @if($type == 'pengeluaran')
+                                                {{ $row->transaction_code }}
+                                            @else
+                                                {{ $row->transaction->transaction_code }}
+                                            @endif
+                                        </span>
                                     </td>
 
-                                    <td class="py-4 px-4 text-gray-700 truncate">
+                                    <td class="py-4 px-6 align-middle text-gray-600 whitespace-nowrap">
                                         @if($type == 'pengeluaran')
                                             {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
                                         @else
@@ -170,7 +172,7 @@
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-4 text-gray-700 truncate" title="@if($type == 'pengeluaran') {{ $row->borrower_name }} @else {{ $row->transaction->borrower_name }} @endif">
+                                    <td class="py-4 px-6 align-middle font-medium text-gray-800">
                                         @if($type == 'pengeluaran')
                                             {{ $row->borrower_name }}
                                         @else
@@ -178,37 +180,47 @@
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-4 text-gray-700">
+                                    <td class="py-4 px-6 align-middle text-gray-600">
                                         @if($type == 'pengeluaran')
-                                            @foreach($row->items as $item)
-                                                <div class="flex items-center gap-2 py-0.5 truncate">
-                                                    <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
-                                                    <span class="truncate" title="{{ $item->consumable->name }}">{{ $item->consumable->name }}</span>
-                                                </div>
-                                            @endforeach
+                                            <div class="flex flex-col gap-1.5">
+                                                @foreach($row->items as $item)
+                                                    <div class="flex items-start gap-2 text-xs leading-relaxed" title="{{ $item->consumable->name }}">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></span>
+                                                        <span class="truncate">{{ $item->consumable->name }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         @else
-                                            <div class="flex items-center gap-2 truncate">
-                                                <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
-                                                <span class="truncate" title="{{ $row->consumable->name }}">{{ $row->consumable->name }}</span>
+                                            <div class="flex items-center gap-2 text-xs" title="{{ $row->consumable->name }}">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></span>
+                                                <span class="truncate">{{ $row->consumable->name }}</span>
                                             </div>
                                         @endif
                                     </td>
 
-                                    <td class="py-4 px-4 text-center">
+                                    <td class="py-4 px-6 text-center align-middle">
                                         @if($type == 'pengeluaran')
-                                            @foreach($row->items as $item)
-                                                <div class="py-0.5"><span class="font-bold text-[#5EA6FF]">{{ $item->qty }}</span> <span class="text-gray-500 text-xs">{{ $item->consumable->unit }}</span></div>
-                                            @endforeach
+                                            <div class="flex flex-col gap-1.5 items-center">
+                                                @foreach($row->items as $item)
+                                                    <div class="bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                                                        <span class="font-bold text-[#5EA6FF] text-sm">{{ $item->qty }}</span>
+                                                        <span class="text-gray-500 text-xs ml-0.5">{{ $item->consumable->unit }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         @else
-                                            <span class="font-bold text-[#5EA6FF]">{{ $row->qty_return }}</span> <span class="text-gray-500 text-xs">{{ $row->consumable->unit }}</span>
+                                            <div class="bg-gray-50 px-2.5 py-1 rounded border border-gray-100 inline-flex items-center gap-1">
+                                                <span class="font-bold text-[#5EA6FF]">{{ $row->qty_return }}</span>
+                                                <span class="text-gray-500 text-xs">{{ $row->consumable->unit }}</span>
+                                            </div>
                                         @endif
                                     </td>
 
                                     @if($type == 'pengeluaran')
-                                        <td class="py-4 px-4 text-center">
+                                        <td class="py-4 px-6 text-center align-middle">
                                             <button @click="openDetail = {{ $row->id }}"
-                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
-                                                style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+                                                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                                                style="background: linear-gradient(180deg, #e5e7eb, #d1d5db); color:#1f2937; border: 1px solid #d1d5db;">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -217,7 +229,7 @@
                                             </button>
                                         </td>
                                     @else
-                                        <td class="py-4 px-4 text-gray-500 truncate">
+                                        <td class="py-4 px-6 align-middle text-gray-500 text-xs italic">
                                             {{ $row->note ?? '-' }}
                                         </td>
                                     @endif
@@ -227,7 +239,7 @@
                         @else
 
                             <tr>
-                                <td colspan="7" class="py-12 text-center text-gray-400">
+                                <td colspan="7" class="py-12 text-center text-gray-400 align-middle">
                                     Tidak ada data transaksi pada periode ini
                                 </td>
                             </tr>
