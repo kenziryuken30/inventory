@@ -133,6 +133,10 @@ class ToolTransactionController extends Controller
                     'serial_id'      => $serial->id,
                     'status'         => 'PENDING',
                 ]);
+
+                $serial->update([
+                    'status' => 'DIPINJAM'
+                ]);
             }
         });
 
@@ -245,10 +249,21 @@ class ToolTransactionController extends Controller
         DB::transaction(function () use ($transaction) {
 
             foreach ($transaction->items as $item) {
+
                 if ($item->serial) {
-                    $item->serial->update([
-                        'status' => 'TERSEDIA'
-                    ]);
+
+                    // cek apakah masih dipakai transaksi lain
+                    $isStillUsed = ToolTransactionItem::where('serial_id', $item->serial_id)
+                        ->where('status', 'DIPINJAM')
+                        ->where('transaction_id', '!=', $transaction->id)
+                        ->exists();
+
+                    // hanya ubah kalau tidak dipakai lagi
+                    if (!$isStillUsed) {
+                        $item->serial->update([
+                            'status' => 'TERSEDIA'
+                        ]);
+                    }
                 }
             }
 
