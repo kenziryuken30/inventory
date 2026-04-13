@@ -4,7 +4,7 @@
 
     <div class="max-w-7xl mx-auto" x-data="{ openDetail: null }">
 
-        {{-- ================= HEADER ================= --}}
+        {{-- ================= HEADER (TETAP SAMA) ================= --}}
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-3xl font-bold text-[#113561] tracking-tight">Laporan Tools</h2>
@@ -13,7 +13,7 @@
         </div>
 
 
-        {{-- ================= FILTER ================= --}}
+        {{-- ================= FILTER (TETAP SAMA) ================= --}}
         <form method="GET" action="{{ route('laporan.tools.transaksi') }}" id="filterForm"
             class="mb-6 p-4 rounded-2xl shadow-md flex flex-wrap gap-4 items-end"
             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
@@ -41,7 +41,7 @@
 
             <div class="flex gap-2 items-end">
 
-                {{-- TOMBOL FILTER (Putih/Abu - Sudah Benar) --}}
+                {{-- TOMBOL FILTER --}}
                 <button type="submit"
                     class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     style="background: linear-gradient(145deg, #ffffff, #e5e7eb); color:#374151;">
@@ -54,7 +54,7 @@
                     </span>
                 </button>
 
-                {{-- TOMBOL RESET (Ungu) --}}
+                {{-- TOMBOL RESET --}}
                 <a href="{{ route('laporan.tools.transaksi', ['type' => $type]) }}"
                     class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     style="background: linear-gradient(135deg, #C084FC, #A855F7); color: white;">
@@ -68,7 +68,7 @@
                     </span>
                 </a>
 
-                {{-- TOMBOL PDF (Merah) --}}
+                {{-- TOMBOL PDF --}}
                 <a href="{{ route('laporan.tools.export.pdf', ['type' => $type, 'start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
                     class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     style="background: linear-gradient(135deg, #FB7185, #E11D48); color: white;">
@@ -81,7 +81,7 @@
                     </span>
                 </a>
 
-                {{-- TOMBOL EXCEL (Hijau) --}}
+                {{-- TOMBOL EXCEL --}}
                 <a href="{{ route('laporan.tools.export.excel', ['type' => $type, 'start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
                     class="group flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
                     style="background: linear-gradient(135deg, #34D399, #059669); color: white;">
@@ -98,7 +98,7 @@
         </form>
 
 
-        {{-- ================= TOGGLE ================= --}}
+        {{-- ================= TOGGLE (TETAP SAMA) ================= --}}
         <div class="flex items-center gap-4 mb-6">
 
             <div class="flex bg-gray-200 p-1 rounded-xl shadow-inner">
@@ -121,23 +121,23 @@
 
 
         {{-- ========================= --}}
-        {{-- TABEL PEMINJAMAN --}}
+        {{-- TABEL PEMINJAMAN (DIRAPIHKAN) --}}
         {{-- ========================= --}}
 
         @if($type == 'peminjaman')
 
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
                 <div class="max-h-[420px] overflow-y-auto">
-                    <table class="min-w-full table-fixed text-sm text-gray-700">
-                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-50"
+                    <table class="min-w-full text-sm text-left text-gray-700">
+                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-50 shadow-sm"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <tr>
-                                <th class="py-4 px-6 font-semibold text-center">No</th>
-                                <th class="py-4 px-6 font-semibold text-left">Kode</th>
-                                <th class="py-4 px-6 font-semibold text-left">Tanggal</th>
-                                <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
-                                <th class="py-4 px-6 font-semibold text-left">Alat</th>
-                                <th class="py-4 px-6 font-semibold text-center w-[120px]">Detail</th>
+                                <th class="py-4 px-6 font-semibold text-center align-middle">No</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Kode</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Tanggal</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Karyawan</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Alat</th>
+                                <th class="py-4 px-6 font-semibold text-center align-middle w-[120px]">Detail</th>
                             </tr>
                         </thead>
 
@@ -151,7 +151,7 @@
                             @if($invalidDate)
 
                                 <tr>
-                                    <td colspan="6" class="py-12 text-center text-red-500 font-semibold">
+                                    <td colspan="6" class="py-12 text-center text-red-500 font-semibold align-middle">
                                         ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
                                     </td>
                                 </tr>
@@ -160,30 +160,34 @@
                             @elseif($data->count() > 0)
 
                                 @foreach($data as $row)
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="py-4 px-6 text-center font-medium text-gray-600">
+                                    <tr class="hover:bg-blue-50/50 transition duration-200">
+                                        <td class="py-4 px-6 text-center align-middle font-medium text-gray-500">
                                             {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
                                         </td>
 
-                                        <td class="py-4 px-6 font-bold text-[#5EA6FF]">
-                                            {{ $row->transaction_code }}
+                                        <td class="py-4 px-6 align-middle whitespace-nowrap">
+                                            <span class="inline-block bg-blue-50 text-[#5EA6FF] px-2.5 py-1 rounded-md text-xs font-bold border border-blue-100">
+                                                {{ $row->transaction_code }}
+                                            </span>
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700">
+                                        <td class="py-4 px-6 align-middle text-gray-600 whitespace-nowrap">
                                             {{ \Carbon\Carbon::parse($row->date)->format('d M Y') }}
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700">
+                                        <td class="py-4 px-6 align-middle font-medium text-gray-800">
                                             {{ $row->borrower_name }}
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700 text-xs">
-                                            @foreach($row->items as $item)
-                                                <div class="mb-1 flex items-center gap-2">
-                                                    <span class="text-lg leading-none">•</span>
-                                                    <span>{{ $item->toolkit->toolkit_name ?? '-' }}</span>
-                                                </div>
-                                            @endforeach
+                                        <td class="py-4 px-6 align-middle">
+                                            <div class="flex flex-col gap-1.5">
+                                                @foreach($row->items as $item)
+                                                    <div class="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></span>
+                                                        <span>{{ $item->toolkit->toolkit_name ?? '-' }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </td>
 
                                         <td class="py-4 px-6 text-center align-middle w-[120px]">
@@ -209,7 +213,7 @@
                             @else
 
                                 <tr>
-                                    <td colspan="6" class="py-12 text-center text-gray-400">
+                                    <td colspan="6" class="py-12 text-center text-gray-400 align-middle">
                                         Tidak ada data transaksi pada periode ini
                                     </td>
                                 </tr>
@@ -220,7 +224,7 @@
                 </div>
             </div>
 
-            {{-- MODAL DETAIL PEMINJAMAN --}}
+            {{-- MODAL DETAIL PEMINJAMAN (TETAP SAMA) --}}
             @foreach($data as $row)
                 <div x-show="openDetail === {{ $row->id }}" x-transition x-cloak
                     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -278,17 +282,17 @@
                                     <thead class="text-white text-xs uppercase tracking-wider"
                                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                         <tr>
-                                            <th class="py-3 px-4 font-semibold text-left">No Seri</th>
-                                            <th class="py-3 px-4 font-semibold text-left">Nama Alat</th>
+                                            <th class="py-3 px-4 font-semibold text-left align-middle">No Seri</th>
+                                            <th class="py-3 px-4 font-semibold text-left align-middle">Nama Alat</th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-100">
                                         @foreach($row->items as $item)
                                             <tr class="hover:bg-gray-50 transition">
-                                                <td class="px-4 py-3 text-gray-600 font-mono text-xs">
+                                                <td class="px-4 py-3 text-gray-600 font-mono text-xs align-middle">
                                                     {{ $item->serial->serial_number ?? '-' }}
                                                 </td>
-                                                <td class="px-4 py-3 text-gray-800">{{ $item->toolkit->toolkit_name ?? '-' }}</td>
+                                                <td class="px-4 py-3 text-gray-800 align-middle">{{ $item->toolkit->toolkit_name ?? '-' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -300,10 +304,10 @@
                             <button @click="openDetail = null"
                                 class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
                                 style="
-                                                                                            background: #ffffff;
-                                                                                            color: #3b82f6;
-                                                                                            border: 2px solid #60a5fa;
-                                                                                            box-shadow: 0 4px 10px rgba(96,165,250,0.2);">
+                                            background: #ffffff;
+                                            color: #3b82f6;
+                                            border: 2px solid #60a5fa;
+                                            box-shadow: 0 4px 10px rgba(96,165,250,0.2);">
                                 Tutup
                             </button>
                         </div>
@@ -313,25 +317,25 @@
             @endforeach
 
             {{-- ========================= --}}
-            {{-- TABEL PENGEMBALIAN --}}
+            {{-- TABEL PENGEMBALIAN (DIRAPIHKAN) --}}
             {{-- ========================= --}}
 
         @else
 
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
                 <div class="max-h-[420px] overflow-y-auto">
-                    <table class="min-w-full text-sm text-gray-700">
-                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z50"
+                    <table class="min-w-full text-sm text-left text-gray-700">
+                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-50 shadow-sm"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <tr>
-                                <th class="py-4 px-6 font-semibold text-center">No</th>
-                                <th class="py-4 px-6 font-semibold text-left">Kode</th>
-                                <th class="py-4 px-6 font-semibold text-left">Tgl Kembali</th>
-                                <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
-                                <th class="py-4 px-6 font-semibold text-left">Alat</th>
-                                <th class="py-4 px-6 font-semibold text-left">No Seri</th>
-                                <th class="py-4 px-6 font-semibold text-left">Kondisi</th>
-                                <th class="py-4 px-6 font-semibold text-left">Keterangan</th>
+                                <th class="py-4 px-6 font-semibold text-center align-middle">No</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Kode</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Tgl Kembali</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Karyawan</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Alat</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">No Seri</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Kondisi</th>
+                                <th class="py-4 px-6 font-semibold text-left align-middle">Keterangan</th>
                             </tr>
                         </thead>
 
@@ -345,7 +349,7 @@
                             @if($invalidDate)
 
                                 <tr>
-                                    <td colspan="8" class="py-12 text-center text-red-500 font-semibold">
+                                    <td colspan="8" class="py-12 text-center text-red-500 font-semibold align-middle">
                                         ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
                                     </td>
                                 </tr>
@@ -354,61 +358,65 @@
                             @elseif($data->count() > 0)
 
                                 @foreach($data as $row)
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="py-4 px-6 text-center font-medium text-gray-600">
+                                    <tr class="hover:bg-blue-50/50 transition duration-200">
+                                        <td class="py-4 px-6 text-center align-middle font-medium text-gray-500">
                                             {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
                                         </td>
 
-                                        <td class="py-4 px-6 font-bold text-[#5EA6FF]">
-                                            {{ $row->transaction->transaction_code }}
+                                        <td class="py-4 px-6 align-middle whitespace-nowrap">
+                                            <span class="inline-block bg-blue-50 text-[#5EA6FF] px-2.5 py-1 rounded-md text-xs font-bold border border-blue-100">
+                                                {{ $row->transaction->transaction_code }}
+                                            </span>
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700">
+                                        <td class="py-4 px-6 align-middle text-gray-600 whitespace-nowrap">
                                             {{ \Carbon\Carbon::parse($row->return_date)->format('d M Y') }}
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700">
+                                        <td class="py-4 px-6 align-middle font-medium text-gray-800">
                                             {{ $row->transaction->borrower_name }}
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700 text-xs">
-                                            <span class="text-lg">•</span> {{ $row->toolkit->toolkit_name ?? '-' }}
+                                        <td class="py-4 px-6 align-middle text-gray-700 text-sm">
+                                            {{ $row->toolkit->toolkit_name ?? '-' }}
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-500 font-mono text-xs">
-                                            {{ $row->serial->serial_number ?? '-' }}
+                                        <td class="py-4 px-6 align-middle whitespace-nowrap">
+                                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200 text-xs font-mono">
+                                                {{ $row->serial->serial_number ?? '-' }}
+                                            </span>
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-700">
+                                        <td class="py-4 px-6 align-middle">
                                             @php
                                                 $kondisi = strtoupper($row->return_condition);
                                             @endphp
 
-                                            <span class="px-2 py-1 rounded-lg text-xs font-semibold
+                                            <span class="px-2 py-1 rounded-lg text-xs font-semibold border
                                                 @if($kondisi == 'BAIK')
-                                                    bg-green-100 text-green-700
+                                                    bg-green-100 text-green-700 border-green-200
                                                 @elseif($kondisi == 'MAINTENANCE')
-                                                    bg-yellow-100 text-yellow-700
+                                                    bg-yellow-100 text-yellow-700 border-yellow-200
                                                 @elseif($kondisi == 'RUSAK')
-                                                    bg-red-100 text-red-700
+                                                    bg-red-100 text-red-700 border-red-200
                                                 @else
-                                                    bg-gray-100 text-gray-700
+                                                    bg-gray-100 text-gray-700 border-gray-200
                                                 @endif
                                             ">
                                                 {{ $row->return_condition ?? '-' }}
                                             </span>
                                         </td>
 
-                                        <td class="py-4 px-6 text-gray-500">
+                                        <td class="py-4 px-6 align-middle text-gray-500 text-xs italic">
                                             {{ $row->return_note ?? '-' }}
                                         </td>
                                     </tr>
                                 @endforeach
-                                {{-- ⚪ Kalau data kosong --}}
+                                {{-- ⚪ Kalau kosong --}}
                             @else
 
                                 <tr>
-                                    <td colspan="8" class="py-12 text-center text-gray-400">
+                                    <td colspan="8" class="py-12 text-center text-gray-400 align-middle">
                                         Tidak ada data transaksi pada periode ini
                                     </td>
                                 </tr>
@@ -429,22 +437,6 @@
             input[type="date"]::-webkit-calendar-picker-indicator {
                 cursor: pointer;
                 opacity: .6;
-            }
-
-            td {
-                position: relative;
-                z-index: 1;
-            }
-
-            thead {
-                position: sticky;
-                top: 0;
-                z-index: 50;
-            }
-
-            tbody tr {
-                position: relative;
-                z-index: 0;
             }
         </style>
         <div class="mt-6 flex justify-center">
