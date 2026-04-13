@@ -351,9 +351,16 @@
                         </button>
                         {{-- TOMBOL SUBMIT DIUBAH JADI GRADASI BIRU --}}
                         <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">
-                            Tambah
-                        </button>
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+
+    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M12 4v16m8-8H4"></path>
+    </svg>
+
+    Tambah
+</button>
                     </div>
                 </form>
             </div>
@@ -400,10 +407,17 @@
                             Batal
                         </button>
                         {{-- TOMBOL UPDATE DIUBAH JADI GRADASI BIRU --}}
-                        <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">
-                            Update
-                        </button>
+                       <button type="submit"
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+
+    <svg class="w-4 h-4 mr-2 transition-all duration-200"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
+    </svg>
+
+    Update
+</button>
                     </div>
                 </form>
             </div>

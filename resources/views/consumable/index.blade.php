@@ -243,7 +243,17 @@
                     <div class="flex justify-end gap-3 px-5 sm:px-8 py-4 border-t border-gray-200 flex-shrink-0">
                         <button type="button" id="cancelTambahConsumable" class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">Batal</button>
                         {{-- TOMBOL SIMPAN DIPERCANTIK DENGAN SHADOW & HOVER EFFECT --}}
-                        <button type="submit" id="tambahSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">Simpan</button>
+                     <button type="submit" id="tambahSubmitBtn"
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+
+    <svg class="w-4 h-4 mr-2 transition-all duration-200"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M5 13l4 4L19 7"/>
+    </svg>
+
+    Simpan
+</button>
                     </div>
                 </form>
             </div>
@@ -339,7 +349,17 @@
                     <div class="flex justify-end gap-3 px-5 sm:px-8 py-4 border-t border-gray-200 flex-shrink-0">
                         <button type="button" id="cancelEditConsumable" class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">Batal</button>
                         {{-- TOMBOL UPDATE DIPERCANTIK DENGAN SHADOW & HOVER EFFECT --}}
-                        <button type="submit" id="editSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">Update</button>
+                        <button type="submit" id="editSubmitBtn"
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+
+    <svg class="w-4 h-4 mr-2"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+            d="M4 20h4l10-10-4-4L4 16v4z"/>
+    </svg>
+
+    Update
+</button>
                     </div>
                 </form>
             </div>
@@ -373,7 +393,17 @@
                     </div>
                     <div class="flex justify-end gap-3 px-5 sm:px-8 py-4 border-t border-gray-200">
                         <button type="button" id="cancelRestockConsumable" class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">Batal</button>
-                        <button type="submit" id="restockSubmitBtn" class="px-5 py-2.5 bg-gradient-to-b from-[#7FC4FF] to-[#5EA6FF] text-white rounded-xl text-sm font-semibold shadow-lg shadow-blue-500/30 hover:opacity-90 hover:-translate-y-0.5 transition">Tambah</button>
+                       <button type="submit" id="restockSubmitBtn"
+    class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
+
+    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M12 5v14M5 12h14"/>
+    </svg>
+
+    Tambah
+</button>
                     </div>
                 </form>
             </div>
