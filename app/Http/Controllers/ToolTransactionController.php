@@ -87,8 +87,10 @@ class ToolTransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|exists:inv_employee,id',
-            'serial_ids'    => 'required|array|min:1'
+            'employee_id'   => 'required|exists:inv_employee,id',
+            'date'          => 'required|date|after_or_equal:today',
+            'serial_ids'    => 'required|array|min:1',
+            'serial_ids.*'  => 'required|exists:inv_serial_number,id|distinct',
         ]);
 
         DB::transaction(function () use ($request) {
