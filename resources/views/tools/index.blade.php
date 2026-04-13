@@ -57,23 +57,7 @@
                         @endif
                     </div>
 
-                    {{-- TAB --}}
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('tools.index', ['tab' => 'rusak']) }}" class="h-[42px] px-4 flex items-center gap-2 rounded-xl text-sm font-semibold transition
-                                                    {{ request('tab') == 'rusak'
-        ? 'bg-red-500 text-white shadow-md shadow-red-200'
-        : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
-
-                            ❗ Barang Rusak
-
-                            <span class="ml-1 px-2 py-0.5 text-xs rounded-full
-                                                        {{ request('tab') == 'rusak'
-        ? 'bg-white/20 text-white'
-        : 'bg-red-100 text-red-600' }}">
-                                {{ $rusakCount ?? 0 }}
-                            </span>
-                        </a>
-                    </div>
+                    
 
                     {{-- FILTER --}}
                     <div class="relative">
@@ -81,7 +65,7 @@
                             class="w-[180px] h-[42px] bg-white rounded-xl pl-3.5 pr-9 text-sm font-medium text-gray-700 shadow-sm appearance-none cursor-pointer focus:ring-2 focus:ring-[#5EA6FF]/20">
                             <option value="">Semua Kondisi</option>
                             <option value="baik" {{ request('condition') === 'baik' ? 'selected' : '' }}>Baik</option>
-                            <option value="rusak" {{ request('tab') == 'rusak' || request('condition') === 'rusak' ? 'selected' : '' }}>Rusak</option>
+                            <option value="rusak" {{ request('condition') === 'rusak' ? 'selected' : '' }}>Rusak</option>
                             <option value="maintenance" {{ request('condition') === 'maintenance' ? 'selected' : '' }}>
                                 Maintenance</option>
                         </select>
@@ -236,7 +220,7 @@
                                             </button>
                                         @endif
 
-                                        @if(request('tab') == 'rusak')
+                                        @if(($tool->latestCondition->condition ?? '') === 'rusak')
 
                                             <button type="button"
                                                 class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-gray-100 text-gray-300 cursor-not-allowed flex items-center justify-center"

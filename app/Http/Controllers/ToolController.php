@@ -21,29 +21,30 @@ class ToolController extends Controller
             'latestCondition'
         ]);
 
-        // 🔥 1. FILTER TAB (INI YANG BARU)
-        if ($request->tab == 'rusak') {
+        if ($request->condition) {
 
-            // 👉 Kalau tab = rusak → ambil hanya rusak
-            $query->whereHas('latestCondition', function ($q) {
-                $q->where('condition', 'rusak');
-            });
-        } else {
+            if ($request->condition == 'baik') {
 
-            // 👉 Default → sembunyikan rusak
-            $query->where(function ($q) {
-                $q->whereHas('latestCondition', function ($sub) {
-                    $sub->whereIn('condition', ['baik', 'maintenance']);
-                })
-                    ->orWhereDoesntHave('latestCondition'); // 🔥 INI PENTING
-            });
+                $query->where(function ($q) {
+                    $q->whereHas('latestCondition', function ($sub) {
+                        $sub->where('condition', 'baik');
+                    })
+                        ->orWhereDoesntHave('latestCondition'); // penting
+                });
+            } else {
 
-            // 🔥 2. DROPDOWN CONDITION (hanya jalan kalau bukan tab rusak)
-            if ($request->condition) {
                 $query->whereHas('latestCondition', function ($q) use ($request) {
                     $q->where('condition', $request->condition);
                 });
             }
+        } else {
+
+            $query->where(function ($q) {
+                $q->whereHas('latestCondition', function ($sub) {
+                    $sub->whereIn('condition', ['baik', 'maintenance']);
+                })
+                    ->orWhereDoesntHave('latestCondition');
+            });
         }
 
         // 🔍 SEARCH (tetap jalan)
