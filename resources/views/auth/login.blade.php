@@ -24,7 +24,6 @@
         .left {
             width: 55%;
             position: relative;
-            /* DIUBAH: Gradasi Biru sesuai contoh (#7FC4FF atas, #5EA6FF bawah) */
             background: linear-gradient(180deg, #7FC4FF 0%, #5EA6FF 100%);
             display: flex;
             align-items: center;
@@ -34,7 +33,6 @@
 
         .logo {
             width: 320px;
-            /* diperbesar */
             position: relative;
             z-index: 2;
         }
@@ -44,7 +42,6 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            /* penuh */
             object-fit: cover;
         }
 
@@ -97,7 +94,6 @@
 
         .login-card input:focus {
             outline: none;
-            /* DIUBAH: Border fokus menjadi Biru (#5EA6FF) */
             border-color: #5EA6FF;
             background: #ffffff;
         }
@@ -107,13 +103,11 @@
             padding: 14px;
             border: none;
             border-radius: 10px;
-            /* DIUBAH: Gradasi Biru sesuai tema */
             background: linear-gradient(90deg, #7FC4FF, #5EA6FF);
             color: white;
             font-weight: 600;
             font-size: 15px;
             cursor: pointer;
-            /* DIUBAH: Shadow warna biru */
             box-shadow: 0 8px 20px rgba(94, 166, 255, 0.25);
             transition: 0.2s;
         }
@@ -180,8 +174,8 @@
             <form method="POST" action="/login">
                 @csrf
 
-                <label>Email</label>
-                <input type="email" name="email" placeholder="Enter your email" required>
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required>
 
                 <label>Password</label>
                 <input type="password" name="password" placeholder="Enter your password" required>
@@ -193,4 +187,4 @@
 
 </body>
 
-</html>
+</html>     
