@@ -58,7 +58,8 @@
                                     <button type="button" x-show="selected" x-cloak
                                         @click="search = ''; selected = ''; selectedId = ''"
                                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
@@ -121,8 +122,10 @@
                         {{-- TOMBOL PILIH CONSUMABLE (STYLE PUTIH) --}}
                         <button type="button" @click.stop="openModal = true"
                             class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
-                            <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                            <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
+                                </path>
                             </svg>
                             Pilih Consumable
                         </button>
@@ -183,14 +186,17 @@
                     <div id="modalNotifWrap" class="hidden mb-4">
                         <div id="modalNotifBox"
                             class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
-                            <div id="modalNotifIcon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
+                            <div id="modalNotifIcon"
+                                class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"></div>
                             <p id="modalNotifText" class="text-sm font-medium"></p>
-                            <button id="modalNotifClose" class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
+                            <button id="modalNotifClose"
+                                class="ml-auto flex-shrink-0 opacity-50 hover:opacity-100 transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
-                            <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%"></div>
+                            <div id="modalNotifBar" class="absolute bottom-0 left-0 h-1 rounded-b-2xl" style="width:0%">
+                            </div>
                         </div>
                     </div>
 
@@ -227,17 +233,21 @@
                                         <td class="text-center py-3 px-4">
                                             <input type="checkbox"
                                                 class="pick-consumable w-4 h-4 accent-[#5EA6FF] rounded border-gray-300"
-                                                data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}" data-unit="{{ $c->unit }}">
+                                                data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}"
+                                                data-unit="{{ $c->unit }}">
                                         </td>
                                         <td class="py-3 px-4">
                                             <div class="flex items-center gap-3">
-                                                <img src="{{ asset('storage/' . $c->image) }}"
+                                                <img src="{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}"
+                                                    class="preview-click w-10 h-10 object-cover rounded-lg cursor-pointer"
+                                                    onerror="this.src='{{ asset('images/no-image.png') }}'"
                                                     class="w-10 h-10 object-cover rounded-lg border shadow-sm">
                                                 <span class="font-medium text-gray-800">{{ $c->name }}</span>
                                             </div>
                                         </td>
                                         <td class="text-center py-3 px-4">
-                                            <span class="font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
+                                            <span
+                                                class="font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
                                                 {{ $c->stock }}
                                             </span>
                                             <div class="text-xs text-gray-400">{{ $c->unit }}</div>
@@ -265,8 +275,10 @@
                     {{-- TOMBOL TAMBAHKAN (STYLE PUTIH) --}}
                     <button type="button" id="btnAddConsumable"
                         class="group px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 flex items-center gap-2">
-                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
+                            </path>
                         </svg>
                         Tambahkan
                     </button>
@@ -303,6 +315,19 @@
             </div>
         </div>
 
+        <!-- MODAL PREVIEW IMAGE -->
+        <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[9999]">
+
+            <div class="relative">
+                <img id="previewImg" class="max-w-[90vw] max-h-[90vh] rounded-xl">
+
+                <button id="closePreviewBtn"
+                    class="absolute -top-3 -right-3 bg-white rounded-full px-3 py-1 shadow z-[10000]">
+                    ✕
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <style>
@@ -326,8 +351,15 @@
         }
 
         @keyframes notifSlideIn {
-            from { opacity: 0; transform: translateX(-40px); }
-            to   { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         #notifWrap.hiding,
@@ -336,8 +368,15 @@
         }
 
         @keyframes notifSlideOut {
-            from { opacity: 1; transform: translateX(0); }
-            to   { opacity: 0; transform: translateX(60px); }
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(60px);
+            }
         }
 
         #notifBar,
@@ -351,9 +390,19 @@
         }
 
         @keyframes shakeRow {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .btn-delete-icon {
@@ -746,36 +795,36 @@
                         updatedCount++;
                     } else {
                         startNo++;
-                        
+
                         const html = `
-                            <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
-                                <td class="py-3 px-4 text-center font-medium text-gray-600 w-12">
-                                    <span class="no-col">${startNo}</span>
-                                </td>
-                                <td class="py-3 px-4 text-center w-20">
-                                    <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto">
-                                </td>
-                                <td class="py-3 px-4">
-                                    <span class="font-semibold text-gray-800 item-name">${name}</span>
-                                </td>
-                                <td class="text-center py-3 px-4 w-24">
-                                    <div class="font-medium text-blue-600 stock-display">${stock}</div>
-                                    <div class="text-xs text-gray-400 unit-display">${unit}</div>
-                                </td>
-                                <td class="text-center py-3 px-4 w-32">
-                                    <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
-                                        class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">
-                                </td>
-                                <td class="text-center py-3 px-4 w-16">
-                                    <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                        </svg>
-                                    </button>
-                                    <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                                    <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
-                                </td>
-                            </tr>`;
+                                                    <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
+                                                        <td class="py-3 px-4 text-center font-medium text-gray-600 w-12">
+                                                            <span class="no-col">${startNo}</span>
+                                                        </td>
+                                                        <td class="py-3 px-4 text-center w-20">
+                                                            <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto">
+                                                        </td>
+                                                        <td class="py-3 px-4">
+                                                            <span class="font-semibold text-gray-800 item-name">${name}</span>
+                                                        </td>
+                                                        <td class="text-center py-3 px-4 w-24">
+                                                            <div class="font-medium text-blue-600 stock-display">${stock}</div>
+                                                            <div class="text-xs text-gray-400 unit-display">${unit}</div>
+                                                        </td>
+                                                        <td class="text-center py-3 px-4 w-32">
+                                                            <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
+                                                                class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">
+                                                        </td>
+                                                        <td class="text-center py-3 px-4 w-16">
+                                                            <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
+                                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                                </svg>
+                                                            </button>
+                                                            <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                                                            <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
+                                                        </td>
+                                                    </tr>`;
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
                         addedCount++;
@@ -803,6 +852,29 @@
             // ===== ESC KEY =====
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') closeDeleteItemModal();
+            });
+
+            document.querySelectorAll('.preview-click').forEach(img => {
+                img.addEventListener('click', function () {
+                    const modal = document.getElementById('imagePreviewModal');
+                    const preview = document.getElementById('previewImg');
+
+                    preview.src = this.src;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                });
+            });
+
+            function closeImagePreview() {
+                const modal = document.getElementById('imagePreviewModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+
+            document.getElementById('closePreviewBtn').addEventListener('click', function () {
+                const modal = document.getElementById('imagePreviewModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
             });
 
         });

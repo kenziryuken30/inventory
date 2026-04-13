@@ -235,46 +235,55 @@
 
                         <table class="w-full text-sm" id="popupTable">
 
-                            <thead class="sticky top-0 text-white text-xs uppercase tracking-wider"
+                            <thead class="sticky top-0 text-white text-xs uppercase tracking-wider shadow"
                                 style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                 <tr>
                                     <th class="py-3 px-4 w-10"></th>
-                                    <th class="py-3 px-4 text-left font-semibold">Nama Consumable</th>
-                                    <th class="py-3 px-4 text-center font-semibold">Stok</th>
-                                    <th class="py-3 px-4 text-center font-semibold">Jumlah</th>
+                                    <th class="py-3 px-4 text-left font-semibold">Consumable</th>
+                                    <th class="py-3 px-4 text-center font-semibold">Stock</th>
+                                    <th class="py-3 px-4 text-center font-semibold">Qty</th>
                                 </tr>
                             </thead>
 
                             <tbody class="bg-white divide-y divide-gray-100">
                                 @foreach ($consumables as $c)
-                                    <tr class="hover:bg-gray-50 transition cursor-pointer cons-row" data-name="{{ strtolower($c->name) }}">
+                                    <tr class="hover:bg-blue-50 transition-all duration-200 cons-row border-b border-gray-100"
+                                        data-name="{{ strtolower($c->name) }}">
 
-                                        <td class="py-3 px-4 text-center">
+                                        <!-- CHECKBOX -->
+                                        <td class="py-4 px-4 text-center">
                                             <input type="checkbox"
                                                 class="pick-consumable w-5 h-5 rounded border-gray-300 text-[#5EA6FF] focus:ring-[#5EA6FF]"
-                                                data-id="{{ $c->id }}" data-name="{{ $c->name }}" data-stock="{{ $c->stock }}">
+                                                data-id="{{ $c->id }}"
+                                                data-name="{{ $c->name }}"
+                                                data-stock="{{ $c->stock }}">
                                         </td>
 
-                                        <td class="py-3 px-4 font-medium text-gray-800">
+                                        <!-- NAMA + FOTO -->
+                                        <td class="py-4 px-4">
                                             <div class="flex items-center gap-3">
-                                                <img src="{{ asset('storage/' . $c->image) }}"
-                                                    class="w-10 h-10 object-cover rounded shadow-sm border">
-                                                <span>{{ $c->name }}</span>
+                                                <img src="{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}"
+                                                    class="preview-click w-12 h-12 object-cover rounded-xl border shadow-sm cursor-pointer"
+                                                    onerror="this.src='{{ asset('images/no-image.png') }}'">
+                                                <div>
+                                                    <p class="font-semibold text-gray-800">{{ $c->name }}</p>
+                                                    <p class="text-xs text-gray-400">Consumable Item</p>
+                                                </div>
                                             </div>
                                         </td>
 
-                                        <td class="py-3 px-4 text-center font-semibold {{ $c->stock <= $c->minimum_stock ? 'text-red-500' : 'text-blue-600' }}">
-                                            {{ $c->stock }}
-                                            @if($c->stock <= $c->minimum_stock)
-                                                <div class="text-xs text-red-400 normal-case font-normal">
-                                                    Min: {{ $c->minimum_stock }}
-                                                </div>
-                                            @endif
+                                        <!-- STOCK -->
+                                        <td class="py-4 px-4 text-center">
+                                            <span class="px-3 py-1 text-sm font-semibold rounded-lg 
+                                                {{ $c->stock <= $c->minimum_stock ? 'bg-red-100 text-red-500' : 'bg-blue-100 text-blue-600' }}">
+                                                {{ $c->stock }}
+                                            </span>
                                         </td>
 
-                                        <td class="py-3 px-4 text-center">
+                                        <!-- JUMLAH -->
+                                        <td class="py-4 px-4 text-center">
                                             <input type="number" min="1" max="{{ $c->stock }}" value="1"
-                                                class="w-16 border rounded-lg text-center qty-input shadow-sm focus:ring-2 focus:ring-[#5EA6FF]">
+                                                class="w-16 h-9 border rounded-lg text-center shadow-sm focus:ring-2 focus:ring-[#5EA6FF]">
                                         </td>
 
                                     </tr>
@@ -333,6 +342,21 @@
                         Ya, Hapus
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- MODAL PREVIEW IMAGE -->
+        <div id="imagePreviewModal"
+            class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[9999]">
+
+            <div class="relative">
+                <img id="previewImg"
+                    class="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl">
+
+                <button id="closePreviewBtn"
+                    class="absolute -top-3 -right-3 bg-white rounded-full px-3 py-1 shadow z-[10000]">
+                    ✕
+                </button>
             </div>
         </div>
 
@@ -711,7 +735,8 @@
                                 <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition align-middle border-b border-gray-100">
                                     <td class="text-center py-4 px-4 text-gray-600 no font-medium"></td>
                                     <td class="text-center py-2 px-4">
-                                        <img src="${image}" class="w-12 h-12 object-cover rounded-lg mx-auto shadow-sm border">
+                                        <img src="${image}" 
+                                            class="preview-click w-12 h-12 object-cover rounded-lg mx-auto shadow-sm border cursor-pointer">
                                     </td>
                                     <td class="text-center py-4 px-4 font-medium text-gray-800 item-name">${name}</td>
                                     <td class="text-center py-4 px-4 font-semibold text-blue-600 stock-display">${stock}</td>
@@ -810,6 +835,32 @@
                     if (e.key === 'Escape') {
                         closeModal();
                         closeDeleteItemModal();
+                    }
+                });
+
+                // ===== PREVIEW IMAGE CLICK =====
+               document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('preview-click')) {
+                    const modal = document.getElementById('imagePreviewModal');
+                    const preview = document.getElementById('previewImg');
+
+                    preview.src = e.target.src;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                }
+            });
+                // ===== CLOSE BUTTON =====
+                document.getElementById('closePreviewBtn').addEventListener('click', function () {
+                    const modal = document.getElementById('imagePreviewModal');
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                });
+
+                // ===== CLICK OUTSIDE =====
+                document.getElementById('imagePreviewModal').addEventListener('click', function(e){
+                    if(e.target === this){
+                        this.classList.add('hidden');
+                        this.classList.remove('flex');
                     }
                 });
 
