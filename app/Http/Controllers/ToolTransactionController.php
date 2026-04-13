@@ -72,13 +72,14 @@ class ToolTransactionController extends Controller
     }
 
 
+
     public function create()
     {
         $serials = InvSerialNumber::with('toolkit')
             ->where('status', 'TERSEDIA')
             ->get();
 
-        $employees = InvEmployee::all();
+        $employees = InvEmployee::select('id', 'full_name')->get();
 
         return view('peminjaman.create', compact('serials', 'employees'));
     }

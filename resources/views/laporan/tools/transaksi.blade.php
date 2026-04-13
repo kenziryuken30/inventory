@@ -128,8 +128,8 @@
 
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
                 <div class="max-h-[420px] overflow-y-auto">
-                    <table class="min-w-full text-sm text-gray-700">
-                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
+                    <table class="min-w-full table-fixed text-sm text-gray-700">
+                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-50"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <tr>
                                 <th class="py-4 px-6 font-semibold text-center">No</th>
@@ -137,7 +137,7 @@
                                 <th class="py-4 px-6 font-semibold text-left">Tanggal</th>
                                 <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
                                 <th class="py-4 px-6 font-semibold text-left">Alat</th>
-                                <th class="py-4 px-6 font-semibold text-center">Detail</th>
+                                <th class="py-4 px-6 font-semibold text-center w-[120px]">Detail</th>
                             </tr>
                         </thead>
 
@@ -179,14 +179,14 @@
 
                                         <td class="py-4 px-6 text-gray-700 text-xs">
                                             @foreach($row->items as $item)
-                                                <div class="mb-1 flex items-start gap-2">
+                                                <div class="mb-1 flex items-center gap-2">
                                                     <span class="text-lg leading-none">•</span>
                                                     <span>{{ $item->toolkit->toolkit_name ?? '-' }}</span>
                                                 </div>
                                             @endforeach
                                         </td>
 
-                                        <td class="py-4 px-6 text-center">
+                                        <td class="py-4 px-6 text-center align-middle w-[120px]">
                                             <button @click="openDetail = {{ $row->id }}"
                                                 class="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
                                                 style="background: linear-gradient(180deg, #e5e7eb, #9ca3af); color:#1f2937; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
@@ -300,10 +300,10 @@
                             <button @click="openDetail = null"
                                 class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
                                 style="
-                                            background: #ffffff;
-                                            color: #3b82f6;
-                                            border: 2px solid #60a5fa;
-                                            box-shadow: 0 4px 10px rgba(96,165,250,0.2);">
+                                                                                            background: #ffffff;
+                                                                                            color: #3b82f6;
+                                                                                            border: 2px solid #60a5fa;
+                                                                                            box-shadow: 0 4px 10px rgba(96,165,250,0.2);">
                                 Tutup
                             </button>
                         </div>
@@ -321,7 +321,7 @@
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
                 <div class="max-h-[420px] overflow-y-auto">
                     <table class="min-w-full text-sm text-gray-700">
-                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
+                        <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z50"
                             style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                             <tr>
                                 <th class="py-4 px-6 font-semibold text-center">No</th>
@@ -416,6 +416,22 @@
             input[type="date"]::-webkit-calendar-picker-indicator {
                 cursor: pointer;
                 opacity: .6;
+            }
+
+            td {
+                position: relative;
+                z-index: 1;
+            }
+
+            thead {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+
+            tbody tr {
+                position: relative;
+                z-index: 0;
             }
         </style>
         <div class="mt-6 flex justify-center">
