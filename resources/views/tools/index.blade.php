@@ -6,7 +6,6 @@
 
         {{-- ================= HEADER ================= --}}
         <div class="mb-4 sm:mb-5">
-            {{-- WARNA JUDUL DIUBAH JADI BIRU TEMA --}}
             <h1 class="text-2xl sm:text-[26px] font-extrabold text-[#113561] tracking-tight leading-tight">
                 Data Tools
             </h1>
@@ -89,7 +88,7 @@
             </div>
         </div>
 
-        {{-- ================= TABEL ================= --}}
+        {{-- ================= TABEL (STYLE NAMA CENTER & AKSI CLEAN) ================= --}}
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden min-h-[400px]">
             <div class="overflow-x-auto">
 
@@ -98,25 +97,26 @@
                     <thead>
                         <tr class="bg-gradient-to-r from-[#7FC4FF] to-[#5EA6FF]">
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap w-[70px] sm:w-[80px]">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap w-[70px] sm:w-[80px] align-middle">
                                 Foto</th>
+                            {{-- NAMA HEADER DIUBAH JADI TEXT-CENTER --}}
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-left text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap pl-4 sm:pl-6">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap align-middle">
                                 Nama</th>
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell align-middle">
                                 Kategori</th>
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell align-middle">
                                 No Seri</th>
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap align-middle">
                                 Status</th>
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap hidden md:table-cell align-middle">
                                 Kondisi</th>
                             <th
-                                class="py-3 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap w-[90px] sm:w-[110px]">
+                                class="py-3.5 sm:py-4 px-3 sm:px-4 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap w-[90px] sm:w-[110px] align-middle">
                                 Aksi</th>
                         </tr>
                     </thead>
@@ -127,27 +127,27 @@
 
                             @php $condition = $tool->latestCondition->condition ?? 'baik'; @endphp
 
-                            <tr class="hover:bg-cyan-50 transition h-[60px] sm:h-[70px]">
+                            <tr class="hover:bg-cyan-50 transition h-[60px] sm:h-[70px] group">
 
                                 {{-- FOTO --}}
-                                <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle">
+                                <td class="py-3 sm:py-3.5 px-2 sm:px-3 text-center align-middle">
                                     @php
                                         $image = optional($tool->toolkit)->image;
                                     @endphp
 
                                     <img src="{{ $image ? asset('storage/' . $image) : asset('images/no-image.png') }}"
-                                        class="tools-img previewImage w-10 h-10 object-contain bg-white rounded-lg shadow p-1"
+                                        class="tools-img previewImage w-10 h-10 object-contain bg-white rounded-lg shadow-sm border border-gray-100"
                                         onerror="this.src='{{ asset('images/error-image.png') }}'">
                                 </td>
 
-                                {{-- NAMA --}}
+                                {{-- NAMA (CENTER & HAPUS PADDING KIRI) --}}
                                 <td
-                                    class="py-2.5 sm:py-3 px-3 sm:px-6 font-semibold text-gray-800 text-xs sm:text-sm whitespace-nowrap align-middle">
+                                    class="py-3 sm:py-3.5 px-3 font-semibold text-gray-800 text-xs sm:text-sm whitespace-nowrap align-middle text-center">
                                     {{ optional($tool->toolkit)->toolkit_name }}
                                 </td>
 
                                 {{-- KATEGORI --}}
-                                <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle hidden md:table-cell">
+                                <td class="py-3 sm:py-3.5 px-2 sm:px-3 text-center align-middle hidden md:table-cell">
                                     <span
                                         class="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-medium rounded-full bg-gray-100 text-gray-600">
                                         {{ optional(optional($tool->toolkit)->category)->category_name ?? '-' }}
@@ -156,40 +156,40 @@
 
                                 {{-- NO SERI --}}
                                 <td
-                                    class="py-2.5 sm:py-3 px-2 sm:px-3 text-center font-medium text-gray-700 text-xs sm:text-sm whitespace-nowrap align-middle hidden md:table-cell">
+                                    class="py-3 sm:py-3.5 px-2 sm:px-3 text-center font-medium text-gray-700 text-xs sm:text-sm whitespace-nowrap align-middle hidden md:table-cell">
                                     {{ $tool->serial_number }}
                                 </td>
 
                                 {{-- STATUS --}}
-                                <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle">
+                                <td class="py-3 sm:py-3.5 px-2 sm:px-3 text-center align-middle">
                                     @php
                                         $condition = $tool->latestCondition->condition ?? 'baik';
                                     @endphp
 
                                     @if ($tool->isPending)
-                                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs">
+                                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium">
                                             Pending
                                         </span>
 
                                     @elseif ($tool->isDipinjam)
-                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">
+                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
                                             Dipinjam
                                         </span>
 
                                     @elseif ($condition == 'rusak')
-                                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">
+                                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
                                             Tidak tersedia
                                         </span>
 
                                     @else
-                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
+                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
                                             Tersedia
                                         </span>
                                     @endif
                                 </td>
 
                                 {{-- KONDISI --}}
-                                <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle hidden md:table-cell">
+                                <td class="py-3 sm:py-3.5 px-2 sm:px-3 text-center align-middle hidden md:table-cell">
                                     @if($condition == 'baik')
                                         <span
                                             class="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full border border-green-400 text-green-700 bg-green-50 whitespace-nowrap">Baik</span>
@@ -202,17 +202,17 @@
                                     @endif
                                 </td>
 
-                                {{-- AKSI --}}
-                                <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center align-middle">
-                                    <div class="flex justify-center items-center gap-1.5 sm:gap-2.5">
+                                {{-- AKSI (HILANGKAN KOTAK, CUMA ICON BERSIH) --}}
+                                <td class="py-3 sm:py-3.5 px-2 sm:px-3 text-center align-middle">
+                                    <div class="flex justify-center items-center gap-2 sm:gap-3">
 
                                         @if(($tool->latestCondition->condition ?? '') === 'maintenance')
                                             <button type="button"
                                                 onclick="openMaintenanceModal('{{ route('tools.finishMaintenance', $tool->id) }}')"
                                                 title="Selesai Maintenance"
-                                                class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-green-50 text-green-600 hover:bg-green-100 hover:scale-110 transition flex items-center justify-center">
+                                                class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg text-green-500 hover:bg-green-50 hover:scale-110 transition flex items-center justify-center">
 
-                                                <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
+                                                <svg class="w-4.5 h-4.5 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -223,10 +223,10 @@
                                         @if(($tool->latestCondition->condition ?? '') === 'rusak')
 
                                             <button type="button"
-                                                class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-gray-100 text-gray-300 cursor-not-allowed flex items-center justify-center"
+                                                class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg text-gray-300 cursor-not-allowed flex items-center justify-center"
                                                 title="Tidak bisa edit barang rusak">
 
-                                                <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
+                                                <svg class="w-4.5 h-4.5 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor" stroke-width="1.8">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
@@ -237,13 +237,13 @@
                                         @else
 
                                             <button type="button"
-                                                class="editBtn w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-gray-50 text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:scale-110 transition flex items-center justify-center"
+                                                class="editBtn w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50/50 hover:scale-110 transition flex items-center justify-center"
                                                 data-id="{{ $tool->id }}" data-name="{{ $tool->toolkit->toolkit_name }}"
                                                 data-category="{{ $tool->toolkit->category_id }}"
                                                 data-serial="{{ $tool->serial_number }}" data-image="{{ $tool->toolkit->image }}"
                                                 title="Edit Barang">
 
-                                                <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
+                                                <svg class="w-4.5 h-4.5 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor" stroke-width="1.8">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
@@ -255,9 +255,9 @@
 
                                         @if (strtolower($tool->status) == 'dipinjam' || ($tool->latestCondition->condition ?? '') === 'rusak')
                                             <button type="button"
-                                                class="btn-disabled-delete w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-gray-50 text-gray-300 opacity-40 cursor-not-allowed flex items-center justify-center"
+                                                class="btn-disabled-delete w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg text-gray-300 opacity-40 cursor-not-allowed flex items-center justify-center"
                                                 title="Tidak bisa dihapus">
-                                                <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
+                                                <svg class="w-4.5 h-4.5 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor" stroke-width="1.8">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-7 0h8l-1 13a2 2 0 01-2 2H11a2 2 0 01-2-2L8 7z" />
@@ -268,8 +268,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" title="Hapus Barang"
-                                                    class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600 hover:scale-110 transition flex items-center justify-center">
-                                                    <svg class="w-4 h-4 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
+                                                    class="w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50/50 hover:scale-110 transition flex items-center justify-center">
+                                                    <svg class="w-4.5 h-4.5 sm:w-[18px] sm:h-[18px]" fill="none" viewBox="0 0 24 24"
                                                         stroke="currentColor" stroke-width="1.8">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 
@@ -318,7 +318,6 @@
 
                     <div
                         class="flex justify-between items-center px-5 sm:px-8 pt-5 sm:pt-6 pb-3 border-b border-gray-200 flex-shrink-0">
-                        {{-- JUDUL MODAL DIUBAH JADI BIRU --}}
                         <h2 class="text-base sm:text-lg font-bold text-[#5EA6FF]">Tambah Barang</h2>
                         <button type="button" id="closeTambahBarang"
                             class="text-gray-500 hover:text-gray-700 text-xl transition hover:scale-110">✕</button>
@@ -353,7 +352,6 @@
                             class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">
                             Batal
                         </button>
-                        {{-- TOMBOL SUBMIT DIUBAH JADI GRADASI BIRU --}}
                         <button type="submit"
     class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
 
@@ -410,7 +408,6 @@
                             class="px-5 py-2.5 bg-[#dcdcdc] text-gray-700 rounded-xl text-sm font-semibold hover:bg-[#c5c5c5] transition">
                             Batal
                         </button>
-                        {{-- TOMBOL UPDATE DIUBAH JADI GRADASI BIRU --}}
                        <button type="submit"
     class="group inline-flex items-center justify-center px-5 h-10 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 whitespace-nowrap">
 
