@@ -9,6 +9,7 @@ use App\Models\InvConsumable;
 use App\Models\InvConsumableTransaction;
 use App\Models\InvConsumableTransactionItem;
 use App\Models\InvEmployee;
+use Illuminate\Support\Facades\Http;
 
 class ConsumableTransactionController extends Controller
 {
@@ -120,12 +121,12 @@ class ConsumableTransactionController extends Controller
 
     public function edit($id)
     {
-        $transaction = InvConsumableTransaction::with('items.consumable')
-            ->findOrFail($id);
-
+        $transaction = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
         $consumables = InvConsumable::all();
+        $employees = InvEmployee::all();
+        $initialClientId = $transaction->client_id ?? '';
 
-        return view('transaksi.edit', compact('transaction', 'consumables'));
+        return view('transaksi.edit', compact('transaction', 'consumables', 'employees',  'initialClientId'));
     }
 
     public function update(Request $request, $id)
@@ -298,7 +299,6 @@ class ConsumableTransactionController extends Controller
 
                 InvConsumable::where('id', $item->consumable_id)
                     ->increment('stock', $qtyReturn);
-
             }
 
             $allReturned = $trx->items->every(function ($i) {
@@ -470,5 +470,40 @@ class ConsumableTransactionController extends Controller
         });
 
         return back()->with('success', 'Consumable berhasil ditambahkan ke transaksi');
+    }
+
+    // ===== PROXY API CLIENT (BIAR GA KENA CORS) =====
+    public function proxyClientList()
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Api Key',
+                'Accept' => 'application/json',
+            ])->get('http://api-checkin.artimu.co.id/ar_client/list', [
+                'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm'
+            ]);
+
+            return response()->json($response->json());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    // ===== PROXY API PROJECT (BIAR GA KENA CORS) =====
+    public function proxyClientProjects(Request $request)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Api Key',
+                'Accept' => 'application/json',
+            ])->get('http://api-checkin.artimu.co.id/ar_client/projects', [
+                'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm',
+                'client_id' => $request->client_id
+            ]);
+
+            return response()->json($response->json());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

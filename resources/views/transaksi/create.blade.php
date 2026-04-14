@@ -96,71 +96,149 @@
 
                         {{-- ROW 2 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Client</label>
-                                <input type="text" name="client" placeholder="Masukkan nama client"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">
+
+                            {{-- NAMA CLIENT (Dengan Search API) --}}
+                            <div x-data="clientSearch()" @click.away="show = false" class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Nama Client
+                                </label>
+                                <div class="relative">
+                                    <input type="text" x-model="search" @focus="if(!selected) show = true; fetchClients()"
+                                        @input="if(!selected) show = true; fetchClients()"
+                                        placeholder="Ketik nama client..." :class="loading ? 'animate-pulse' : ''"
+                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none pr-9">
+                                    <button type="button" x-show="selected" x-cloak @click="clearSelection()"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                    {{-- Loading Indicator --}}
+                                    <div x-show="loading" x-cloak class="absolute right-9 top-1/2 -translate-y-1/2">
+                                        <svg class="animate-spin h-4 w-4 text-[#5EA6FF]" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                {{-- Hidden Inputs --}}
+                                <input type="hidden" name="client_id" :value="selectedId">
+                                <input type="hidden" name="client" :value="selected">
+
+                                {{-- Dropdown Results --}}
+                                <div x-show="show && !selected && search.length > 0" x-transition x-cloak
+                                    class="absolute z-50 mt-1 w-full bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                                    <div class="max-h-56 overflow-y-auto">
+                                        <template x-for="item in filtered" :key="getClientId(item)">
+                                            <button type="button" @click="selectClient(item)"
+                                                class="w-full px-4 py-2.5 text-left text-sm hover:bg-blue-50 transition border-b border-gray-50 last:border-0">
+                                                <span x-text="getClientName(item)"></span>
+                                                <span class="text-gray-400 text-xs ml-2" x-text="getClientId(item)"></span>
+                                            </button>
+                                        </template>
+                                        <template x-if="!loading && filtered.length === 0">
+                                            <div class="px-4 py-6 text-center text-gray-400 text-sm">
+                                                Tidak ditemukan
+                                            </div>
+                                        </template>
+                                        <template x-if="loading">
+                                            <div class="px-4 py-6 text-center text-gray-400 text-sm">
+                                                Mencari data...
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
-                                <input type="text" name="project" placeholder="Masukkan nama proyek"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">
+
+                            {{-- PROYEK (Combobox, tergantung client yang dipilih) --}}
+                            <div x-data="projectDropdown()" class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Proyek
+                                </label>
+                                <select name="project" :disabled="!hasClientId"
+                                    :class="!hasClientId ? 'bg-gray-100 cursor-not-allowed' : 'bg-white cursor-pointer'"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none appearance-none"
+                                    @change="selectedProject = $event.target.value">
+
+                                    {{-- Teks default DINAMIS (Bakal berubah sesuai kondisi) --}}
+                                    <option value=""
+                                        x-text="!hasClientId ? '-- Pilih Client dulu --' : (projects.length === 0 ? 'Tidak ada proyek tersedia' : '-- Pilih Proyek --')">
+                                    </option>
+
+                                    <template x-for="proj in projects" :key="getProjectName(proj)">
+                                        <option :value="getProjectName(proj)" x-text="getProjectName(proj)"></option>
+                                    </template>
+                                </select>
+                                {{-- icon dropdown --}}
+                                <div class="pointer-events-none absolute right-3 top-[38px]">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+
+                                <input type="hidden" name="project_id" x-model="selectedProjectId">
                             </div>
+                            {{-- KEPERLUAN --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
                                 <input type="text" name="purpose" placeholder="Masukkan keperluan"
                                     class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {{-- SECTION DAFTAR BARANG --}}
-                <div class="mt-10">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-gray-800">Daftar Consumable</h3>
-                        {{-- TOMBOL PILIH CONSUMABLE (STYLE PUTIH) --}}
-                        <button type="button" @click.stop="openModal = true"
-                            class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
-                            <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
-                                </path>
-                            </svg>
-                            Pilih Consumable
-                        </button>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                        <table class="w-full text-sm" id="tableConsumables">
-                            <thead>
-                                <tr class="text-white text-xs uppercase tracking-wider"
-                                    style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                                    <th class="py-3 px-4 font-semibold text-center w-12">No</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-20">Foto</th>
-                                    <th class="py-3 px-4 font-semibold text-left">Nama Consumable</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-24">Stock</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-32">Jumlah</th>
-                                    <th class="py-3 px-4 font-semibold text-center w-16">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-50">
-                                <tr id="emptyRow">
-                                    <td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">
-                                        Belum ada consumable yang dipilih
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                        {{-- SECTION DAFTAR BARANG --}}
+                        <div class="mt-10">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-800">Daftar Consumable</h3>
+                                <button type="button" @click.stop="openModal = true"
+                                    class="group inline-flex items-center px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Pilih Consumable
+                                </button>
+                            </div>
+                            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                                <table class="w-full text-sm" id="tableConsumables">
+                                    <thead>
+                                        <tr class="text-white text-xs uppercase tracking-wider"
+                                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
+                                            <th class="py-3 px-4 font-semibold text-center w-12">No</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-20">Foto</th>
+                                            <th class="py-3 px-4 font-semibold text-left">Nama Consumable</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-24">Stock</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-32">Jumlah</th>
+                                            <th class="py-3 px-4 font-semibold text-center w-16">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-50">
+                                        <tr id="emptyRow">
+                                            <td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">
+                                                Belum ada consumable yang dipilih
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                {{-- SAVE BUTTON --}}
-                <div class="pt-8 border-t border-gray-200 flex justify-end">
-                    {{-- TOMBOL SAVE (STYLE PUTIH) --}}
-                    <button type="button" id="btnSave"
-                        class="px-10 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
-                        Save Transaksi
-                    </button>
+                        {{-- SAVE BUTTON --}}
+                        <div class="pt-8 border-t border-gray-200 flex justify-end">
+                            <button type="button" id="btnSave"
+                                class="px-10 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
+                                Save Transaksi
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
@@ -182,7 +260,6 @@
 
                 <div class="p-6 flex-1 overflow-auto">
 
-                    {{-- NOTIF ERROR DI DALAM MODAL --}}
                     <div id="modalNotifWrap" class="hidden mb-4">
                         <div id="modalNotifBox"
                             class="relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border">
@@ -240,8 +317,7 @@
                                             <div class="flex items-center gap-3">
                                                 <img src="{{ $c->image ? asset('storage/' . $c->image) : asset('images/no-image.png') }}"
                                                     class="preview-click w-10 h-10 object-cover rounded-lg cursor-pointer"
-                                                    onerror="this.src='{{ asset('images/no-image.png') }}'"
-                                                    class="w-10 h-10 object-cover rounded-lg border shadow-sm">
+                                                    onerror="this.src='{{ asset('images/no-image.png') }}'">
                                                 <span class="font-medium text-gray-800">{{ $c->name }}</span>
                                             </div>
                                         </td>
@@ -266,13 +342,11 @@
                     </div>
                 </div>
 
-                {{-- MODAL FOOTER --}}
                 <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
                     <button type="button" @click="openModal=false"
                         class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-100 transition font-medium text-sm shadow-sm">
                         Batal
                     </button>
-                    {{-- TOMBOL TAMBAHKAN (STYLE PUTIH) --}}
                     <button type="button" id="btnAddConsumable"
                         class="group px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5 flex items-center gap-2">
                         <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" fill="none"
@@ -317,10 +391,8 @@
 
         <!-- MODAL PREVIEW IMAGE -->
         <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[9999]">
-
             <div class="relative">
                 <img id="previewImg" class="max-w-[90vw] max-h-[90vh] rounded-xl">
-
                 <button id="closePreviewBtn"
                     class="absolute -top-3 -right-3 bg-white rounded-full px-3 py-1 shadow z-[10000]">
                     ✕
@@ -430,6 +502,224 @@
     </style>
 
     <script>
+        // ===== ALPINE COMPONENT: CLIENT SEARCH =====
+        // ===== ALPINE COMPONENT: CLIENT SEARCH =====
+        function clientSearch() {
+            return {
+                search: '',
+                selected: '',
+                selectedId: '',
+                show: false,
+                loading: false,
+                clients: [],
+                debounceTimer: null,
+
+                fetchClients() {
+                    clearTimeout(this.debounceTimer);
+
+                    this.debounceTimer = setTimeout(async () => {
+                        this.loading = true;
+
+                        try {
+                            // URL sekarang ke Laravel, bukan langsung ke API eksternal
+                            const url = '{{ url("/api/proxy/client-list") }}';
+
+                            const response = await fetch(url, {
+                                method: 'GET'
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Server Error: ' + response.status);
+                            }
+
+                            const data = await response.json();
+
+                            // Debug: lihat response-nya
+                            console.log('📦 RAW RESPONSE:', data);
+                            console.log('📦 Type:', typeof data);
+                            console.log('📦 Is Array?:', Array.isArray(data));
+                            if (!Array.isArray(data)) {
+                                console.log('📦 Keys:', Object.keys(data));
+                            }
+
+                            // Parse berbagai kemungkinan format
+                            let parsedClients = [];
+
+                            if (data.data && Array.isArray(data.data)) {
+                                parsedClients = data.data;
+                            } else if (data.result && Array.isArray(data.result)) {
+                                parsedClients = data.result;
+                            } else if (Array.isArray(data)) {
+                                parsedClients = data;
+                            } else if (typeof data === 'object') {
+                                const values = Object.values(data);
+                                if (values.length > 0 && typeof values[0] === 'object') {
+                                    parsedClients = values;
+                                }
+                            }
+
+                            this.clients = parsedClients;
+                            console.log('✅ Total parsed:', this.clients.length);
+                            if (this.clients.length > 0) {
+                                console.log('📋 Sample:', this.clients[0]);
+                                console.log('📋 Keys:', Object.keys(this.clients[0]));
+                            }
+
+                        } catch (error) {
+                            console.error('❌ Gagal fetch:', error);
+                            this.clients = [];
+                        } finally {
+                            this.loading = false;
+                        }
+                    }, 300);
+                },
+
+                get filtered() {
+                    if (!this.search || this.clients.length === 0) return [];
+                    const q = this.search.toLowerCase();
+                    return this.clients.filter(client => {
+                        const allText = [
+                            (client.name || ''),
+                            (client.client_name || ''),
+                            (client.nama_client || ''),
+                            (client.nama || ''),
+                            (client.title || ''),
+                            (client.label || ''),
+                            (client.text || '')
+                        ].join(' ').toLowerCase();
+                        return allText.includes(q);
+                    });
+                },
+
+                getClientName(item) {
+                    return item.name || item.client_name || item.nama_client ||
+                        item.nama || item.title || item.label || item.text || JSON.stringify(item);
+                },
+
+                getClientId(item) {
+                    // Coba field yang umum
+                    if (item.id) return item.id;
+                    if (item.client_id) return item.client_id;
+                    if (item.code) return item.code;
+                    if (item.client_code) return item.code;
+                    if (item.value) return item.value;
+
+                    // Kalau ga ada yang cocok, cari field yang isinya format "CLT-xxx"
+                    const values = Object.entries(item);
+                    const idField = values.find(([key, val]) =>
+                        typeof val === 'string' && val.toUpperCase().startsWith('CLT')
+                    );
+
+                    if (idField) {
+                        console.log('🔑 ID ditemukan di field:', idField[0], '=', idField[1]);
+                        return idField[1];
+                    }
+
+                    // Last fallback: log semua keys biar lo tau
+                    console.log('⚠️ GA KETEMU ID! Keys yang ada:', Object.keys(item));
+                    return '';
+                },
+
+                selectClient(item) {
+                    const name = this.getClientName(item);
+                    const id = this.getClientId(item);
+
+                    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                    console.log('✅ CLIENT DIPILIH');
+                    console.log('📛 Nama:', name);
+                    console.log('🆔 ID:', id);
+                    console.log('📄 Full data:', item);
+                    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+                    this.selected = name;
+                    this.selectedId = id;
+                    this.search = name;
+                    this.show = false;
+
+                    if (!id) {
+                        console.error('❌ ID KOSONG! Proyek ga akan ke-load.');
+                        return; // Jangan kirim event kalau ID kosong
+                    }
+
+                    window.dispatchEvent(new CustomEvent('client-selected', {
+                        detail: { clientId: id, clientName: name }
+                    }));
+                },
+
+                clearSelection() {
+                    this.search = '';
+                    this.selected = '';
+                    this.selectedId = '';
+                    this.clients = [];
+                    window.dispatchEvent(new CustomEvent('client-selected', {
+                        detail: { clientId: '', clientName: '' }
+                    }));
+                }
+            };
+        }
+
+        // ===== ALPINE COMPONENT: PROJECT DROPDOWN =====
+        function projectDropdown() {
+            return {
+                projects: [],
+                hasClientId: false,
+                selectedProject: '',
+                selectedProjectId: '',
+
+                // Fungsi auto-detect nama proyek
+                getProjectName(proj) {
+                    return proj.name || proj.project_name || proj.nama_proyek ||
+                        proj.nama || proj.title || proj.label ||
+                        Object.values(proj).find(v => typeof v === 'string' && v.length > 1 && v.length < 100) || '';
+                },
+
+                init() {
+                    window.addEventListener('client-selected', async (event) => {
+                        const clientId = event.detail.clientId;
+                        this.projects = [];
+                        this.selectedProject = '';
+                        this.selectedProjectId = '';
+
+                        if (!clientId) {
+                            this.hasClientId = false;
+                            return;
+                        }
+
+                        this.hasClientId = true;
+
+                        try {
+                            const url = `{{ url("/api/proxy/client-projects") }}?client_id=${clientId}`;
+                            const response = await fetch(url, { method: 'GET' });
+
+                            if (!response.ok) throw new Error('Server Error: ' + response.status);
+
+                            const data = await response.json();
+
+                            if (data.data && Array.isArray(data.data)) {
+                                this.projects = data.data;
+                            } else if (Array.isArray(data)) {
+                                this.projects = data;
+                            } else {
+                                this.projects = data || [];
+                            }
+
+                            console.log('📦 Data Proyek:', this.projects);
+
+                            // DEBUG: Liat field proyeknya apa aja
+                            if (this.projects.length > 0) {
+                                console.log('🔑 KEYS PROYEK:', Object.keys(this.projects[0]));
+                                console.log('📄 SAMPLE PROYEK:', this.projects[0]);
+                            }
+
+                        } catch (error) {
+                            console.error('❌ Gagal fetch proyek:', error);
+                            this.projects = [];
+                        }
+                    });
+                }
+            };
+        }
+
         function empSearch() {
             return {
                 search: '',
@@ -444,6 +734,7 @@
                 }
             };
         }
+
         document.addEventListener('DOMContentLoaded', function () {
 
             const btnSave = document.getElementById('btnSave');
@@ -452,7 +743,6 @@
             const searchInput = document.getElementById('searchConsumable');
             const selectAllCheckbox = document.getElementById('selectAllCons');
 
-            // ===== ELEMEN NOTIF HALAMAN UTAMA =====
             const notifWrap = document.getElementById('notifWrap');
             const notifBox = document.getElementById('notifBox');
             const notifIcon = document.getElementById('notifIcon');
@@ -461,7 +751,6 @@
             const notifClose = document.getElementById('notifClose');
             let notifTimer = null;
 
-            // ===== ELEMEN NOTIF MODAL =====
             const modalNotifWrap = document.getElementById('modalNotifWrap');
             const modalNotifBox = document.getElementById('modalNotifBox');
             const modalNotifIcon = document.getElementById('modalNotifIcon');
@@ -470,11 +759,9 @@
             const modalNotifClose = document.getElementById('modalNotifClose');
             let modalNotifTimer = null;
 
-            // ===== FUNGSI NOTIF HALAMAN UTAMA =====
             function showNotif(message, type) {
                 if (notifTimer) clearTimeout(notifTimer);
                 notifWrap.classList.remove('hidden', 'hiding');
-
                 if (type === 'success') {
                     notifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-green-50 border-green-200 text-green-800';
                     notifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-100';
@@ -491,18 +778,15 @@
                     notifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
                     notifBar.style.background = '#f87171';
                 }
-
                 notifText.textContent = message;
                 notifBar.style.transition = 'none';
                 notifBar.style.width = '0%';
-
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         notifBar.style.transition = 'width 3.5s linear';
                         notifBar.style.width = '100%';
                     });
                 });
-
                 notifTimer = setTimeout(() => hideNotif(), 3500);
             }
 
@@ -519,11 +803,9 @@
                 hideNotif();
             });
 
-            // ===== FUNGSI NOTIF MODAL =====
             function showModalNotif(message, type) {
                 if (modalNotifTimer) clearTimeout(modalNotifTimer);
                 modalNotifWrap.classList.remove('hidden', 'hiding');
-
                 if (type === 'success') {
                     modalNotifBox.className = 'relative overflow-hidden flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-lg border bg-blue-50 border-blue-200 text-blue-800';
                     modalNotifIcon.className = 'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-blue-100';
@@ -540,18 +822,15 @@
                     modalNotifIcon.innerHTML = '<svg class="w-4.5 h-4.5 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
                     modalNotifBar.style.background = '#f87171';
                 }
-
                 modalNotifText.textContent = message;
                 modalNotifBar.style.transition = 'none';
                 modalNotifBar.style.width = '0%';
-
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         modalNotifBar.style.transition = 'width 3.5s linear';
                         modalNotifBar.style.width = '100%';
                     });
                 });
-
                 modalNotifTimer = setTimeout(() => hideModalNotif(), 3500);
             }
 
@@ -568,7 +847,6 @@
                 hideModalNotif();
             });
 
-            // ===== SESSION NOTIF =====
             @if(session('success'))
                 showNotif('{{ session("success") }}', 'success');
             @endif
@@ -576,19 +854,13 @@
                 showNotif('{{ session("error") }}', 'error');
             @endif
 
-            // ===== VALIDASI SAVE =====
             btnSave.addEventListener('click', function () {
-
-                // 1. Cegah double click langsung di sini
                 if (btnSave.disabled) return;
-
-                // Ubah state tombol jadi loading/disable
                 btnSave.disabled = true;
                 const originalText = btnSave.innerText;
                 btnSave.innerText = "Proses...";
                 btnSave.classList.add('opacity-75', 'cursor-not-allowed');
 
-                // Fungsi buat balikin tombol kalau validasi gagal
                 const resetButton = () => {
                     btnSave.disabled = false;
                     btnSave.innerText = originalText;
@@ -598,19 +870,17 @@
                 const employeeId = form.querySelector('input[name="employee_id"]');
                 const items = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
 
-                document.querySelectorAll('.row-error').forEach(row => {
-                    row.classList.remove('row-error');
-                });
+                document.querySelectorAll('.row-error').forEach(row => row.classList.remove('row-error'));
 
                 if (!employeeId.value) {
                     showNotif("Pilih karyawan terlebih dahulu", "error");
-                    resetButton(); // Balikin tombol karena error
+                    resetButton();
                     return;
                 }
 
                 if (items.length === 0) {
                     showNotif("Pilih minimal 1 consumable terlebih dahulu", "error");
-                    resetButton(); // Balikin tombol karena error
+                    resetButton();
                     return;
                 }
 
@@ -622,11 +892,7 @@
                     let qty = parseInt(qtyInput.value);
                     const itemName = row.querySelector('.item-name').textContent.trim();
 
-                    if (isNaN(qty) || qty <= 0) {
-                        qty = 1;
-                        qtyInput.value = 1;
-                    }
-
+                    if (isNaN(qty) || qty <= 0) { qty = 1; qtyInput.value = 1; }
                     if (hiddenQty) hiddenQty.value = qty;
 
                     if (qty > stock) {
@@ -638,10 +904,8 @@
                 if (stockErrors.length > 0) {
                     showNotif(stockErrors[0], "error");
                     const firstErrorRow = document.querySelector('.row-error');
-                    if (firstErrorRow) {
-                        firstErrorRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                    resetButton(); 
+                    if (firstErrorRow) firstErrorRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    resetButton();
                     return;
                 }
 
@@ -649,48 +913,33 @@
             });
 
             document.querySelectorAll('#formTransaksi input').forEach(input => {
-                input.addEventListener('input', function () {
-                    this.classList.remove('border-red-500');
-                });
+                input.addEventListener('input', function () { this.classList.remove('border-red-500'); });
             });
 
-            // ===== SEARCH MODAL =====
             searchInput?.addEventListener('keyup', function () {
                 const keyword = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#popupTable tbody tr.cons-row');
-                rows.forEach(row => {
-                    if (row.dataset.added === 'true') {
-                        row.style.display = 'none';
-                        return;
-                    }
+                document.querySelectorAll('#popupTable tbody tr.cons-row').forEach(row => {
+                    if (row.dataset.added === 'true') { row.style.display = 'none'; return; }
                     row.style.display = row.dataset.name.includes(keyword) ? '' : 'none';
                 });
             });
 
-            // ===== SELECT ALL MODAL =====
             selectAllCheckbox?.addEventListener('change', function () {
-                const checkboxes = document.querySelectorAll('.pick-consumable');
-                checkboxes.forEach(cb => {
-                    if (cb.closest('tr').style.display !== 'none') {
-                        cb.checked = this.checked;
-                    }
+                document.querySelectorAll('.pick-consumable').forEach(cb => {
+                    if (cb.closest('tr').style.display !== 'none') cb.checked = this.checked;
                 });
             });
 
-            // ===== LOGIC QTY =====
             window.updateQty = function (input) {
                 const row = input.closest('tr');
                 const qty = parseInt(input.value);
                 const stock = parseInt(row.dataset.stock);
-
                 row.classList.remove('row-error');
-
                 if (isNaN(qty) || qty <= 0) {
                     const hiddenQty = row.querySelector('.hidden-qty');
                     if (hiddenQty) hiddenQty.value = input.value;
                     return;
                 }
-
                 if (qty > stock) {
                     const itemName = row.querySelector('.item-name').textContent.trim();
                     showNotif("Stock " + itemName + " hanya tersedia " + stock, "warning");
@@ -700,12 +949,10 @@
                     if (hiddenQty) hiddenQty.value = stock;
                     return;
                 }
-
                 const hiddenQty = row.querySelector('.hidden-qty');
                 if (hiddenQty) hiddenQty.value = qty;
             };
 
-            // ===== LOGIC HAPUS ITEM =====
             let rowToDelete = null;
             const deleteItemModal = document.getElementById('deleteItemModal');
             const deleteItemNameModal = document.getElementById('deleteItemNameModal');
@@ -725,24 +972,19 @@
             }
 
             document.getElementById('cancelDeleteItem').addEventListener('click', closeDeleteItemModal);
-            deleteItemModal.addEventListener('click', function (e) {
-                if (e.target === deleteItemModal) closeDeleteItemModal();
-            });
+            deleteItemModal.addEventListener('click', function (e) { if (e.target === deleteItemModal) closeDeleteItemModal(); });
 
             document.getElementById('confirmDeleteItem').addEventListener('click', function () {
                 if (rowToDelete) {
                     const itemName = rowToDelete.querySelector('.item-name').textContent.trim();
                     const rowId = rowToDelete.dataset.id;
-
                     rowToDelete.remove();
-
                     const modalCheckbox = document.querySelector(`.pick-consumable[data-id="${rowId}"]`);
                     if (modalCheckbox) {
                         const modalRow = modalCheckbox.closest('tr');
                         delete modalRow.dataset.added;
                         modalRow.style.display = '';
                     }
-
                     const tbody = document.querySelector('#tableConsumables tbody');
                     if (tbody.querySelectorAll('tr:not(#emptyRow)').length === 0) {
                         tbody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">Belum ada consumable yang dipilih</td></tr>';
@@ -751,45 +993,31 @@
                             row.querySelector('.no-col').innerText = i + 1;
                         });
                     }
-
                     showNotif(itemName + " berhasil dihapus", "success");
                 }
                 closeDeleteItemModal();
             });
 
-
-            // ===== BUTTON TAMBAH DARI MODAL =====
             let index = 0;
 
             btnAddConsumable.addEventListener('click', function () {
-
                 const selectedItems = document.querySelectorAll('.pick-consumable:checked');
-                if (selectedItems.length === 0) {
-                    showModalNotif("Pilih minimal 1 consumable", "error");
-                    return;
-                }
+                if (selectedItems.length === 0) { showModalNotif("Pilih minimal 1 consumable", "error"); return; }
 
                 let hasError = false;
-
                 selectedItems.forEach(selected => {
                     const row = selected.closest('tr');
                     const name = selected.dataset.name;
                     const stock = parseInt(selected.dataset.stock);
                     const qty = parseInt(row.querySelector('.qty-input').value);
-
-                    if (qty > stock) {
-                        showModalNotif("Stock " + name + " hanya tersedia " + stock, "error");
-                        hasError = true;
-                    }
+                    if (qty > stock) { showModalNotif("Stock " + name + " hanya tersedia " + stock, "error"); hasError = true; }
                 });
-
                 if (hasError) return;
 
                 const emptyRow = document.getElementById('emptyRow');
                 if (emptyRow) emptyRow.remove();
 
-                let addedCount = 0;
-                let updatedCount = 0;
+                let addedCount = 0, updatedCount = 0;
                 const existingRows = document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)');
                 let startNo = existingRows.length;
 
@@ -815,41 +1043,25 @@
                         updatedCount++;
                     } else {
                         startNo++;
-
                         const html = `
-                                                        <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
-                                                            <td class="py-3 px-4 text-center font-medium text-gray-600 w-12">
-                                                                <span class="no-col">${startNo}</span>
-                                                            </td>
-                                                            <td class="py-3 px-4 text-center w-20">
-                                                                <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto">
-                                                            </td>
-                                                            <td class="py-3 px-4">
-                                                                <span class="font-semibold text-gray-800 item-name">${name}</span>
-                                                            </td>
-                                                            <td class="text-center py-3 px-4 w-24">
-                                                                <div class="font-medium text-blue-600 stock-display">${stock}</div>
-                                                                <div class="text-xs text-gray-400 unit-display">${unit}</div>
-                                                            </td>
-                                                            <td class="text-center py-3 px-4 w-32">
-                                                                <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)"
-                                                                    class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none">
-                                                            </td>
-                                                            <td class="text-center py-3 px-4 w-16">
-                                                                <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                                    </svg>
-                                                                </button>
-                                                                <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                                                                <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
-                                                            </td>
-                                                        </tr>`;
+                                                                    <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
+                                                                        <td class="py-3 px-4 text-center font-medium text-gray-600 w-12"><span class="no-col">${startNo}</span></td>
+                                                                        <td class="py-3 px-4 text-center w-20"><img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto"></td>
+                                                                        <td class="py-3 px-4"><span class="font-semibold text-gray-800 item-name">${name}</span></td>
+                                                                        <td class="text-center py-3 px-4 w-24"><div class="font-medium text-blue-600 stock-display">${stock}</div><div class="text-xs text-gray-400 unit-display">${unit}</div></td>
+                                                                        <td class="text-center py-3 px-4 w-32"><input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none"></td>
+                                                                        <td class="text-center py-3 px-4 w-16">
+                                                                            <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
+                                                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                                                            </button>
+                                                                            <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                                                                            <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
+                                                                        </td>
+                                                                    </tr>`;
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
                         addedCount++;
                     }
-
                     row.dataset.added = 'true';
                     row.style.display = 'none';
                     selected.checked = false;
@@ -857,46 +1069,29 @@
                 });
 
                 if (selectAllCheckbox) selectAllCheckbox.checked = false;
-
                 window.dispatchEvent(new CustomEvent('close-modal'));
 
-                if (addedCount > 0 && updatedCount === 0) {
-                    showNotif(addedCount + " consumable berhasil ditambahkan", "success");
-                } else if (addedCount > 0 && updatedCount > 0) {
-                    showNotif(addedCount + " consumable ditambahkan, " + updatedCount + " diperbarui", "success");
-                } else if (updatedCount > 0 && addedCount === 0) {
-                    showNotif(updatedCount + " consumable berhasil diperbarui", "success");
-                }
+                if (addedCount > 0 && updatedCount === 0) showNotif(addedCount + " consumable berhasil ditambahkan", "success");
+                else if (addedCount > 0 && updatedCount > 0) showNotif(addedCount + " consumable ditambahkan, " + updatedCount + " diperbarui", "success");
+                else if (updatedCount > 0 && addedCount === 0) showNotif(updatedCount + " consumable berhasil diperbarui", "success");
             });
 
-            // ===== ESC KEY =====
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closeDeleteItemModal();
-            });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDeleteItemModal(); });
 
             document.querySelectorAll('.preview-click').forEach(img => {
                 img.addEventListener('click', function () {
+                    document.getElementById('previewImg').src = this.src;
                     const modal = document.getElementById('imagePreviewModal');
-                    const preview = document.getElementById('previewImg');
-
-                    preview.src = this.src;
                     modal.classList.remove('hidden');
                     modal.classList.add('flex');
                 });
             });
-
-            function closeImagePreview() {
-                const modal = document.getElementById('imagePreviewModal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
 
             document.getElementById('closePreviewBtn').addEventListener('click', function () {
                 const modal = document.getElementById('imagePreviewModal');
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             });
-
         });
     </script>
 @endsection
