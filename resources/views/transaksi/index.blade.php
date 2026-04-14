@@ -89,111 +89,139 @@
         </form>
 
 
-        {{-- TABLE --}}
+        {{-- TABLE (RAPID & STYLE KEMBALI KE AWAL) --}}
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
             <div class="max-h-[500px] overflow-auto">
-                <table class="w-full text-sm">
-                    <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10"
+                <table class="w-full text-sm border-collapse">
+                    <thead class="text-white text-xs uppercase tracking-wider sticky top-0 z-10 shadow-md"
                         style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                         <tr>
-                            <th class="py-4 px-6 font-semibold text-center">No</th>
-                            <th class="py-4 px-6 font-semibold text-left">Kode</th>
-                            <th class="py-4 px-6 font-semibold text-left">Tanggal</th>
-                            <th class="py-4 px-6 font-semibold text-left">Karyawan</th>
-                            <th class="py-4 px-6 font-semibold text-left">Consumable</th>
-                            <th class="py-4 px-6 font-semibold text-center">Permintaan</th>
-                            <th class="py-4 px-6 font-semibold text-center">Pengembalian</th>
-                            <th class="py-4 px-6 font-semibold text-center">Pemakaian</th>
-                            <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+                            <th class="py-3 px-4 font-semibold text-center align-middle w-12">No</th>
+                            <th class="py-3 px-4 font-semibold text-left align-middle w-28">Kode</th>
+                            <th class="py-3 px-4 font-semibold text-left align-middle w-28">Tanggal</th>
+                            <th class="py-3 px-4 font-semibold text-left align-middle">Karyawan</th>
+                            <th class="py-3 px-4 font-semibold text-left align-middle">Consumable</th>
+                            <th class="py-3 px-4 font-semibold text-center align-middle w-24">Minta</th>
+                            <th class="py-3 px-4 font-semibold text-center align-middle w-24">Kembali</th>
+                            <th class="py-3 px-4 font-semibold text-center align-middle w-24">Pakai</th>
+                            {{-- Kolom Aksi dibuat sedikit lebih lebar agar muat tombol asli --}}
+                            <th class="py-3 px-4 font-semibold text-center align-middle w-40">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-700 divide-y divide-gray-100">
 
                         @forelse($transactions as $trx)
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="py-4 px-6 text-center font-medium text-gray-600">
+                            <tr class="group hover:bg-blue-50/30 transition-colors duration-200 align-middle">
+                                
+                                {{-- NO --}}
+                                <td class="py-3 px-4 text-center font-medium text-gray-500">
                                     {{ ($transactions->currentPage() - 1) * $transactions->perPage() + $loop->iteration }}
                                 </td>
-                                <td class="py-4 px-6 font-bold text-[#5EA6FF]">
+
+                                {{-- KODE --}}
+                                <td class="py-3 px-4 font-bold text-[#5EA6FF] whitespace-nowrap">
                                     {{ $trx->transaction_code }}
                                 </td>
-                                <td class="py-4 px-6 text-gray-700">
+
+                                {{-- TANGGAL --}}
+                                <td class="py-3 px-4 text-gray-700 whitespace-nowrap">
                                     {{ \Carbon\Carbon::parse($trx->date)->format('d M Y') }}
                                 </td>
-                                <td class="py-4 px-6 text-gray-700">
-                                    {{ $trx->borrower_name }}
+
+                                {{-- KARYAWAN --}}
+                                <td class="py-3 px-4 text-gray-700">
+                                    <span class="font-medium text-gray-800">{{ $trx->borrower_name }}</span>
                                 </td>
+
                                 {{-- CONSUMABLE --}}
-                                <td class="py-4 px-6 text-gray-700">
-                                    @foreach($trx->items as $item)
-                                        <div class="flex items-center gap-2 py-0.5">
-                                            <span class="flex-shrink-0 w-2 h-2 rounded-full bg-black"></span>
-                                            <span>{{ $item->consumable->name }}</span>
-                                        </div>
-                                    @endforeach
+                                <td class="py-3 px-4 text-gray-700 align-top">
+                                    <div class="flex flex-col gap-1.5">
+                                        @foreach($trx->items as $item)
+                                            <div class="flex items-start gap-2">
+                                                <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5"></span>
+                                                <span>{{ $item->consumable->name }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </td>
+
                                 {{-- MINTA --}}
-                                <td class="py-4 px-6 text-center text-gray-700">
-                                    @foreach($trx->items as $item)
-                                        <div class="py-0.5">{{ $item->qty }} {{ $item->consumable->unit }}</div>
-                                    @endforeach
+                                <td class="py-3 px-4 text-center text-gray-600 align-top">
+                                    <div class="flex flex-col gap-1.5 justify-center">
+                                        @foreach($trx->items as $item)
+                                            <div class="font-medium">{{ $item->qty }} <span class="text-[10px] text-gray-400">{{ $item->consumable->unit }}</span></div>
+                                        @endforeach
+                                    </div>
                                 </td>
+
                                 {{-- KEMBALI --}}
-                                <td class="py-4 px-6 text-center text-gray-700">
-                                    @foreach($trx->items as $item)
-                                        <div class="py-0.5">{{ ($item->qty_return ?? 0) == 0 ? '-' : $item->qty_return }}</div>
-                                    @endforeach
+                                <td class="py-3 px-4 text-center text-gray-600 align-top">
+                                    <div class="flex flex-col gap-1.5 justify-center">
+                                        @foreach($trx->items as $item)
+                                            <div class="font-medium">
+                                                {{ ($item->qty_return ?? 0) == 0 ? '-' : $item->qty_return }}
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </td>
+
                                 {{-- PEMAKAIAN --}}
-                                <td class="py-4 px-6 text-center">
-                                    @foreach($trx->items as $item)
-                                        @php
-                                            $sisa = $item->qty - ($item->qty_return ?? 0);
-                                        @endphp
-                                        @if($sisa == $item->qty)
-                                            <div class="py-0.5 text-yellow-600 font-semibold">-</div>
-                                        @elseif($sisa == 0)
-                                            <div class="py-0.5 text-green-600 font-semibold">Selesai</div>
-                                        @else
-                                            <div class="py-0.5 text-orange-600 font-semibold">{{ $sisa }}</div>
-                                        @endif
-                                    @endforeach
+                                <td class="py-3 px-4 text-center align-top">
+                                    <div class="flex flex-col gap-1.5 justify-center">
+                                        @foreach($trx->items as $item)
+                                            @php
+                                                $sisa = $item->qty - ($item->qty_return ?? 0);
+                                            @endphp
+                                            @if($sisa == $item->qty)
+                                                <div class="text-gray-400 text-[10px]">-</div>
+                                            @elseif($sisa == 0)
+                                                <div class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex justify-center items-center w-max mx-auto">
+                                                    Selesai
+                                                </div>
+                                            @else
+                                                <div class="bg-orange-50 text-orange-600 font-bold px-2 py-0.5 rounded-full inline-flex justify-center items-center w-max mx-auto border border-orange-100">
+                                                    {{ $sisa }}
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 </td>
-                                <td class="py-4 px-6 text-center">
+
+                                {{-- AKSI (DIKEMBALIKAN KE STYLE AWAL) --}}
+                                <td class="py-3 px-4 text-center whitespace-nowrap align-middle">
                                     @if(!$trx->is_confirm)
                                         <div class="flex justify-center gap-2 items-center">
                                             <a href="{{ route('transaksi.edit', $trx->id) }}"
-                                                class="p-2 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition"
+                                                class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition"
                                                 title="Edit">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
                                                 </svg>
                                             </a>
                                             <button type="button"
                                                 @click="deleteId = '{{ $trx->id }}'; deleteCode = '{{ $trx->transaction_code }}'; deleteConfirm = true"
-                                                class="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                                                class="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
                                                 title="Hapus">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                                 </svg>
                                             </button>
-                                            <form action="{{ route('transaksi.confirm', $trx->id) }}" method="POST">
+                                            <form action="{{ route('transaksi.confirm', $trx->id) }}" method="POST" class="inline-block">
                                                 @csrf
-                                                <button
-                                                    class="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:scale-[1.02]"
+                                                <button type="submit"
+                                                    class="px-3 py-1.5 rounded-xl text-[11px] font-bold text-white shadow-sm transition-all hover:scale-[1.02]"
                                                     style="
                                                         background: linear-gradient(180deg, #7BE495 0%, #43C463 100%);
                                                         border: 1px solid #43C463;
-                                                        box-shadow:
-                                                            inset 0 1px 0 rgba(255,255,255,0.45),
-                                                            0 2px 6px rgba(67,196,99,0.35);
+                                                        box-shadow: 0 2px 4px rgba(67,196,99,0.2);
                                                     ">
                                                     Confirm
                                                 </button>
                                             </form>
                                         </div>
                                     @else
-                                        <div class="flex justify-center gap-2 flex-wrap">
+                                        {{-- INI BAGIAN YANG DIKEMBALIKAN KE AWAL --}}
+                                        <div class="flex justify-center gap-2 items-center">
                                             <button @click="openReturn = '{{ $trx->id }}'"
                                                 class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-semibold text-xs transition shadow-sm">
                                                 Pengembalian
@@ -213,9 +241,12 @@
                         @empty
                             <tr>
                                 <td colspan="9" class="py-12 text-center text-gray-400">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                                        <span>Belum ada transaksi</span>
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                        </div>
+                                        <span class="font-medium">Belum ada transaksi</span>
+                                        <span class="text-xs">Silakan buat permintaan consumable baru.</span>
                                     </div>
                                 </td>
                             </tr>
@@ -243,7 +274,7 @@
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-90"
-                class="bg-white w-full max-w-sm rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.25)] p-6 text-center"
+                class="bg-white w-full max-w-sm rounded-2xl shadow-[0_15px 40px_rgba(0,0,0,0.25)] p-6 text-center"
                 style="font-family: 'Plus Jakarta Sans', sans-serif;">
                 <div class="flex justify-center mb-4">
                     <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
@@ -311,7 +342,7 @@
                                 {{-- TABLE ITEM --}}
                                 <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                                     <table class="w-full text-sm">
-                                        <thead class="text-white text-xs uppercase tracking-wider"
+                                        <thead class="text-white text-xs uppercase tracking-wider align-middle"
                                                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
                                             <tr>
                                                 <th class="py-3 px-4 text-center w-16 font-semibold">Pilih</th>
@@ -321,7 +352,7 @@
                                                 <th class="py-3 px-4 text-left font-semibold">Keterangan</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="bg-white divide-y divide-gray-100">
+                                        <tbody class="bg-white divide-y divide-gray-100 align-middle">
                                             @foreach($trx->items as $item)
                                                 @php
                                                     $sisa = $item->qty - ($item->qty_return ?? 0);
