@@ -113,7 +113,7 @@
             </div>
         </div>
 
-        {{-- ================= TABLE (DIRAPIHKAN & PERBAGUS) ================= --}}
+        {{-- ================= TABLE ================= --}}
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             <div class="max-h-[420px] overflow-auto">
                 <table class="min-w-full text-sm text-left text-gray-700">
@@ -125,7 +125,6 @@
                             <th class="py-4 px-6 font-semibold text-left align-middle whitespace-nowrap">Tanggal</th>
                             <th class="py-4 px-6 font-semibold text-left align-middle">Karyawan</th>
                             <th class="py-4 px-6 font-semibold text-left align-middle">Consumable</th>
-                            <th class="py-4 px-6 font-semibold text-center align-middle w-24">Jumlah</th>
                             @if($type == 'pengeluaran')
                                 <th class="py-4 px-6 font-semibold text-center align-middle w-32">Detail</th>
                             @else
@@ -141,7 +140,7 @@
 
                         @if($invalidDate)
                             <tr>
-                                <td colspan="7" class="py-12 text-center text-red-500 font-medium align-middle">
+                                <td colspan="6" class="py-12 text-center text-red-500 font-medium align-middle">
                                     ⚠️ Tanggal akhir harus sama atau lebih besar dari tanggal awal
                                 </td>
                             </tr>
@@ -184,34 +183,16 @@
                                         @if($type == 'pengeluaran')
                                             <div class="flex flex-col gap-1.5">
                                                 @foreach($row->items as $item)
-                                                    <div class="flex items-start gap-2 text-xs leading-relaxed" title="{{ $item->consumable->name }}">
+                                                    <div class="flex items-center gap-2 text-xs leading-relaxed">
                                                         <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></span>
-                                                        <span class="truncate">{{ $item->consumable->name }}</span>
+                                                        <span class="truncate">{{ $item->consumable->name }} <span class="text-gray-800 ml-1">({{ $item->qty }} {{ $item->consumable->unit }})</span></span>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         @else
-                                            <div class="flex items-center gap-2 text-xs" title="{{ $row->consumable->name }}">
+                                            <div class="flex items-center gap-2 text-xs">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></span>
-                                                <span class="truncate">{{ $row->consumable->name }}</span>
-                                            </div>
-                                        @endif
-                                    </td>
-
-                                    <td class="py-4 px-6 text-center align-middle">
-                                        @if($type == 'pengeluaran')
-                                            <div class="flex flex-col gap-1.5 items-center">
-                                                @foreach($row->items as $item)
-                                                    <div class="bg-gray-50 px-2 py-1 rounded border border-gray-100">
-                                                        <span class="font-bold text-[#5EA6FF] text-sm">{{ $item->qty }}</span>
-                                                        <span class="text-gray-500 text-xs ml-0.5">{{ $item->consumable->unit }}</span>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <div class="bg-gray-50 px-2.5 py-1 rounded border border-gray-100 inline-flex items-center gap-1">
-                                                <span class="font-bold text-[#5EA6FF]">{{ $row->qty_return }}</span>
-                                                <span class="text-gray-500 text-xs">{{ $row->consumable->unit }}</span>
+                                                <span class="truncate">{{ $row->consumable->name }} <span class="text-gray-800 ml-1">({{ $row->qty_return }} {{ $row->consumable->unit }})</span></span>
                                             </div>
                                         @endif
                                     </td>
@@ -239,7 +220,7 @@
                         @else
 
                             <tr>
-                                <td colspan="7" class="py-12 text-center text-gray-400 align-middle">
+                                <td colspan="6" class="py-12 text-center text-gray-400 align-middle">
                                     Tidak ada data transaksi pada periode ini
                                 </td>
                             </tr>
@@ -430,7 +411,7 @@
             const startDate = document.getElementById('startDate');
             const endDate = document.getElementById('endDate');
             const filterType = document.getElementById('filterType');
-            const togglePengeluaran = document.getElementById('togglePengeluaran');
+            consttogglePengeluaran = document.getElementById('togglePengeluaran');
             const togglePengembalian = document.getElementById('togglePengembalian');
 
             filterForm?.addEventListener('submit', function (e) {
