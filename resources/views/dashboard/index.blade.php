@@ -91,9 +91,21 @@
         {{-- Header --}}
         <div class="mb-4 sm:mb-6 md:mb-8">
             {{-- DIUBAH: Warna teks judul menjadi #113561 --}}
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#113561] mb-0.5 leading-tight break-words">Dashboard
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#113561] mb-0.5 leading-tight break-words">
+                Dashboard
             </h2>
-            <p class="text-xs sm:text-sm text-gray-500 break-words">Selamat datang di Sistem Inventory Management</p>
+
+            <p class="text-xs sm:text-sm text-gray-500 break-words">
+                Selamat datang, {{ Auth::user()->name }}
+            </p>
+
+            <div class="mt-2 text-xs sm:text-sm text-gray-600 bg-gray-100 p-3 rounded-lg">
+                👤 {{ Auth::user()->name }} <br>
+                🕒 Login terakhir:
+                {{ Auth::user()->last_login
+        ? \Carbon\Carbon::parse(Auth::user()->last_login)->format('d M Y H:i')
+        : 'Belum pernah login' }}
+            </div>
         </div>
 
         {{-- ===================== --}}
@@ -105,14 +117,15 @@
             {{-- Total Barang --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">
                         Total Tools
                     </p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $totalBarang }}</p>
+                        {{ $totalBarang }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">Semua item dalam
                         inventory</p>
                 </div>
@@ -129,14 +142,16 @@
             {{-- Alat Tersedia --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">Tools Tersedia</p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $alatTersedia }}</p>
+                        {{ $alatTersedia }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari
-                        {{ $totalBarang }} total tools</p>
+                        {{ $totalBarang }} total tools
+                    </p>
                 </div>
                 <div class="ml-2 sm:ml-3 md:ml-4 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -150,14 +165,16 @@
             {{-- Alat Dipinjam --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">Tools Di Pinjam</p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $alatDipinjam }}</p>
+                        {{ $alatDipinjam }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari
-                        {{ $totalBarang }} total tools</p>
+                        {{ $totalBarang }} total tools
+                    </p>
                 </div>
                 <div class="ml-2 sm:ml-3 md:ml-4 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -172,12 +189,13 @@
             {{-- Consumable Menipis --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">Consumable Menipis</p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $consumableMenipis }}</p>
+                        {{ $consumableMenipis }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">Di bawah minimum
                         stok</p>
                 </div>
@@ -197,8 +215,8 @@
             {{-- Peminjaman Terbaru --}}
             <div class="rounded-xl sm:rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col">
                 <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white 
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
+                            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
                     <h3 class="text-sm sm:text-base md:text-lg font-semibold leading-tight break-words">Peminjaman Terbaru
                     </h3>
                 </div>
@@ -245,8 +263,8 @@
             {{-- Pengeluaran Consumable Terbaru --}}
             <div class="rounded-xl sm:rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col">
                 <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white 
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
+                            {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                            bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
                     <h3 class="text-sm sm:text-base md:text-lg font-semibold leading-tight break-words">Pengeluaran
                         Consumable Terbaru</h3>
                 </div>
@@ -280,6 +298,51 @@
                     @endforelse
                 </div>
             </div>
+
+        </div>
+
+        {{-- Activity Logs --}}
+        <div class="flex flex-col gap-3 p-4">
+
+            @forelse($activities as $activity)
+                <div class="bg-gray-50 rounded-xl p-3 shadow-sm hover:shadow-md transition">
+
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm font-semibold text-gray-800">
+                            {{ $activity->name }}
+                        </p>
+
+                        <p class="text-[10px] text-gray-400">
+                            {{ \Carbon\Carbon::parse($activity->created_at)->format('d M Y H:i') }}
+                        </p>
+                    </div>
+
+                    <div class="mt-1 text-xs text-gray-600">
+                        @if($activity->action == 'login')
+                            <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                LOGIN
+                            </span>
+                        @elseif($activity->action == 'logout')
+                            <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                LOGOUT
+                            </span>
+                        @else
+                            <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                {{ strtoupper($activity->action) }}
+                            </span>
+                        @endif
+
+                        <span class="ml-2">
+                            {{ $activity->description }}
+                        </span>
+                    </div>
+
+                </div>
+            @empty
+                <div class="text-center text-gray-400 text-sm py-6">
+                    Belum ada aktivitas
+                </div>
+            @endforelse
 
         </div>
     </div>

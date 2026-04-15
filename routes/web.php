@@ -84,7 +84,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/{category}', [InvCategoryController::class, 'update'])->name('update');
         Route::delete('/{category}', [InvCategoryController::class, 'destroy'])->name('destroy');
     });
-});
 
-Route::get('/api/proxy/client-list', [ConsumableTransactionController::class, 'proxyClientList']);
-Route::get('/api/proxy/client-projects', [ConsumableTransactionController::class, 'proxyClientProjects']);
+    Route::get('/api/proxy/client-list', [ConsumableTransactionController::class, 'proxyClientList']);
+    Route::get('/api/proxy/client-projects', [ConsumableTransactionController::class, 'proxyClientProjects']);
+
+    Route::get('/api/employees', [ToolTransactionController::class, 'getEmployeesApi']);
+
+    Route::get('/api/clients', [ToolTransactionController::class, 'getClientsApi']);
+
+    Route::get('/api/projects', [ToolTransactionController::class, 'getProjectsApi']);
+});

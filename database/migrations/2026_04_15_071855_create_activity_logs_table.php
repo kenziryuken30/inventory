@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_transaction', function (Blueprint $table) {
+        Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('transaction_code', 20)->unique();
-
-
-            $table->date('date');
-            $table->boolean('is_confirm')->default(false);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('action');
+            $table->text('description')->nullable();
             $table->timestamps();
-
-            $table->string('client_id')->nullable();
-            $table->string('project_id')->nullable();
         });
     }
 
@@ -30,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_transaction');
+        Schema::dropIfExists('activity_logs');
     }
 };

@@ -8,6 +8,8 @@ use App\Models\ToolTransactionItem;
 use App\Models\InvConsumable;
 use App\Models\ToolTransaction;
 use App\Models\InvConsumableTransactionItem;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -39,6 +41,14 @@ class DashboardController extends Controller
             ->limit(4)
             ->get();
 
+        $activities = DB::table('activity_logs')
+            ->join('users', 'activity_logs.user_id', '=', 'users.id')
+            ->select('activity_logs.*', 'users.name')
+            ->orderBy('activity_logs.created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+
         return view('dashboard.index', compact(
             'totalBarang',
             'alatTersedia',
@@ -46,7 +56,8 @@ class DashboardController extends Controller
             'consumableMenipis',
             'lowStock',
             'peminjamanTerbaru',
-            'consumableTerbaru'
+            'consumableTerbaru',
+            'activities'
         ));
     }
 }

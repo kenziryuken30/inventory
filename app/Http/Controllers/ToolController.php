@@ -64,17 +64,20 @@ class ToolController extends Controller
 
             $condition = $tool->latestCondition->condition ?? 'baik';
 
-            $lastItem = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
-                ->latest()
+            $latestTransaction = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
+                ->orderBy('created_at', 'desc')
                 ->first();
 
-            $tool->isPending = $lastItem && $lastItem->status === 'PENDING';
-            $tool->isDipinjam = $lastItem && $lastItem->status === 'DIPINJAM';
+            $isDipinjam = $latestTransaction && $latestTransaction->status == 'DIPINJAM';
+            $isPending  = $latestTransaction && $latestTransaction->status == 'PENDING';
 
-            if ($tool->isPending) {
-                $tool->status_label = 'pending';
-            } elseif ($tool->isDipinjam) {
+            $tool->isDipinjam = $isDipinjam;
+            $tool->isPending = $isPending;
+
+            if ($tool->isDipinjam) {
                 $tool->status_label = 'dipinjam';
+            } elseif ($tool->isPending) {
+                $tool->status_label = 'pending';
             } elseif ($condition == 'rusak') {
                 $tool->status_label = 'tidak tersedia';
             } else {
@@ -121,13 +124,13 @@ class ToolController extends Controller
             'id'            => 'SN-' . strtoupper(Str::random(8)),
             'toolkit_id'    => $toolkit->id,
             'serial_number' => $request->serial_number,
-            'status'        => 'tersedia', // default
+            'status'        => 'TERSEDIA', // default
         ]);
 
         InvToolConditionLog::create([
             'serial_id' => $serial->id,
             'condition' => 'baik',
-            'notes'     => 'Kondisi awal saat alat ditambahkan',
+            'note'     => 'Kondisi awal saat alat ditambahkan',
         ]);
 
         return redirect()->back()
@@ -186,7 +189,7 @@ class ToolController extends Controller
         $serial = InvSerialNumber::findOrFail($id);
         $toolkit = $serial->toolkit;
 
-        if ($serial->status === 'dipinjam') {
+        if ($serial->status === 'DIPINJAM') {
             return redirect()->back()
                 ->with('error', 'Alat sedang dipinjam, tidak bisa dihapus');
         }
