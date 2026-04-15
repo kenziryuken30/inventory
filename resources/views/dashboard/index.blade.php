@@ -98,14 +98,6 @@
             <p class="text-xs sm:text-sm text-gray-500 break-words">
                 Selamat datang, {{ Auth::user()->name }}
             </p>
-
-            <div class="mt-2 text-xs sm:text-sm text-gray-600 bg-gray-100 p-3 rounded-lg">
-                👤 {{ Auth::user()->name }} <br>
-                🕒 Login terakhir:
-                {{ Auth::user()->last_login
-        ? \Carbon\Carbon::parse(Auth::user()->last_login)->format('d M Y H:i')
-        : 'Belum pernah login' }}
-            </div>
         </div>
 
         {{-- ===================== --}}
