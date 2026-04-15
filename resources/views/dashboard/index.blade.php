@@ -99,20 +99,20 @@
         {{-- ===================== --}}
         {{-- STATS CARDS --}}
         {{-- ===================== --}}
-        {{-- HP kecil: 1 kolom | HP besar: 2 kolom | Desktop: 4 kolom --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 mb-5 sm:mb-8 md:mb-10">
 
             {{-- Total Barang --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                    {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                    bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">
                         Total Tools
                     </p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $totalBarang }}</p>
+                        {{ $totalBarang }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">Semua item dalam
                         inventory</p>
                 </div>
@@ -129,14 +129,16 @@
             {{-- Alat Tersedia --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                    {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                    bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">Tools Tersedia</p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $alatTersedia }}</p>
+                        {{ $alatTersedia }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari
-                        {{ $totalBarang }} total tools</p>
+                        {{ $totalBarang }} total tools
+                    </p>
                 </div>
                 <div class="ml-2 sm:ml-3 md:ml-4 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -150,14 +152,16 @@
             {{-- Alat Dipinjam --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                    {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                    bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">Tools Di Pinjam</p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $alatDipinjam }}</p>
+                        {{ $alatDipinjam }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">dari
-                        {{ $totalBarang }} total tools</p>
+                        {{ $totalBarang }} total tools
+                    </p>
                 </div>
                 <div class="ml-2 sm:ml-3 md:ml-4 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -172,12 +176,13 @@
             {{-- Consumable Menipis --}}
             <div
                 class="stat-card p-3 sm:p-4 md:p-5 flex justify-between items-center rounded-xl sm:rounded-2xl shadow-lg text-white
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
+                    {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                    bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] transform hover:scale-105 transition-transform duration-300">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base md:text-lg font-semibold opacity-95 leading-tight">Consumable Menipis</p>
                     <p class="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5 sm:mt-1 leading-tight break-words">
-                        {{ $consumableMenipis }}</p>
+                        {{ $consumableMenipis }}
+                    </p>
                     <p class="text-[10px] sm:text-xs opacity-75 mt-0.5 sm:mt-1 truncate hidden sm:block">Di bawah minimum
                         stok</p>
                 </div>
@@ -197,8 +202,8 @@
             {{-- Peminjaman Terbaru --}}
             <div class="rounded-xl sm:rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col">
                 <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white 
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
+                    {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
+                    bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
                     <h3 class="text-sm sm:text-base md:text-lg font-semibold leading-tight break-words">Peminjaman Terbaru
                     </h3>
                 </div>
@@ -245,8 +250,7 @@
             {{-- Pengeluaran Consumable Terbaru --}}
             <div class="rounded-xl sm:rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col">
                 <div class="px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 text-white 
-                {{-- DIUBAH: Gradasi sesuai contoh (#7FC4FF atas, #5EA6FF bawah) --}}
-                bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
+                    bg-[linear-gradient(180deg,#7FC4FF_0%,#5EA6FF_100%)] flex-shrink-0">
                     <h3 class="text-sm sm:text-base md:text-lg font-semibold leading-tight break-words">Pengeluaran
                         Consumable Terbaru</h3>
                 </div>
@@ -258,11 +262,16 @@
                             class="flex justify-between items-center gap-2 sm:gap-3 md:gap-4 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors min-w-0">
 
                             <div class="min-w-0 flex-1">
+                                {{-- PERBAIKAN 1: Pastikan relasi consumable diakses dari $item --}}
                                 <p class="text-xs sm:text-sm font-medium text-gray-800 truncate break-words">
                                     {{ $item->consumable->name ?? '-' }}
                                 </p>
+
+                                {{-- PERBAIKAN 2: Ganti $trx menjadi $item->transaction karena loop variabelnya adalah $item
+                                --}}
                                 <p class="text-[10px] sm:text-xs text-gray-400 mt-0.5 break-words">
-                                    {{ $trx->borrower_name ?? '-' }} &bull; {{ $item->created_at->format('d M Y') }}
+                                    {{ $item->transaction->borrower_name ?? '-' }} &bull;
+                                    {{ $item->transaction->date->format('d M Y') }}
                                 </p>
                             </div>
 
