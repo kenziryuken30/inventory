@@ -202,28 +202,43 @@
                                     Pilih Consumable
                                 </button>
                             </div>
-                            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                                <table class="w-full text-sm" id="tableConsumables">
-                                    <thead>
-                                        <tr class="text-white text-xs uppercase tracking-wider"
-                                            style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
-                                            <th class="py-3 px-4 font-semibold text-center w-12">No</th>
-                                            <th class="py-3 px-4 font-semibold text-center w-20">Foto</th>
-                                            <th class="py-3 px-4 font-semibold text-left">Nama Consumable</th>
-                                            <th class="py-3 px-4 font-semibold text-center w-24">Stock</th>
-                                            <th class="py-3 px-4 font-semibold text-center w-32">Jumlah</th>
-                                            <th class="py-3 px-4 font-semibold text-center w-16">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-50">
-                                        <tr id="emptyRow">
-                                            <td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">
-                                                Belum ada consumable yang dipilih
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            
+                           <!-- TABEL TANPA GARIS PUTIH VERTIKAL DI HEADER -->
+<div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <!-- Class table-force-fix menjaga agar kolom tidak bergerak -->
+    <table class="w-full text-sm table-layout-fixed" id="tableConsumables">
+        <thead>
+            <tr class="text-white text-xs uppercase tracking-wider"
+                style="background: linear-gradient(180deg, #7FC4FF, #5EA6FF);">
+                
+                <!-- Kolom No: 5% lebar tabel (TANPA GARIS KANAN) -->
+                <th class="w-[5%] py-4 font-semibold text-center">No</th>
+                
+                <!-- Kolom Foto: 10% lebar tabel (TANPA GARIS KANAN) -->
+                <th class="w-[10%] py-4 font-semibold text-center">Foto</th>
+                
+                <!-- Kolom Nama: 45% lebar tabel (DI TENGAH, TANPA GARIS KANAN) -->
+                <th class="w-[45%] py-4 font-semibold text-center">Nama Consumable</th>
+                
+                <!-- Kolom Stock: 15% lebar tabel (TANPA GARIS KANAN) -->
+                <th class="w-[15%] py-4 font-semibold text-center">Stock</th>
+                
+                <!-- Kolom Jumlah: 15% lebar tabel (TANPA GARIS KANAN) -->
+                <th class="w-[15%] py-4 font-semibold text-center">Jumlah</th>
+                
+                <!-- Kolom Aksi: 10% lebar tabel (TANPA GARIS KANAN) -->
+                <th class="w-[10%] py-4 font-semibold text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-50">
+            <tr id="emptyRow">
+                <td colspan="7" class="py-4 text-center text-gray-400 italic text-sm">
+                    Belum ada consumable yang dipilih
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
                         </div>
 
                         {{-- SAVE BUTTON --}}
@@ -398,101 +413,15 @@
     </div>
 
     <style>
+        /* CSS UNTUK MEMASTIKAN TABEL KAKU DAN SEJAJAR */
+        .table-layout-fixed {
+            table-layout: fixed; /* PENTING: Kunci kolom supaya tidak berubah-ubah */
+        }
+
         #tableConsumables th,
         #tableConsumables td {
-            border: none !important;
-        }
-
-        .shadow-inner {
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        input::placeholder {
-            color: #9CA3AF;
-            font-weight: 400;
-        }
-
-        #notifWrap,
-        #modalNotifWrap {
-            animation: notifSlideIn 0.4s ease-out;
-        }
-
-        @keyframes notifSlideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        #notifWrap.hiding,
-        #modalNotifWrap.hiding {
-            animation: notifSlideOut 0.35s ease-in forwards;
-        }
-
-        @keyframes notifSlideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateX(60px);
-            }
-        }
-
-        #notifBar,
-        #modalNotifBar {
-            transition: width 3.5s linear;
-        }
-
-        .row-error {
-            background-color: #fef2f2 !important;
-            animation: shakeRow 0.4s ease-in-out;
-        }
-
-        @keyframes shakeRow {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            75% {
-                transform: translateX(5px);
-            }
-        }
-
-        .btn-delete-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: #fef2f2;
-            color: #ef4444;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-delete-icon:hover {
-            background: #fee2e2;
-            transform: scale(1.1);
-        }
-
-        .btn-delete-icon:active {
-            transform: scale(0.95);
+            vertical-align: middle; /* Posisi tengah vertikal */
+            overflow: hidden; /* Sembunyikan teks terlalu panjang */
         }
     </style>
 
@@ -515,7 +444,6 @@
                         this.loading = true;
 
                         try {
-                            // URL sekarang ke Laravel, bukan langsung ke API eksternal
                             const url = '{{ url("/api/proxy/client-list") }}';
 
                             const response = await fetch(url, {
@@ -527,16 +455,9 @@
                             }
 
                             const data = await response.json();
-
-                            // Debug: lihat response-nya
                             console.log('📦 RAW RESPONSE:', data);
                             console.log('📦 Type:', typeof data);
-                            console.log('📦 Is Array?:', Array.isArray(data));
-                            if (!Array.isArray(data)) {
-                                console.log('📦 Keys:', Object.keys(data));
-                            }
 
-                            // Parse berbagai kemungkinan format
                             let parsedClients = [];
 
                             if (data.data && Array.isArray(data.data)) {
@@ -591,14 +512,12 @@
                 },
 
                 getClientId(item) {
-                    // Coba field yang umum
                     if (item.id) return item.id;
                     if (item.client_id) return item.client_id;
                     if (item.code) return item.code;
                     if (item.client_code) return item.code;
                     if (item.value) return item.value;
 
-                    // Kalau ga ada yang cocok, cari field yang isinya format "CLT-xxx"
                     const values = Object.entries(item);
                     const idField = values.find(([key, val]) =>
                         typeof val === 'string' && val.toUpperCase().startsWith('CLT')
@@ -609,7 +528,6 @@
                         return idField[1];
                     }
 
-                    // Last fallback: log semua keys biar lo tau
                     console.log('⚠️ GA KETEMU ID! Keys yang ada:', Object.keys(item));
                     return '';
                 },
@@ -622,7 +540,6 @@
                     console.log('✅ CLIENT DIPILIH');
                     console.log('📛 Nama:', name);
                     console.log('🆔 ID:', id);
-                    console.log('📄 Full data:', item);
                     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
                     this.selected = name;
@@ -632,7 +549,7 @@
 
                     if (!id) {
                         console.error('❌ ID KOSONG! Proyek ga akan ke-load.');
-                        return; // Jangan kirim event kalau ID kosong
+                        return;
                     }
 
                     window.dispatchEvent(new CustomEvent('client-selected', {
@@ -660,7 +577,6 @@
                 selectedProject: '',
                 selectedProjectId: '',
 
-                // Fungsi auto-detect nama proyek
                 getProjectName(proj) {
                     return proj.name || proj.project_name || proj.nama_proyek ||
                         proj.nama || proj.title || proj.label ||
@@ -699,7 +615,6 @@
 
                             console.log('📦 Data Proyek:', this.projects);
 
-                            // DEBUG: Liat field proyeknya apa aja
                             if (this.projects.length > 0) {
                                 console.log('🔑 KEYS PROYEK:', Object.keys(this.projects[0]));
                                 console.log('📄 SAMPLE PROYEK:', this.projects[0]);
@@ -727,7 +642,7 @@
                 fetchEmployees() {
                     clearTimeout(this.debounceTimer);
                     this.debounceTimer = setTimeout(async () => {
-                        if (this.employees.length > 0) return; // udah pernah fetch, skip
+                        if (this.employees.length > 0) return;
                         this.loading = true;
                         try {
                             const res = await fetch('{{ url("/api/proxy/employee-list") }}');
@@ -1018,7 +933,7 @@
                     }
                     const tbody = document.querySelector('#tableConsumables tbody');
                     if (tbody.querySelectorAll('tr:not(#emptyRow)').length === 0) {
-                        tbody.innerHTML = '<tr id="emptyRow"><td colspan="6" class="py-10 text-center text-gray-400 italic text-sm">Belum ada consumable yang dipilih</td></tr>';
+                        tbody.innerHTML = '<tr id="emptyRow"><td colspan="7" class="py-4 text-center text-gray-400 italic text-sm">Belum ada consumable yang dipilih</td></tr>';
                     } else {
                         document.querySelectorAll('#tableConsumables tbody tr:not(#emptyRow)').forEach((row, i) => {
                             row.querySelector('.no-col').innerText = i + 1;
@@ -1067,28 +982,57 @@
                         exist.querySelector('.qty-input-main').max = stock;
                         exist.querySelector('.hidden-qty').value = qty;
                         exist.dataset.stock = stock;
-                        const stockDisplay = exist.querySelector('.stock-display');
+                        const stockDisplay = exist.querySelector('.stock-val');
                         if (stockDisplay) stockDisplay.textContent = stock;
-                        const unitDisplay = exist.querySelector('.unit-display');
+                        const unitDisplay = exist.querySelector('.unit-val');
                         if (unitDisplay) unitDisplay.textContent = unit;
                         updatedCount++;
                     } else {
                         startNo++;
                         const html = `
-                                                                                <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
-                                                                                    <td class="py-3 px-4 text-center font-medium text-gray-600 w-12"><span class="no-col">${startNo}</span></td>
-                                                                                    <td class="py-3 px-4 text-center w-20"><img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto"></td>
-                                                                                    <td class="py-3 px-4"><span class="font-semibold text-gray-800 item-name">${name}</span></td>
-                                                                                    <td class="text-center py-3 px-4 w-24"><div class="font-medium text-blue-600 stock-display">${stock}</div><div class="text-xs text-gray-400 unit-display">${unit}</div></td>
-                                                                                    <td class="text-center py-3 px-4 w-32"><input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none"></td>
-                                                                                    <td class="text-center py-3 px-4 w-16">
-                                                                                        <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                                                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                                                                                        </button>
-                                                                                        <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                                                                                        <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
-                                                                                    </td>
-                                                                                </tr>`;
+                            <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
+                                
+                                <!-- Kolom No: 5% -->
+                                <td class="w-[5%] py-4 text-center text-gray-600 font-medium">
+                                    <span class="no-col">${startNo}</span>
+                                </td>
+                                
+                                <!-- Kolom Foto: 10% -->
+                                <td class="w-[10%] py-4 text-center">
+                                    <img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto border border-gray-100">
+                                </td>
+                                
+                                <!-- Kolom Nama: 45% (TEXT CENTER) -->
+                                <td class="w-[45%] py-4 text-center">
+                                    <span class="font-semibold text-gray-800 item-name block truncate" title="${name}">${name}</span>
+                                </td>
+                                
+                                <!-- Kolom Stock: 15% -->
+                                <td class="w-[15%] py-4 text-center">
+                                    <div class="flex flex-col justify-center items-center leading-tight">
+                                        <span class="font-bold text-blue-600 stock-val text-sm">${stock}</span>
+                                        <span class="text-[10px] text-gray-400 uppercase tracking-wider unit-val">${unit}</span>
+                                    </div>
+                                </td>
+                                
+                                <!-- Kolom Jumlah: 15% -->
+                                <td class="w-[15%] py-4 text-center">
+                                    <input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" 
+                                        class="w-full h-8 text-center border border-gray-300 rounded-md qty-input-main focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] outline-none transition">
+                                </td>
+                                
+                                <!-- Kolom Aksi: 10% -->
+                                <td class="w-[10%] py-4 text-center">
+                                    <button type="button" onclick="removeRow(this)" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-full transition duration-200">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                    <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                                    <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
+                                </td>
+                            </tr>
+                        `;
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
                         addedCount++;
