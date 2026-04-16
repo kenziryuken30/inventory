@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\InvConsumable;
 use App\Models\InvConsumableTransaction;
@@ -45,28 +46,35 @@ class ConsumableTransactionController extends Controller
 
     public function store(Request $request)
     {
+        // ✅ FIX: employee_id nullable, borrower_name wajib ada
         $request->validate([
-            'employee_id' => 'required|exists:inv_employee,id',
+            'employee_id' => 'nullable|string|max:255',
+            'borrower_name' => 'required|string|max:255',
             'date' => 'required|date',
+            'client_id' => 'nullable|string|max:255',
+            'client' => 'nullable|string|max:255',
+            'project_id' => 'nullable|string|max:255',
+            'project' => 'nullable|string|max:255',
+            'purpose' => 'nullable|string|max:255',
             'items' => 'required|array|min:1',
-            'items.*.consumable_id' => 'required',
+            'items.*.consumable_id' => 'required|integer|exists:inv_consumables,id',
             'items.*.qty' => 'required|integer|min:1',
         ]);
 
         DB::transaction(function () use ($request) {
 
+            // Generate unique transaction code
             do {
                 $letters = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3));
                 $numbers = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $transactionCode = $letters . $numbers;
             } while (InvConsumableTransaction::where('transaction_code', $transactionCode)->exists());
 
-            $employee = InvEmployee::find($request->employee_id);
-
+            // ✅ FIX: Simpan employee_id sebagai string (bisa external ID)
             $trx = InvConsumableTransaction::create([
                 'transaction_code' => $transactionCode,
-                'employee_id' => $employee->id,
-                'borrower_name' => $employee->full_name,
+                'employee_id' => $request->employee_id ?: null, // Bisa NULL atau string external ID
+                'borrower_name' => $request->borrower_name,    // Wajib ada dari frontend
                 'client_id' => $request->client_id,
                 'client' => $request->client,
                 'project_id' => $request->project_id,
@@ -79,9 +87,10 @@ class ConsumableTransactionController extends Controller
             foreach ($request->items as $item) {
                 $consumable = InvConsumable::findOrFail($item['consumable_id']);
 
+                // Validasi stock sebelum simpan
                 if ($item['qty'] > $consumable->stock) {
                     throw new \Exception(
-                        "Stock {$consumable->name} hanya tersedia {$consumable->stock}"
+                        "Stock {$consumable->name} hanya tersedia {$consumable->stock}, Anda meminta {$item['qty']}"
                     );
                 }
 
@@ -111,9 +120,7 @@ class ConsumableTransactionController extends Controller
                     ->increment('stock', $item->qty);
             }
 
-            $trx->update([
-                'is_confirm' => true
-            ]);
+            $trx->update(['is_confirm' => true]);
         });
 
         return back()->with('success', 'Semua consumable berhasil dikembalikan');
@@ -138,7 +145,6 @@ class ConsumableTransactionController extends Controller
                 ]);
 
                 $clients = $response->json();
-
                 $found = collect($clients['data'] ?? $clients)
                     ->first(
                         fn($c) =>
@@ -150,6 +156,7 @@ class ConsumableTransactionController extends Controller
                     $initialClientId = $found['id'] ?? $found['client_id'] ?? null;
                 }
             } catch (\Exception $e) {
+                Log::warning('Gagal fetch client saat edit: ' . $e->getMessage());
             }
         }
 
@@ -164,17 +171,24 @@ class ConsumableTransactionController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'employee_id' => 'nullable|exists:inv_employee,id',
-            'borrower_name' => 'nullable',
-            'client_id' => 'nullable',
+            'employee_id' => 'nullable|string|max:255',
+            'borrower_name' => 'required|string|max:255',
+            'client_id' => 'nullable|string|max:255',
+            'client' => 'nullable|string|max:255',
+            'project_id' => 'nullable|string|max:255',
+            'project' => 'nullable|string|max:255',
+            'purpose' => 'nullable|string|max:255',
             'date' => 'required|date',
             'items' => 'required|array|min:1',
+            'items.*.consumable_id' => 'required|integer|exists:inv_consumables,id',
+            'items.*.qty' => 'required|integer|min:1',
         ]);
 
         DB::transaction(function () use ($request, $id) {
 
             $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
+            // Kalau sudah confirmed, kembalikan stock dulu sebelum update
             if ($trx->is_confirm) {
                 foreach ($trx->items as $item) {
                     $sisa = $item->qty - ($item->qty_return ?? 0);
@@ -187,18 +201,13 @@ class ConsumableTransactionController extends Controller
 
             $trx->items()->delete();
 
-            $borrowerName = $request->borrower_name;
-            if ($request->employee_id) {
-                $borrowerName = InvEmployee::find($request->employee_id)->full_name;
-            }
-
             $trx->update([
-                'employee_id' => $request->employee_id,
-                'borrower_name' => $borrowerName,
-                'client_id' => $request->client_id,      
-                'client' => $request->client,           
-                'project_id' => $request->project_id,    
-                'project' => $request->project,          
+                'employee_id' => $request->employee_id ?: null,
+                'borrower_name' => $request->borrower_name,
+                'client_id' => $request->client_id,
+                'client' => $request->client,
+                'project_id' => $request->project_id,
+                'project' => $request->project,
                 'purpose' => $request->purpose,
                 'date' => $request->date,
             ]);
@@ -208,7 +217,7 @@ class ConsumableTransactionController extends Controller
 
                 if ($item['qty'] > $consumable->stock) {
                     throw new \Exception(
-                        "Stock {$consumable->name} tidak cukup"
+                        "Stock {$consumable->name} tidak cukup (tersedia: {$consumable->stock})"
                     );
                 }
 
@@ -218,6 +227,7 @@ class ConsumableTransactionController extends Controller
                     'qty' => $item['qty'],
                 ]);
 
+                // Kalau transaksi sudah confirmed, langsung kurangi stock
                 if ($trx->is_confirm) {
                     $consumable->decrement('stock', $item['qty']);
                 }
@@ -232,13 +242,11 @@ class ConsumableTransactionController extends Controller
     {
         DB::transaction(function () use ($id) {
 
-            $trx = InvConsumableTransaction::with('items')
-                ->findOrFail($id);
+            $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
             if ($trx->is_confirm) {
                 foreach ($trx->items as $item) {
                     $sisa = $item->qty - ($item->qty_return ?? 0);
-
                     if ($sisa > 0) {
                         InvConsumable::where('id', $item->consumable_id)
                             ->increment('stock', $sisa);
@@ -279,14 +287,10 @@ class ConsumableTransactionController extends Controller
                 return $i->qty == $i->qty_return;
             });
 
-            $trx->update([
-                'return_date' => $request->return_date
-            ]);
+            $trx->update(['return_date' => $request->return_date]);
 
             if ($allReturned) {
-                $trx->update([
-                    'is_return' => true
-                ]);
+                $trx->update(['is_return' => true]);
             }
         });
 
@@ -306,13 +310,10 @@ class ConsumableTransactionController extends Controller
             $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
             foreach ($request->selected_items as $itemId) {
-
                 $data = $request->items[$itemId] ?? null;
-
                 if (!$data) continue;
 
                 $qtyReturn = (int) ($data['qty'] ?? 0);
-
                 if ($qtyReturn <= 0) continue;
 
                 $item = InvConsumableTransactionItem::findOrFail($itemId);
@@ -322,15 +323,12 @@ class ConsumableTransactionController extends Controller
                 }
 
                 $sisa = $item->qty - $item->qty_return;
-
                 if ($qtyReturn > $sisa) {
                     throw new \Exception("Qty return {$item->consumable->name} melebihi sisa pemakaian (sisa: {$sisa})");
                 }
 
                 $item->increment('qty_return', $qtyReturn);
-
-                InvConsumable::where('id', $item->consumable_id)
-                    ->increment('stock', $qtyReturn);
+                InvConsumable::where('id', $item->consumable_id)->increment('stock', $qtyReturn);
             }
 
             $allReturned = $trx->items->every(function ($i) {
@@ -338,9 +336,7 @@ class ConsumableTransactionController extends Controller
             });
 
             if ($allReturned) {
-                $trx->update([
-                    'return_date' => $request->return_date,
-                ]);
+                $trx->update(['return_date' => $request->return_date]);
             }
         });
 
@@ -352,13 +348,9 @@ class ConsumableTransactionController extends Controller
     {
         $item = InvConsumableTransactionItem::findOrFail($id);
 
-        $request->validate([
-            'qty' => 'required|integer|min:1'
-        ]);
+        $request->validate(['qty' => 'required|integer|min:1']);
 
-        $item->update([
-            'qty' => $request->qty
-        ]);
+        $item->update(['qty' => $request->qty]);
 
         return back()->with('success', 'Jumlah consumable berhasil diupdate');
     }
@@ -366,63 +358,44 @@ class ConsumableTransactionController extends Controller
     public function destroyItem($id)
     {
         $item = InvConsumableTransactionItem::findOrFail($id);
-
         $item->delete();
-
         return back()->with('success', 'Item consumable berhasil dihapus');
     }
 
     public function confirm($id)
     {
         try {
-
             DB::transaction(function () use ($id) {
 
-                $trx = InvConsumableTransaction::with('items.consumable')
-                    ->findOrFail($id);
+                $trx = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
 
                 if ($trx->is_confirm) {
                     throw new \Exception("Transaksi sudah dikonfirmasi");
                 }
 
                 foreach ($trx->items as $item) {
+                    $consumable = InvConsumable::lockForUpdate()->find($item->consumable_id);
 
-                    $consumable = InvConsumable::lockForUpdate()
-                        ->find($item->consumable_id);
-
-                    // ❗ FIX: pakai $consumable bukan $item->consumable
                     if ($item->qty > $consumable->stock) {
-                        throw new \Exception(
-                            "Stock {$consumable->name} tidak cukup"
-                        );
+                        throw new \Exception("Stock {$consumable->name} tidak cukup");
                     }
 
                     $consumable->decrement('stock', $item->qty);
                 }
 
-                $trx->update([
-                    'is_confirm' => true
-                ]);
+                $trx->update(['is_confirm' => true]);
             });
 
-            return redirect()
-                ->route('transaksi.index')
-                ->with('success', 'Transaksi berhasil dikonfirmasi');
+            return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dikonfirmasi');
         } catch (\Exception $e) {
-
-            return redirect()
-                ->route('transaksi.index')
-                ->with('error', $e->getMessage());
+            return redirect()->route('transaksi.index')->with('error', $e->getMessage());
         }
     }
 
     public function kembali(Request $request, $id)
     {
         try {
-
-            $request->validate([
-                'return_date' => 'required|date'
-            ]);
+            $request->validate(['return_date' => 'required|date']);
 
             DB::transaction(function () use ($request, $id) {
 
@@ -430,9 +403,7 @@ class ConsumableTransactionController extends Controller
 
                 foreach ($request->items as $itemId => $data) {
                     if (!empty($data['qty']) && $data['qty'] > 0) {
-
                         $item = InvConsumableTransactionItem::findOrFail($itemId);
-
                         $sisa = $item->qty - $item->qty_return;
 
                         if ($data['qty'] > $sisa) {
@@ -440,39 +411,25 @@ class ConsumableTransactionController extends Controller
                         }
 
                         $item->increment('qty_return', $data['qty']);
-
-                        $item->update([
-                            'note' => $data['note'] ?? '-'
-                        ]);
-
-                        InvConsumable::where('id', $item->consumable_id)
-                            ->increment('stock', $data['qty']);
+                        $item->update(['note' => $data['note'] ?? '-']);
+                        InvConsumable::where('id', $item->consumable_id)->increment('stock', $data['qty']);
                     }
                 }
 
                 $trx->load('items');
-
-                $trx->update([
-                    'return_date' => $request->return_date
-                ]);
+                $trx->update(['return_date' => $request->return_date]);
 
                 $allReturned = $trx->items->every(function ($i) {
                     return $i->qty == $i->qty_return;
                 });
 
                 if ($allReturned) {
-                    $trx->update([
-                        'is_return' => true
-                    ]);
+                    $trx->update(['is_return' => true]);
                 }
             });
 
-            // ✅ RETURN HARUS DI SINI (LUAR TRANSACTION)
-            return redirect()
-                ->route('transaksi.index')
-                ->with('success', 'Consumable berhasil dikembalikan');
+            return redirect()->route('transaksi.index')->with('success', 'Consumable berhasil dikembalikan');
         } catch (\Exception $e) {
-
             return back()->with('error', $e->getMessage());
         }
     }
@@ -480,12 +437,11 @@ class ConsumableTransactionController extends Controller
     public function storeItem(Request $request, $id)
     {
         $request->validate([
-            'consumable_id' => 'required',
+            'consumable_id' => 'required|integer|exists:inv_consumables,id',
             'qty' => 'required|integer|min:1',
         ]);
 
         DB::transaction(function () use ($request, $id) {
-
             $consumable = InvConsumable::findOrFail($request->consumable_id);
 
             if ($request->qty > $consumable->stock) {
@@ -504,7 +460,7 @@ class ConsumableTransactionController extends Controller
         return back()->with('success', 'Consumable berhasil ditambahkan ke transaksi');
     }
 
-    // ===== PROXY API EMPLOYEE  =====
+    // ===== PROXY API EMPLOYEE =====
     public function proxyEmployeeList(Request $request)
     {
         try {
@@ -512,14 +468,14 @@ class ConsumableTransactionController extends Controller
                 'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm',
                 'search' => $request->search
             ]);
-
             return response()->json($response->json());
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Proxy Employee Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal mengambil data employee'], 500);
         }
     }
 
-    // ===== PROXY API CLIENT  =====
+    // ===== PROXY API CLIENT =====
     public function proxyClientList()
     {
         try {
@@ -529,10 +485,10 @@ class ConsumableTransactionController extends Controller
             ])->get('http://api-checkin.artimu.co.id/ar_client/list', [
                 'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm'
             ]);
-
             return response()->json($response->json());
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Proxy Client Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal mengambil data client'], 500);
         }
     }
 
@@ -547,10 +503,10 @@ class ConsumableTransactionController extends Controller
                 'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm',
                 'client_id' => $request->client_id
             ]);
-
             return response()->json($response->json());
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Proxy Project Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal mengambil data project'], 500);
         }
     }
 }
