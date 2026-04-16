@@ -48,6 +48,7 @@
                                             class="w-full px-4 py-2 border rounded-lg focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition"
                                             placeholder="Cari nama karyawan...">
                                         <input type="hidden" name="employee_id" id="employee_id">
+                                        <input type="hidden" name="employee_name" id="employee_name_hidden">
                                         <div id="employee_suggestions"
                                             class="absolute left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-md mt-1 max-h-48 overflow-y-auto hidden z-50">
                                         </div>
@@ -62,22 +63,43 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama client</label>
-                                    <input type="text" name="client_name"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+
+                                <!-- CLIENT -->
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Client</label>
+
+                                    <input type="text" id="client_name" placeholder="Cari client..."
+                                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-blue-400">
+
+                                    <input type="hidden" name="client_id" id="client_id">
+                                    <input type="hidden" name="client_name" id="client_name_hidden">
+
+                                    <div id="client_suggestions"
+                                        class="absolute left-0 right-0 bg-white border rounded-lg shadow-md mt-1 hidden z-50">
+                                    </div>
                                 </div>
+
+                                <!-- PROJECT -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Proyek</label>
-                                    <input type="text" name="project"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Project</label>
+
+                                    <select id="project" name="project_id" disabled
+                                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-blue-400">
+                                        <option value="">Pilih client terlebih dahulu</option>
+                                    </select>
+
+                                    <input type="hidden" name="project_name" id="project_hidden">
                                 </div>
+
+                                <!-- KEPERLUAN -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
-                                    <input type="text" name="purpose"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition">
+
+                                    <input type="text" name="purpose" id="purpose" placeholder="Tujuan peminjaman..."
+                                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-blue-400">
                                 </div>
+
                             </div>
                         </div>
 
@@ -87,10 +109,12 @@
                                 <h3 class="text-lg font-bold text-gray-800">Daftar Alat yang Dipinjam</h3>
                                 <button type="button" id="openToolsBtn"
                                     class="group inline-flex items-center px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-xs text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
-                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M12 4v16m8-8H4"></path>
                                     </svg>
-                                     Pilih Tools
+                                    Pilih Tools
                                 </button>
                             </div>
 
@@ -196,7 +220,8 @@
                 </button>
                 <button type="button" id="btnAddTool"
                     class="group inline-flex items-center px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all duration-200 tracking-wide border-2 border-[#5EA6FF] bg-white text-sm text-[#5EA6FF] hover:bg-[#5EA6FF] hover:text-white hover:shadow-blue-500/40 hover:-translate-y-0.5">
-                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-90" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                     </svg>
                     Tambahkan
@@ -299,6 +324,26 @@
 
 {{-- ================= SCRIPT ================= --}}
 <script>
+    let employees = [];
+
+    fetch('/api/employees')
+        .then(res => res.json())
+        .then(data => {
+            employees = data.data;
+            console.log('Employees loaded:', employees);
+        })
+        .catch(err => console.error('Error:', err));
+
+    let clients = [];
+
+    fetch('/api/clients')
+        .then(res => res.json())
+        .then(data => {
+            clients = data.data || [];
+            console.log('Clients:', clients);
+        })
+        .catch(err => console.error(err));
+
     document.addEventListener('DOMContentLoaded', function () {
 
         let selectedTools = new Set();
@@ -322,23 +367,30 @@
         const deleteCancelBtn = document.getElementById('deleteCancelBtn');
         const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
         const formPeminjaman = document.getElementById('formPeminjaman');
+
         const submitBtn = document.getElementById('submitBtn');
 
         // ===== AUTOCOMPLETE EMPLOYEE =====
-        const employees = @json($employees);
         const inputEmp = document.getElementById('employee_name');
         const hiddenEmp = document.getElementById('employee_id');
         const box = document.getElementById('employee_suggestions');
 
         inputEmp.addEventListener('input', function () {
+            if (employees.length === 0) return;
             let value = this.value.toLowerCase();
             box.innerHTML = '';
             if (!value) {
+
+                document.getElementById('project').disabled = true;
+                document.getElementById('project').innerHTML = '<option>Pilih client terlebih dahulu</option>';
+
                 box.classList.add('hidden');
                 hiddenEmp.value = '';
                 return;
             }
-            let filtered = employees.filter(emp => emp.full_name.toLowerCase().includes(value));
+            let filtered = employees.filter(emp =>
+                (emp.full_name || '').toLowerCase().includes(value)
+            );
             if (filtered.length === 0) {
                 box.classList.add('hidden');
                 return;
@@ -351,6 +403,8 @@
                 item.addEventListener('click', function () {
                     inputEmp.value = emp.full_name;
                     hiddenEmp.value = emp.id;
+
+                    document.getElementById('employee_name_hidden').value = emp.full_name;
                     box.classList.add('hidden');
                 });
                 box.appendChild(item);
@@ -371,6 +425,103 @@
 
         document.addEventListener('click', function (e) {
             if (!e.target.closest('#employee_name')) box.classList.add('hidden');
+        });
+
+        const inputClient = document.getElementById('client_name');
+        const hiddenClient = document.getElementById('client_id');
+        const clientBox = document.getElementById('client_suggestions');
+
+        inputClient.addEventListener('input', function () {
+            let value = this.value.toLowerCase();
+            clientBox.innerHTML = '';
+
+            if (!value) {
+                clientBox.classList.add('hidden');
+                hiddenClient.value = '';
+                return;
+            }
+
+            let filtered = clients.filter(c =>
+                (c.client_name || '').toLowerCase().includes(value)
+            );
+
+            if (filtered.length === 0) {
+                clientBox.classList.add('hidden');
+                return;
+            }
+
+            clientBox.classList.remove('hidden');
+
+            filtered.forEach(c => {
+                let item = document.createElement('div');
+                item.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm";
+                item.innerText = c.client_name;
+
+                item.addEventListener('click', function () {
+                    console.log(c);
+                    inputClient.value = c.client_name;
+                    hiddenClient.value = c.id;
+
+                    document.getElementById('client_name_hidden').value = c.client_name;
+
+
+                    clientBox.classList.add('hidden');
+
+                    const projectSelect = document.getElementById('project');
+                    projectSelect.disabled = false;
+                    projectSelect.innerHTML = '<option value="">Loading project...</option>';
+
+                    console.log("CLIENT ID:", c.id);
+
+                    loadProjects(c.id);
+                });
+
+                clientBox.appendChild(item);
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!inputClient.contains(e.target) && !clientBox.contains(e.target)) {
+                clientBox.classList.add('hidden');
+            }
+        });
+
+        function loadProjects(clientId) {
+            fetch(`/api/projects?client_id=${clientId}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+
+                    let projects = data.data || [];
+                    let select = document.getElementById('project');
+
+                    select.innerHTML = '<option value="">Pilih project</option>';
+
+                    if (projects.length === 0) {
+                        let option = document.createElement('option');
+                        option.value = "";
+                        option.textContent = "Tidak ada project";
+                        select.appendChild(option);
+                        return;
+                    }
+
+                    projects.forEach(p => {
+                        let option = document.createElement('option');
+                        option.value = p.id;
+                        option.textContent = p.project_name;
+                        select.appendChild(option);
+                    });
+
+                    console.log('Projects loaded:', projects);
+                })
+                .catch(err => console.error(err));
+        }
+
+        document.getElementById('project').addEventListener('change', function () {
+            let selected = this.options[this.selectedIndex];
+            document.getElementById('project_hidden').value = selected.text;
+
+            console.log("PROJECT DIPILIH:", selected.text);
         });
 
         // ===== NOTIF SYSTEM =====

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\InvToolConditionLog;
 use App\Models\InvEmployee;
+use Illuminate\Support\Facades\Http;
+
 
 
 class ToolTransactionController extends Controller
@@ -79,15 +81,14 @@ class ToolTransactionController extends Controller
             ->where('status', 'TERSEDIA')
             ->get();
 
-        $employees = InvEmployee::select('id', 'full_name')->get();
 
-        return view('peminjaman.create', compact('serials', 'employees'));
+        return view('peminjaman.create', compact('serials'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'employee_id'   => 'required|exists:inv_employee,id',
+            'employee_id' => 'required|string',
             'date'          => 'required|date|after_or_equal:today',
             'serial_ids'    => 'required|array|min:1',
             'serial_ids.*'  => 'required|exists:inv_serial_number,id|distinct',
@@ -103,14 +104,16 @@ class ToolTransactionController extends Controller
             } while (ToolTransaction::where('transaction_code', $transactionCode)->exists());
 
             // Simpan transaksi
-            $employee = InvEmployee::findOrFail($request->employee_id);
+            $employeeName = $request->employee_name;
 
             $transaction = ToolTransaction::create([
                 'transaction_code' => $transactionCode,
                 'employee_id'      => $request->employee_id,
-                'borrower_name'    => $employee->full_name,
+                'borrower_name'    => $employeeName,
+                'client_id'        => $request->client_id,
                 'client_name'      => $request->client_name,
-                'project'          => $request->project,
+                'project_id'       => $request->project_id,
+                'project'          => $request->project_name,
                 'purpose'          => $request->purpose,
                 'date'             => $request->date ?? now(),
                 'is_confirm'       => false,
@@ -168,10 +171,10 @@ class ToolTransactionController extends Controller
 
         // Validasi form basic (SESUAIKAN DENGAN NAME DI BLADE)
         $request->validate([
-            'borrower_name' => 'required|string|max:255',
+            'employee_id' => 'required|string',
             'date'          => 'required|date',
             'client_name'   => 'nullable|string|max:255',
-            'project'       => 'nullable|string|max:255',
+            'project_name'  => 'nullable|string|max:255',
             'purpose'       => 'nullable|string|max:255',
         ]);
 
@@ -182,14 +185,27 @@ class ToolTransactionController extends Controller
                 ->with('error', 'Tidak bisa menyimpan, belum ada tools yang dipilih!');
         }
 
+        DB::transaction(function () use ($request, $transaction) {
+
+        $employeeName = $request->employee_name;
+
+
         // Update data utama transaksi
         $transaction->update([
-            'borrower_name' => $request->borrower_name,
+            'employee_id'   => $request->employee_id,
+            'borrower_name' => $employeeName,
             'date'          => $request->date,
+
+            'client_id'     => $request->client_id,
             'client_name'   => $request->client_name,
-            'project'       => $request->project,
+
+            'project_id'    => $request->project_id,
+            'project'       => $request->project_name,
+
             'purpose'       => $request->purpose,
         ]);
+
+        });
 
         return redirect()
             ->route('peminjaman.index')
@@ -231,6 +247,10 @@ class ToolTransactionController extends Controller
                     'serial_id'      => $serial->id,
                     'status'         => 'PENDING',
                 ]);
+
+                $serial->update([
+                    'status' => 'DIPINJAM'
+                ]);
             }
         });
 
@@ -254,7 +274,7 @@ class ToolTransactionController extends Controller
 
                     // cek apakah masih dipakai transaksi lain
                     $isStillUsed = ToolTransactionItem::where('serial_id', $item->serial_id)
-                        ->where('status', 'DIPINJAM')
+                        ->whereIn('status', ['PENDING', 'DIPINJAM'])
                         ->where('transaction_id', '!=', $transaction->id)
                         ->exists();
 
@@ -286,7 +306,12 @@ class ToolTransactionController extends Controller
 
         DB::transaction(function () use ($item) {
 
-            if ($item->serial) {
+            $isStillUsed = ToolTransactionItem::where('serial_id', $item->serial_id)
+                ->where('status', 'DIPINJAM')
+                ->where('id', '!=', $item->id)
+                ->exists();
+
+            if (!$isStillUsed) {
                 $item->serial->update([
                     'status' => 'TERSEDIA'
                 ]);
@@ -394,5 +419,39 @@ class ToolTransactionController extends Controller
 
         return redirect()->route('peminjaman.index')
             ->with('success', 'Pengembalian berhasil');
+    }
+
+    public function getEmployeesApi()
+    {
+        $response = Http::get(
+            'http://api-checkin.artimu.co.id/employee/list',
+            [
+                'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm'
+            ]
+        );
+
+        return response()->json($response->json());
+    }
+
+    public function getClientsApi()
+    {
+        $response = Http::get(
+            'http://api-checkin.artimu.co.id/ar_client/list',
+            [
+                'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm'
+            ]
+        );
+
+        return response()->json($response->json());
+    }
+
+    public function getProjectsApi(Request $request)
+    {
+        $response = Http::get('http://api-checkin.artimu.co.id/ar_client/projects', [
+            'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm',
+            'client_id' => $request->client_id
+        ]);
+
+        return response()->json($response->json());
     }
 }
