@@ -45,8 +45,8 @@
                                     </label>
                                     <div class="relative">
                                         <input type="text" id="employee_name"
-                                            class="w-full px-4 py-2 border rounded-lg focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none transition"
-                                            placeholder="Cari nama karyawan...">
+                                            placeholder="Cari nama karyawan..." 
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm">
                                         <input type="hidden" name="employee_id" id="employee_id">
                                         <input type="hidden" name="employee_name" id="employee_name_hidden">
                                         <div id="employee_suggestions"

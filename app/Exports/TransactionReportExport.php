@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\FromCollection;
-  
+
 
 class TransactionReportExport implements
     FromCollection,
@@ -29,45 +29,72 @@ class TransactionReportExport implements
     }
 
     public function collection()
-{
-    $rows = [];
+    {
+        $rows = [];
 
-    if ($this->type == 'peminjaman') {
+        if ($this->type == 'peminjaman') {
 
-        $query = ToolTransaction::with(['items.toolkit', 'items.serial']);
+            $query = ToolTransaction::with(['items.toolkit', 'items.serial']);
 
-        if ($this->start) $query->whereDate('date', '>=', $this->start);
-        if ($this->end)   $query->whereDate('date', '<=', $this->end);
+            if ($this->start) $query->whereDate('date', '>=', $this->start);
+            if ($this->end)   $query->whereDate('date', '<=', $this->end);
 
-        $data = $query->latest()->get();
+            $data = $query->latest()->get();
 
-        $no = 1;
+            $no = 1;
 
-        foreach ($data as $row) {
+            foreach ($data as $row) {
 
-            $alat = [];
-            $seri = [];
+                $alat = [];
+                $seri = [];
 
-            foreach ($row->items as $item) {
-                $alat[] = $item->toolkit->toolkit_name ?? '-';
-                $seri[] = $item->serial->serial_number ?? '-';
+                foreach ($row->items as $item) {
+                    $alat[] = $item->toolkit->toolkit_name ?? '-';
+                    $seri[] = $item->serial->serial_number ?? '-';
+                }
+
+                $rows[] = [
+                    $no++,
+                    $row->transaction_code,
+                    \Carbon\Carbon::parse($row->date)->format('d M Y'),
+                    $row->borrower_name,
+                    implode(' | ', $alat),
+                    implode(' | ', $seri),
+                    $row->client_name ?? '-',
+                    $row->project ?? '-'
+                ];
             }
+        } else { 
 
-            $rows[] = [
-                $no++,
-                $row->transaction_code,
-                Carbon::parse($row->date)->format('d M Y'),
-                $row->borrower_name,
-                implode(' | ', $alat),
-                implode(' | ', $seri),
-                $row->client_name ?? '-',
-                $row->project ?? '-'
-            ];
+            $query = ToolTransactionItem::with([
+                'transaction',
+                'toolkit',
+                'serial'
+            ])->whereNotNull('return_date');
+
+            if ($this->start) $query->whereDate('return_date', '>=', $this->start);
+            if ($this->end)   $query->whereDate('return_date', '<=', $this->end);
+
+            $data = $query->latest()->get();
+
+            $no = 1;
+
+            foreach ($data as $row) {
+                $rows[] = [
+                    $no++,
+                    $row->transaction->transaction_code ?? '-',
+                    \Carbon\Carbon::parse($row->return_date)->format('d M Y'),
+                    $row->transaction->borrower_name ?? '-',
+                    $row->toolkit->toolkit_name ?? '-',
+                    $row->serial->serial_number ?? '-',
+                    $row->return_condition ?? '-',
+                    $row->return_note ?? '-',
+                ];
+            }
         }
-    }
 
-    return collect($rows);
-}
+        return collect($rows);
+    }
 
     public function styles(Worksheet $sheet)
     {

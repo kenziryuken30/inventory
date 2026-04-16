@@ -88,7 +88,7 @@ class ReportConsumableController extends Controller
             ));
         }
 
-        // 🔥 BARU QUERY JALAN
+        // BARU QUERY JALAN
         $allData = $this->getData($request, $type, true);
         $data = $this->getData($request, $type);
 
