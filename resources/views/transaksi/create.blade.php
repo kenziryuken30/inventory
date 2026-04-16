@@ -44,39 +44,36 @@
                         {{-- ROW 1 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                            <script>window.empData = @json($employees);</script>
-
                             {{-- Search Employee --}}
                             <div x-data="empSearch()" @click.away="show = false" class="relative">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Nama Karyawan <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
-                                    <input type="text" x-model="search" @focus="if(!selected) show = true"
-                                        @input="if(!selected) show = true" placeholder="Ketik nama karyawan..."
+                                    <input type="text" x-model="search" @focus="fetchEmployees(); if(!selected) show = true"
+                                        @input="fetchEmployees(); if(!selected) show = true"
+                                        placeholder="Ketik nama karyawan..."
                                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none pr-9">
                                     <button type="button" x-show="selected" x-cloak
                                         @click="search = ''; selected = ''; selectedId = ''"
                                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
+                                        ✕
                                     </button>
                                 </div>
                                 <input type="hidden" name="employee_id" :value="selectedId">
                                 <input type="hidden" name="borrower_name" :value="selected">
+
                                 <div x-show="show && !selected && search.length > 0" x-transition x-cloak
                                     class="absolute z-50 mt-1 w-full bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
                                     <div class="max-h-56 overflow-y-auto">
-                                        <template x-for="[id, name] in filtered" :key="id">
+                                        <template x-for="emp in filtered" :key="getEmpId(emp)">
                                             <button type="button"
-                                                @click="selected = name; selectedId = id; search = name; show = false"
+                                                @click="selected = getEmpName(emp); selectedId = getEmpId(emp); search = getEmpName(emp); show = false"
                                                 class="w-full px-4 py-2.5 text-left text-sm hover:bg-blue-50 transition border-b border-gray-50 last:border-0">
-                                                <span x-text="name"></span>
+                                                <span x-text="getEmpName(emp)"></span>
                                             </button>
                                         </template>
-                                        <template x-if="filtered.length === 0">
+                                        <template x-if="!loading && filtered.length === 0">
                                             <div class="px-4 py-6 text-center text-gray-400 text-sm">Tidak ditemukan</div>
                                         </template>
                                     </div>
@@ -97,7 +94,7 @@
                         {{-- ROW 2 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                            {{-- NAMA CLIENT (Dengan Search API) --}}
+                            {{-- NAMA CLIENT --}}
                             <div x-data="clientSearch()" @click.away="show = false" class="relative">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Nama Client
@@ -126,11 +123,9 @@
                                         </svg>
                                     </div>
                                 </div>
-                                {{-- Hidden Inputs --}}
                                 <input type="hidden" name="client_id" :value="selectedId">
                                 <input type="hidden" name="client" :value="selected">
 
-                                {{-- Dropdown Results --}}
                                 <div x-show="show && !selected && search.length > 0" x-transition x-cloak
                                     class="absolute z-50 mt-1 w-full bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
                                     <div class="max-h-56 overflow-y-auto">
@@ -155,7 +150,6 @@
                                 </div>
                             </div>
 
-                            {{-- PROYEK (Combobox, tergantung client yang dipilih) --}}
                             <div x-data="projectDropdown()" class="relative">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
                                     Proyek
@@ -163,15 +157,16 @@
                                 <select name="project" :disabled="!hasClientId"
                                     :class="!hasClientId ? 'bg-gray-100 cursor-not-allowed' : 'bg-white cursor-pointer'"
                                     class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none appearance-none"
-                                    @change="selectedProject = $event.target.value">
+                                    @change="selectedProject = $event.target.value; selectedProjectId = $event.target.options[$event.target.selectedIndex].dataset.id">
 
-                                    {{-- Teks default DINAMIS (Bakal berubah sesuai kondisi) --}}
                                     <option value=""
                                         x-text="!hasClientId ? '-- Pilih Client dulu --' : (projects.length === 0 ? 'Tidak ada proyek tersedia' : '-- Pilih Proyek --')">
                                     </option>
 
                                     <template x-for="proj in projects" :key="getProjectName(proj)">
-                                        <option :value="getProjectName(proj)" x-text="getProjectName(proj)"></option>
+                                        <option :value="getProjectName(proj)"
+                                            :data-id="proj.id || proj.project_id || proj.code || ''"
+                                            x-text="getProjectName(proj)"></option>
                                     </template>
                                 </select>
                                 {{-- icon dropdown --}}
@@ -503,7 +498,6 @@
 
     <script>
         // ===== ALPINE COMPONENT: CLIENT SEARCH =====
-        // ===== ALPINE COMPONENT: CLIENT SEARCH =====
         function clientSearch() {
             return {
                 search: '',
@@ -726,11 +720,48 @@
                 selected: '',
                 selectedId: '',
                 show: false,
-                list: window.empData || {},
+                loading: false,
+                employees: [],
+                debounceTimer: null,
+
+                fetchEmployees() {
+                    clearTimeout(this.debounceTimer);
+                    this.debounceTimer = setTimeout(async () => {
+                        if (this.employees.length > 0) return; // udah pernah fetch, skip
+                        this.loading = true;
+                        try {
+                            const res = await fetch('{{ url("/api/proxy/employee-list") }}');
+                            const data = await res.json();
+
+                            if (data.data && Array.isArray(data.data)) this.employees = data.data;
+                            else if (Array.isArray(data)) this.employees = data;
+                            else this.employees = [];
+
+                            console.log('👤 Employees:', this.employees);
+                        } catch (e) {
+                            console.error('❌ Gagal fetch employees:', e);
+                            this.employees = [];
+                        } finally {
+                            this.loading = false;
+                        }
+                    }, 300);
+                },
+
                 get filtered() {
-                    if (!this.search) return [];
+                    if (!this.search || this.selected) return [];
                     const q = this.search.toLowerCase();
-                    return Object.entries(this.list).filter(([id, name]) => name.toLowerCase().includes(q));
+                    return this.employees.filter(emp => {
+                        const name = (emp.full_name || emp.name || emp.nama || '').toLowerCase();
+                        return name.includes(q);
+                    });
+                },
+
+                getEmpName(emp) {
+                    return emp.full_name || emp.name || emp.nama || '';
+                },
+
+                getEmpId(emp) {
+                    return emp.id || emp.employee_id || '';
                 }
             };
         }
@@ -1044,20 +1075,20 @@
                     } else {
                         startNo++;
                         const html = `
-                                                                    <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
-                                                                        <td class="py-3 px-4 text-center font-medium text-gray-600 w-12"><span class="no-col">${startNo}</span></td>
-                                                                        <td class="py-3 px-4 text-center w-20"><img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto"></td>
-                                                                        <td class="py-3 px-4"><span class="font-semibold text-gray-800 item-name">${name}</span></td>
-                                                                        <td class="text-center py-3 px-4 w-24"><div class="font-medium text-blue-600 stock-display">${stock}</div><div class="text-xs text-gray-400 unit-display">${unit}</div></td>
-                                                                        <td class="text-center py-3 px-4 w-32"><input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none"></td>
-                                                                        <td class="text-center py-3 px-4 w-16">
-                                                                            <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                                                                            </button>
-                                                                            <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                                                                            <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
-                                                                        </td>
-                                                                    </tr>`;
+                                                                                <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
+                                                                                    <td class="py-3 px-4 text-center font-medium text-gray-600 w-12"><span class="no-col">${startNo}</span></td>
+                                                                                    <td class="py-3 px-4 text-center w-20"><img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto"></td>
+                                                                                    <td class="py-3 px-4"><span class="font-semibold text-gray-800 item-name">${name}</span></td>
+                                                                                    <td class="text-center py-3 px-4 w-24"><div class="font-medium text-blue-600 stock-display">${stock}</div><div class="text-xs text-gray-400 unit-display">${unit}</div></td>
+                                                                                    <td class="text-center py-3 px-4 w-32"><input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none"></td>
+                                                                                    <td class="text-center py-3 px-4 w-16">
+                                                                                        <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
+                                                                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                                                                        </button>
+                                                                                        <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                                                                                        <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
+                                                                                    </td>
+                                                                                </tr>`;
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
                         addedCount++;

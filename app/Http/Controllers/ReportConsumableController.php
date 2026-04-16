@@ -55,7 +55,13 @@ class ReportConsumableController extends Controller
             }
         }
 
-        $query->latest();
+        if ($type === 'pengembalian') {
+            $query->orderBy('created_at', 'desc') 
+                ->orderBy('id', 'desc');
+        } else {
+            $query->orderBy('date', 'desc')
+                ->orderBy('id', 'desc');
+        }
 
         return $isExport
             ? $query->get()
@@ -67,11 +73,10 @@ class ReportConsumableController extends Controller
     {
         $type = $request->get('type', 'pengeluaran');
 
-        // 🔥 VALIDASI HARUS DI ATAS
         [$start, $end] = [$request->start_date, $request->end_date];
 
         if ($start && $end && $end < $start) {
-            $data = collect(); // kosongkan data
+            $data = collect(); 
             $totalItems = 0;
             $totalTransaksi = 0;
 

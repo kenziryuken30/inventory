@@ -40,14 +40,13 @@ class ConsumableTransactionController extends Controller
     {
         return view('transaksi.create', [
             'consumables' => InvConsumable::all(),
-            'employees' => InvEmployee::where('is_exit', 1)->orderBy('full_name')->pluck('full_name', 'id'),
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|exists:inv_employee,id', // <-- DIUBAH
+            'employee_id' => 'required|exists:inv_employee,id',
             'date' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.consumable_id' => 'required',
@@ -66,9 +65,11 @@ class ConsumableTransactionController extends Controller
 
             $trx = InvConsumableTransaction::create([
                 'transaction_code' => $transactionCode,
-                'employee_id' => $employee->id,               // <-- DITAMBAH
-                'borrower_name' => $employee->full_name,      // <-- DIUBAH (otomatis keisi nama employee)
+                'employee_id' => $employee->id,
+                'borrower_name' => $employee->full_name,
+                'client_id' => $request->client_id,
                 'client' => $request->client,
+                'project_id' => $request->project_id,
                 'project' => $request->project,
                 'purpose' => $request->purpose,
                 'date' => $request->date,
@@ -76,7 +77,6 @@ class ConsumableTransactionController extends Controller
             ]);
 
             foreach ($request->items as $item) {
-
                 $consumable = InvConsumable::findOrFail($item['consumable_id']);
 
                 if ($item['qty'] > $consumable->stock) {
@@ -123,25 +123,57 @@ class ConsumableTransactionController extends Controller
     {
         $transaction = InvConsumableTransaction::with('items.consumable')->findOrFail($id);
         $consumables = InvConsumable::all();
-        $employees = InvEmployee::all();
-        $initialClientId = $transaction->client_id ?? '';
 
-        return view('transaksi.edit', compact('transaction', 'consumables', 'employees',  'initialClientId'));
+        $initialClientId = $transaction->client_id;
+        $initialProject = $transaction->project;
+
+        if (!$initialClientId && $transaction->client) {
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Api Key',
+                    'Accept' => 'application/json',
+                ])->get('http://api-checkin.artimu.co.id/ar_client/list', [
+                    'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm',
+                    'search' => $transaction->client
+                ]);
+
+                $clients = $response->json();
+
+                $found = collect($clients['data'] ?? $clients)
+                    ->first(
+                        fn($c) =>
+                        strtolower($c['name'] ?? $c['client_name'] ?? '') ===
+                            strtolower($transaction->client)
+                    );
+
+                if ($found) {
+                    $initialClientId = $found['id'] ?? $found['client_id'] ?? null;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        return view('transaksi.edit', compact(
+            'transaction',
+            'consumables',
+            'initialClientId',
+            'initialProject'
+        ));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'employee_id' => 'nullable|exists:inv_employee,id', // <-- DITAMBAH (nullable biar halaman edit lama ga error)
-            'borrower_name' => 'nullable',                       // <-- DIUBAH
+            'employee_id' => 'nullable|exists:inv_employee,id',
+            'borrower_name' => 'nullable',
+            'client_id' => 'nullable',
             'date' => 'required|date',
             'items' => 'required|array|min:1',
         ]);
 
         DB::transaction(function () use ($request, $id) {
 
-            $trx = InvConsumableTransaction::with('items')
-                ->findOrFail($id);
+            $trx = InvConsumableTransaction::with('items')->findOrFail($id);
 
             if ($trx->is_confirm) {
                 foreach ($trx->items as $item) {
@@ -155,23 +187,23 @@ class ConsumableTransactionController extends Controller
 
             $trx->items()->delete();
 
-            // <-- LOGIC BARU: Pilih nama berdasarkan ada/tidaknya employee_id
             $borrowerName = $request->borrower_name;
             if ($request->employee_id) {
                 $borrowerName = InvEmployee::find($request->employee_id)->full_name;
             }
 
             $trx->update([
-                'employee_id' => $request->employee_id, // <-- DITAMBAH
-                'borrower_name' => $borrowerName,       // <-- DIUBAH
-                'client' => $request->client,
-                'project' => $request->project,
+                'employee_id' => $request->employee_id,
+                'borrower_name' => $borrowerName,
+                'client_id' => $request->client_id,      
+                'client' => $request->client,           
+                'project_id' => $request->project_id,    
+                'project' => $request->project,          
                 'purpose' => $request->purpose,
                 'date' => $request->date,
             ]);
 
             foreach ($request->items as $item) {
-
                 $consumable = InvConsumable::findOrFail($item['consumable_id']);
 
                 if ($item['qty'] > $consumable->stock) {
@@ -472,7 +504,22 @@ class ConsumableTransactionController extends Controller
         return back()->with('success', 'Consumable berhasil ditambahkan ke transaksi');
     }
 
-    // ===== PROXY API CLIENT (BIAR GA KENA CORS) =====
+    // ===== PROXY API EMPLOYEE  =====
+    public function proxyEmployeeList(Request $request)
+    {
+        try {
+            $response = Http::get('http://api-checkin.artimu.co.id/employee/list', [
+                'key' => 'k4v9X8F1kqPz1LpYbG7aNzR6VnZ0TpQm',
+                'search' => $request->search
+            ]);
+
+            return response()->json($response->json());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    // ===== PROXY API CLIENT  =====
     public function proxyClientList()
     {
         try {
@@ -489,7 +536,7 @@ class ConsumableTransactionController extends Controller
         }
     }
 
-    // ===== PROXY API PROJECT (BIAR GA KENA CORS) =====
+    // ===== PROXY API PROJECT =====
     public function proxyClientProjects(Request $request)
     {
         try {
