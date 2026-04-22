@@ -114,7 +114,7 @@
 
                         <input type="text" name="purpose" value="{{ $transaction->purpose }}"
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm focus:ring-2
-                                                                                                         focus:ring-blue-400 transition duration-200">
+                                                                                                             focus:ring-blue-400 transition duration-200">
                     </div>
 
                 </div>
@@ -191,12 +191,10 @@
                                         </form>
 
                                         {{-- ICON HAPUS --}}
-                                        <button type="button" onclick="openDeleteModal({{ $item->id }})"
-                                            class="inline-flex items-center justify-center w-9 h-9 rounded-lg 
-                                            bg-red-50 hover:bg-red-100 
-                                            border border-red-200 hover:border-red-300 
-                                            transition-all duration-200 hover:scale-105"
-                                            title="Hapus">
+                                        <button type="button" onclick="openDeleteModal({{ $item->id }})" class="inline-flex items-center justify-center w-9 h-9 rounded-lg 
+                                                    bg-red-50 hover:bg-red-100 
+                                                    border border-red-200 hover:border-red-300 
+                                                    transition-all duration-200 hover:scale-105" title="Hapus">
                                             <i class="ph ph-trash text-red-500 text-[18px]"></i>
                                         </button>
                                     </td>
@@ -275,29 +273,29 @@
                                 <tbody id="toolsTableBody" class="bg-white divide-y divide-gray-100">
 
                                     @forelse ($serials as $serial)
-                                         <tr class="hover:bg-gray-50 transition cursor-pointer">
+                                                                <tr class="hover:bg-gray-50 transition cursor-pointer">
 
-                                                <td class="py-3 px-4 text-center">
-                                                    <input type="checkbox" name="serial_ids[]" value="{{ $serial->id }}"
-                                                    class="w-5 h-5 rounded border-gray-300 text-[#5EA6FF] focus:ring-[#5EA6FF]">
-                                                </td>
+                                                                    <td class="py-3 px-4 text-center">
+                                                                        <input type="checkbox" name="serial_ids[]" value="{{ $serial->id }}"
+                                                                            class="w-5 h-5 rounded border-gray-300 text-[#5EA6FF] focus:ring-[#5EA6FF]">
+                                                                    </td>
 
-                                                <td class="py-3 px-4 font-medium text-gray-800">
-                                                    {{ $serial->toolkit->toolkit_name }}
-                                                </td>
+                                                                    <td class="py-3 px-4 font-medium text-gray-800">
+                                                                        {{ optional($serial->toolkit)->toolkit_name }}
+                                                                    </td>
 
-                                                <td class="py-3 px-4 text-center text-gray-600 font-mono text-xs">
-                                                    {{ $serial->serial_number }}
-                                                </td>
+                                                                    <td class="py-3 px-4 text-center text-gray-600 font-mono text-xs">
+                                                                        {{ $serial->serial_number }}
+                                                                    </td>
 
-                                                <td class="py-3 px-4 text-center">
-                                                    <img src="{{ $serial->toolkit->image
-                                        ? asset('storage/' . $serial->toolkit->image)
+                                                                    <td class="py-3 px-4 text-center">
+                                                                        <img src="{{ optional($serial->toolkit)->image
+                                        ? asset('storage/' . optional($serial->toolkit)->image)
                                         : asset('images/no-image.png') }}"
-                                            class="w-10 h-10 object-contain mx-auto rounded shadow-sm border">
-                                                </td>
+                                                                            class="w-10 h-10 object-contain mx-auto rounded shadow-sm border">
+                                                                    </td>
 
-                                            </tr>
+                                                                </tr>
                                     @empty
                                         <tr>
                                             <td colspan="4" class="text-center text-gray-400 py-10">
@@ -493,8 +491,8 @@
                 @endif
 
 
-                // ================= MODAL HAPUS ITEM =================
-                const deleteItemModal = document.getElementById('deleteItemModal');
+                    // ================= MODAL HAPUS ITEM =================
+                    const deleteItemModal = document.getElementById('deleteItemModal');
                 const deleteItemNameModal = document.getElementById('deleteItemNameModal');
                 let pendingDeleteId = null;
 
@@ -641,6 +639,12 @@
                         return;
                     }
 
+                    if (selectedDate < today) {
+                        e.preventDefault();
+                        showNotif('Tanggal tidak boleh di masa lalu', 'error');
+                        return;
+                    }
+
                     // 3. Validasi minimal 1 tool ada di tabel
                     const toolRows = document.querySelectorAll('#tableTools tbody tr[data-id]');
                     if (toolRows.length === 0) {
@@ -653,11 +657,11 @@
                     isSubmitting = true;
                     const originalText = submitBtn.innerHTML;
                     submitBtn.innerHTML = `
-                    <svg class="animate-spin w-5 h-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Menyimpan...`;
+                        <svg class="animate-spin w-5 h-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Menyimpan...`;
                     submitBtn.disabled = true;
                     submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
                     submitBtn.style.pointerEvents = 'none';

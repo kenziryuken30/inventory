@@ -7,6 +7,8 @@ use App\Models\InvCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class InvConsumableController extends Controller
@@ -64,6 +66,14 @@ class InvConsumableController extends Controller
 
         InvConsumable::create($data);
 
+        DB::table('activity_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'create_consumable',
+            'description' => 'Tambah consumable: ' . $data['name'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         return back()->with('success', 'Consumable berhasil ditambahkan');
     }
 
@@ -88,6 +98,14 @@ class InvConsumableController extends Controller
         }
 
         $item->update($data);
+
+        DB::table('activity_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'update_consumable',
+            'description' => 'Update consumable: ' . $data['name'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return back()->with('success', 'Consumable berhasil diupdate');
     }
@@ -114,6 +132,14 @@ class InvConsumableController extends Controller
         $item = InvConsumable::findOrFail($id);
         $item->stock += $request->qty;
         $item->save();
+
+        DB::table('activity_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'add_stock',
+            'description' => 'Tambah stok: ' . $item->name . ' (+' . $request->qty . ')',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return back()->with('success', 'Stok berhasil ditambah');
     }

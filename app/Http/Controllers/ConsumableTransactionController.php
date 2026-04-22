@@ -11,6 +11,7 @@ use App\Models\InvConsumableTransaction;
 use App\Models\InvConsumableTransactionItem;
 use App\Models\InvEmployee;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 
 class ConsumableTransactionController extends Controller
 {
@@ -384,7 +385,20 @@ class ConsumableTransactionController extends Controller
                 }
 
                 $trx->update(['is_confirm' => true]);
+
+                foreach ($trx->items as $item) {
+                    DB::table('activity_logs')->insert([
+                        'user_id' => Auth::id(),
+                        'action' => 'consume_item',
+                        'description' => 'Ambil consumable: '
+                            . $item->consumable->name
+                            . ' (' . $item->qty . ')',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             });
+
 
             return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dikonfirmasi');
         } catch (\Exception $e) {
@@ -414,6 +428,16 @@ class ConsumableTransactionController extends Controller
                         $item->update(['note' => $data['note'] ?? '-']);
                         InvConsumable::where('id', $item->consumable_id)->increment('stock', $data['qty']);
                     }
+
+                    DB::table('activity_logs')->insert([
+                        'user_id' => Auth::id(),
+                        'action' => 'return_consumable',
+                        'description' => 'Kembali consumable: '
+                            . $item->consumable->name
+                            . ' (' . $data['qty'] . ')',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
                 }
 
                 $trx->load('items');

@@ -40,5 +40,28 @@ class InvSerialNumber extends Model
         return $this->hasOne(InvToolConditionLog::class, 'serial_id')
                     ->latestOfMany();
     }
+
+    public function latestTransaction()
+{
+    return $this->hasOne(\App\Models\ToolTransactionItem::class, 'serial_id')
+        ->latestOfMany(); 
+}
+
+public function getStatusLabelAttribute()
+{
+    if ($this->latestTransaction?->status === 'DIPINJAM') {
+        return 'dipinjam';
+    }
+
+    if ($this->latestTransaction?->status === 'PENDING') {
+        return 'pending';
+    }
+
+    if (in_array($this->latestCondition?->condition, ['rusak', 'maintenance'])) {
+        return 'tidak tersedia';
+    }
+
+    return 'tersedia';
+}
 }
 

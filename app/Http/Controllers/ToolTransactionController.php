@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use App\Models\InvToolConditionLog;
 use App\Models\InvEmployee;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -42,16 +43,16 @@ class ToolTransactionController extends Controller
                     // 🔍 Cari nama tools (YANG BELUM DIKEMBALIKAN)
                     ->orWhereHas('items', function ($q2) use ($search) {
                         $q2->whereNull('return_date')
-                            ->whereHas('toolkit', function ($q3) use ($search) {
-                                $q3->where('toolkit_name', 'like', "%$search%");
-                            });
-                    })
+                            ->where(function ($q3) use ($search) {
 
-                    // 🔍 Cari serial number (YANG BELUM DIKEMBALIKAN)
-                    ->orWhereHas('items', function ($q2) use ($search) {
-                        $q2->whereNull('return_date')
-                            ->whereHas('serial', function ($q3) use ($search) {
-                                $q3->where('serial_number', 'like', "%$search%");
+                                $q3->whereHas('toolkit', function ($q4) use ($search) {
+                                    $q4->where('toolkit_name', 'like', "%$search%");
+                                })
+
+                                ->orWhereHas('serial', function ($q4) use ($search) {
+                                    $q4->where('serial_number', 'like', "%$search%");
+                                });
+
                             });
                     });
             });
@@ -86,30 +87,29 @@ class ToolTransactionController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'employee_id' => 'required|string',
-            'date'          => 'required|date|after_or_equal:today',
-            'serial_ids'    => 'required|array|min:1',
-            'serial_ids.*'  => 'required|exists:inv_serial_number,id|distinct',
-        ]);
+{
+    $request->validate([
+        'employee_id' => 'required',
+        'date'        => 'required|date|after_or_equal:today',
+        'serial_ids'  => 'required|array|min:1',
+        'serial_ids.*'=> 'required|exists:inv_serial_number,id|distinct',
+    ]);
+
+    try {
 
         DB::transaction(function () use ($request) {
 
-            // Generate kode
+            // generate kode
             do {
                 $letters = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3));
                 $numbers = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $transactionCode = $letters . $numbers;
             } while (ToolTransaction::where('transaction_code', $transactionCode)->exists());
 
-            // Simpan transaksi
-            $employeeName = $request->employee_name;
-
             $transaction = ToolTransaction::create([
                 'transaction_code' => $transactionCode,
                 'employee_id'      => $request->employee_id,
-                'borrower_name'    => $employeeName,
+                'borrower_name'    => $request->employee_name,
                 'client_id'        => $request->client_id,
                 'client_name'      => $request->client_name,
                 'project_id'       => $request->project_id,
@@ -119,15 +119,15 @@ class ToolTransactionController extends Controller
                 'is_confirm'       => false,
             ]);
 
-            // Pastikan ID ada
-            if (!$transaction->id) {
-                throw new \Exception('Transaction ID kosong');
+            // 🔥 DEBUG PENTING
+            if (!$transaction) {
+                throw new \Exception('Gagal insert transaksi');
             }
 
             foreach ($request->serial_ids as $serialId) {
 
-                $serial = InvSerialNumber::where('status', 'TERSEDIA')
-                    ->where('id', $serialId)
+                $serial = InvSerialNumber::where('id', $serialId)
+                    ->lockForUpdate()
                     ->firstOrFail();
 
                 ToolTransactionItem::create([
@@ -146,8 +146,12 @@ class ToolTransactionController extends Controller
         return redirect()
             ->route('peminjaman.index')
             ->with('success', 'Transaksi berhasil dibuat');
-    }
 
+    } catch (\Exception $e) {
+
+        dd($e->getMessage()); // INI AKAN MUNCULIN ERROR SEBENARNYA
+    }
+}
     public function edit($id)
     {
         $transaction = ToolTransaction::with('items.serial')
@@ -171,7 +175,7 @@ class ToolTransactionController extends Controller
 
         // Validasi form basic (SESUAIKAN DENGAN NAME DI BLADE)
         $request->validate([
-            'employee_id' => 'required|string',
+            'employee_id' => 'required',
             'date'          => 'required|date',
             'client_name'   => 'nullable|string|max:255',
             'project_name'  => 'nullable|string|max:255',
@@ -187,24 +191,23 @@ class ToolTransactionController extends Controller
 
         DB::transaction(function () use ($request, $transaction) {
 
-        $employeeName = $request->employee_name;
+            $employeeName = $request->employee_name;
 
 
-        // Update data utama transaksi
-        $transaction->update([
-            'employee_id'   => $request->employee_id,
-            'borrower_name' => $employeeName,
-            'date'          => $request->date,
+            // Update data utama transaksi
+            $transaction->update([
+                'employee_id'   => $request->employee_id,
+                'borrower_name' => $employeeName,
+                'date'          => $request->date,
 
-            'client_id'     => $request->client_id,
-            'client_name'   => $request->client_name,
+                'client_id'     => $request->client_id,
+                'client_name'   => $request->client_name,
 
-            'project_id'    => $request->project_id,
-            'project'       => $request->project_name,
+                'project_id'    => $request->project_id,
+                'project'       => $request->project_name,
 
-            'purpose'       => $request->purpose,
-        ]);
-
+                'purpose'       => $request->purpose,
+            ]);
         });
 
         return redirect()
@@ -229,9 +232,9 @@ class ToolTransactionController extends Controller
 
             foreach ($request->serial_ids as $serialId) {
 
-                $serial = InvSerialNumber::with('toolkit')
-                    ->where('status', 'TERSEDIA')
-                    ->findOrFail($serialId);
+                $serial = InvSerialNumber::where('id', $serialId)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
                 // Cegah duplikat
                 $exists = ToolTransactionItem::where('transaction_id', $transaction->id)
@@ -350,6 +353,18 @@ class ToolTransactionController extends Controller
                 ]);
 
                 foreach ($transaction->items as $item) {
+                    DB::table('activity_logs')->insert([
+                        'user_id' => Auth::id(),
+                        'action' => 'Peminjaman_tools',
+                        'description' => 'Pinjam: '
+                            . optional($item->serial->toolkit)->toolkit_name
+                            . ' (' . $item->serial->serial_number . ')',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                foreach ($transaction->items as $item) {
                     $item->update(['status' => 'DIPINJAM']);
                     $item->serial->update(['status' => 'DIPINJAM']);
                 }
@@ -389,7 +404,7 @@ class ToolTransactionController extends Controller
                 // Update transaction item
                 $item->update([
                     'return_date' => $request->return_date,
-                    'status'      => 'Tersedia',
+                    'status'      => 'TERSEDIA',
                     'return_condition' => $condition,
                     'return_note' => $data['note'] ?? null,
                 ]);
@@ -413,6 +428,16 @@ class ToolTransactionController extends Controller
                 // Update status serial
                 $item->serial->update([
                     'status' => $statusSerial
+                ]);
+
+                DB::table('activity_logs')->insert([
+                    'user_id' => Auth::id(),
+                    'action' => 'Pengembalian_tools',
+                    'description' => 'Kembali: '
+                        . optional($item->serial->toolkit)->toolkit_name
+                        . ' (' . $item->serial->serial_number . ')',
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
         });

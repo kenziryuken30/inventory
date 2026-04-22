@@ -9,6 +9,9 @@ class ToolTransaction extends Model
 {
     protected $table = 'inv_transaction';
 
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
         'transaction_code',
         'borrower_name',

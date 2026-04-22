@@ -10,6 +10,7 @@ use App\Models\InvCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ToolController extends Controller
 {
@@ -18,7 +19,9 @@ class ToolController extends Controller
     {
         $query = InvSerialNumber::with([
             'toolkit.category',
-            'latestCondition'
+            'latestCondition',
+            'latestTransaction'
+
         ]);
 
         if ($request->condition) {
@@ -59,31 +62,6 @@ class ToolController extends Controller
 
         $tools = $query->latest()->paginate(5)->withQueryString();
 
-        // 🔥 STATUS LOGIC (punya kamu, tidak diubah)
-        foreach ($tools as $tool) {
-
-            $condition = $tool->latestCondition->condition ?? 'baik';
-
-            $latestTransaction = \App\Models\ToolTransactionItem::where('serial_id', $tool->id)
-                ->orderBy('created_at', 'desc')
-                ->first();
-
-            $isDipinjam = $latestTransaction && $latestTransaction->status == 'DIPINJAM';
-            $isPending  = $latestTransaction && $latestTransaction->status == 'PENDING';
-
-            $tool->isDipinjam = $isDipinjam;
-            $tool->isPending = $isPending;
-
-            if ($tool->isDipinjam) {
-                $tool->status_label = 'dipinjam';
-            } elseif ($tool->isPending) {
-                $tool->status_label = 'pending';
-            } elseif (in_array($condition, ['rusak', 'maintenance'])) {
-                $tool->status_label = 'tidak tersedia';
-            } else {
-                $tool->status_label = 'tersedia';
-            }
-        }
 
         $rusakCount = InvSerialNumber::whereHas('latestCondition', function ($q) {
             $q->where('condition', 'rusak');
@@ -101,7 +79,7 @@ class ToolController extends Controller
 
         $request->validate([
             'toolkit_name'  => 'required|string|max:255',
-            'category_id'   => 'required',
+            'category_id' => 'required|exists:inv_categories,id',
             'serial_number' => 'required|unique:inv_serial_number,serial_number',
             'image'         => 'nullable|image|max:2048',
         ], [
@@ -131,6 +109,14 @@ class ToolController extends Controller
             'serial_id' => $serial->id,
             'condition' => 'baik',
             'note'     => 'Kondisi awal saat alat ditambahkan',
+        ]);
+
+        DB::table('activity_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'create_tool',
+            'description' => 'Tambah tool: ' . $request->toolkit_name,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->back()
@@ -178,6 +164,14 @@ class ToolController extends Controller
                 'image' => $path
             ]);
         }
+
+        DB::table('activity_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'update tool',
+            'description' => 'Edit tool: ' . $request->toolkit_name,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect()->route('tools.index')
             ->with('success', 'Barang berhasil diupdate');

@@ -28,6 +28,16 @@
             </div>
         </div>
 
+        @if ($errors->any())
+    <div style="background:red;color:white;padding:10px;margin-bottom:10px;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
         <form method="POST" action="{{ route('peminjaman.store') }}" id="formPeminjaman">
             @csrf
             {{-- Main Card --}}
@@ -44,8 +54,7 @@
                                         Nama Peminjam <span class="text-red-500">*</span>
                                     </label>
                                     <div class="relative">
-                                        <input type="text" id="employee_name"
-                                            placeholder="Cari nama karyawan..." 
+                                        <input type="text" id="employee_name" placeholder="Cari nama karyawan..."
                                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm">
                                         <input type="hidden" name="employee_id" id="employee_id">
                                         <input type="hidden" name="employee_name" id="employee_name_hidden">
@@ -191,20 +200,22 @@
                         <tbody id="toolsTable" class="bg-white divide-y divide-gray-100">
                             @foreach ($serials as $serial)
                                 <tr class="hover:bg-blue-50/30 transition cursor-pointer tool-row"
-                                    data-name="{{ strtolower($serial->toolkit->toolkit_name) }}">
+                                    data-name="{{ strtolower(optional($serial->toolkit)->toolkit_name) }}">
                                     <td class="py-3 px-4 text-center">
                                         <input type="checkbox"
                                             class="tool-checkbox w-4 h-4 accent-[#5EA6FF] rounded border-gray-300"
-                                            value="{{ $serial->id }}" data-name="{{ $serial->toolkit->toolkit_name }}"
+                                            value="{{ $serial->id }}" data-name="{{ optional($serial->toolkit)->toolkit_name }}"
                                             data-serial="{{ $serial->serial_number }}"
-                                            data-image="{{ $serial->toolkit->image }}">
+                                            data-image="{{ optional($serial->toolkit)->image }}">
                                     </td>
-                                    <td class="py-3 px-4 font-medium text-gray-800">{{ $serial->toolkit->toolkit_name }}</td>
+                                    <td class="py-3 px-4 font-medium text-gray-800">
+                                        {{ optional($serial->toolkit)->toolkit_name }}
+                                    </td>
                                     <td class="py-3 px-4 text-center text-gray-500 font-mono text-xs">
                                         {{ $serial->serial_number }}
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <img src="{{ $serial->toolkit->image ? asset('storage/' . $serial->toolkit->image) : asset('images/no-image.png') }}"
+                                        <img src="{{ optional($serial->toolkit)->image ? asset('storage/' . optional($serial->toolkit)->image) : asset('images/no-image.png') }}"
                                             class="w-10 h-10 object-contain mx-auto rounded-lg shadow-sm preview-image cursor-pointer hover:scale-110 transition">
                                     </td>
                                 </tr>
@@ -324,26 +335,7 @@
 
 {{-- ================= SCRIPT ================= --}}
 <script>
-    let employees = [];
-
-    fetch('/api/employees')
-        .then(res => res.json())
-        .then(data => {
-            employees = data.data;
-            console.log('Employees loaded:', employees);
-        })
-        .catch(err => console.error('Error:', err));
-
-    let clients = [];
-
-    fetch('/api/clients')
-        .then(res => res.json())
-        .then(data => {
-            clients = data.data || [];
-            console.log('Clients:', clients);
-        })
-        .catch(err => console.error(err));
-
+    
     document.addEventListener('DOMContentLoaded', function () {
 
         let selectedTools = new Set();
@@ -370,17 +362,54 @@
 
         const submitBtn = document.getElementById('submitBtn');
 
+         let employees = [];
+    let clients = [];
+
+    fetch('/api/employees')
+        .then(res => {
+            if (!res.ok) throw new Error('Gagal load data');
+            return res.json();
+        })
+        .then(data => {
+            employees = data.data || [];
+        })
+        .catch(err => {
+            console.error(err);
+            showNotif('Gagal mengambil data karyawan', 'error');
+        });
+
+    fetch('/api/clients')
+        .then(res => {
+            if (!res.ok) throw new Error('Gagal load data');
+            return res.json();
+        })
+        .then(data => {
+            clients = data.data || [];
+        })
+        .catch(err => {
+            console.error(err);
+            showNotif('Gagal mengambil data client', 'error');
+        });
+
         // ===== AUTOCOMPLETE EMPLOYEE =====
         const inputEmp = document.getElementById('employee_name');
         const hiddenEmp = document.getElementById('employee_id');
         const box = document.getElementById('employee_suggestions');
 
         inputEmp.addEventListener('input', function () {
-            if (employees.length === 0) return;
-            let value = this.value.toLowerCase();
-            box.innerHTML = '';
-            if (!value) {
+            if (employees.length === 0) {
+                box.innerHTML = `<div class="px-4 py-2 text-sm text-gray-400">
+                    Data karyawan belum tersedia
+                </div>`;
+                box.classList.remove('hidden');
+                return;
+            }
 
+            let value = this.value.toLowerCase().trim();
+            box.innerHTML = '';
+
+            // Reset jika kosong
+            if (!value) {
                 document.getElementById('project').disabled = true;
                 document.getElementById('project').innerHTML = '<option>Pilih client terlebih dahulu</option>';
 
@@ -388,18 +417,36 @@
                 hiddenEmp.value = '';
                 return;
             }
+
+            //  VALIDASI: reset kalau user ubah manual
+            const employeeId = hiddenEmp.value;
+            if (employeeId) {
+                const selectedEmp = employees.find(emp => emp.id == employeeId);
+                if (selectedEmp && selectedEmp.full_name.toLowerCase() !== value) {
+                    hiddenEmp.value = '';
+                }
+            }
+
+            // FILTER DATA
             let filtered = employees.filter(emp =>
                 (emp.full_name || '').toLowerCase().includes(value)
             );
+
             if (filtered.length === 0) {
-                box.classList.add('hidden');
+                box.innerHTML = `<div class="px-4 py-2 text-sm text-gray-400">
+                    Tidak ada hasil
+                </div>`;
+                box.classList.remove('hidden');
                 return;
             }
+
             box.classList.remove('hidden');
+
             filtered.forEach(emp => {
                 let item = document.createElement('div');
                 item.className = "px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm";
                 item.innerText = emp.full_name;
+
                 item.addEventListener('click', function () {
                     inputEmp.value = emp.full_name;
                     hiddenEmp.value = emp.id;
@@ -407,20 +454,9 @@
                     document.getElementById('employee_name_hidden').value = emp.full_name;
                     box.classList.add('hidden');
                 });
+
                 box.appendChild(item);
             });
-        });
-
-        // Clear employee_id saat user edit nama manual setelah pilih
-        inputEmp.addEventListener('input', function () {
-            const currentValue = this.value.trim();
-            const employeeId = hiddenEmp.value;
-            if (employeeId) {
-                const selectedEmp = employees.find(emp => emp.id == employeeId);
-                if (selectedEmp && selectedEmp.full_name !== currentValue) {
-                    hiddenEmp.value = '';
-                }
-            }
         });
 
         document.addEventListener('click', function (e) {
@@ -446,11 +482,15 @@
             );
 
             if (filtered.length === 0) {
-                clientBox.classList.add('hidden');
+                clientBox.innerHTML = `<div class="px-4 py-2 text-sm text-gray-400">
+                    Tidak ada client ditemukan
+                </div>`;
+                clientBox.classList.remove('hidden');
                 return;
             }
 
             clientBox.classList.remove('hidden');
+            
 
             filtered.forEach(c => {
                 let item = document.createElement('div');
@@ -479,6 +519,8 @@
                 clientBox.appendChild(item);
             });
         });
+
+        
 
         document.addEventListener('click', function (e) {
             if (!inputClient.contains(e.target) && !clientBox.contains(e.target)) {
@@ -514,7 +556,10 @@
 
                     console.log('Projects loaded:', projects);
                 })
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err);
+                    showNotif('Gagal mengambil project', 'error');
+                });
         }
 
         document.getElementById('project').addEventListener('change', function () {
@@ -767,6 +812,8 @@
         // ===== VALIDASI FORM SUBMIT =====
         formPeminjaman.addEventListener('submit', function (e) {
 
+            console.log("SUBMIT KE TRIGGER");
+
             // Cegah double submit
             if (isSubmitting) {
                 e.preventDefault();
@@ -786,7 +833,7 @@
 
             // Cek nama yang diketik cocok dengan data yang tersimpan
             const selectedEmp = employees.find(emp => emp.id == employeeId);
-            if (selectedEmp && selectedEmp.full_name !== employeeName) {
+            if (selectedEmp && selectedEmp.full_name.toLowerCase() !== employeeName.toLowerCase()) {
                 e.preventDefault();
                 showNotif('Nama peminjam tidak valid, pilih dari daftar', 'error');
                 inputEmp.focus();
@@ -802,18 +849,24 @@
             }
 
             // 3. Validasi tanggal tidak boleh masa lalu
-            const dateInput = document.querySelector('input[name="date"]');
-            if (dateInput) {
-                const selectedDate = new Date(dateInput.value);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+            const dateInput = document.querySelector('input[name="date"]'); 
 
-                if (selectedDate < today) {
-                    e.preventDefault();
-                    showNotif('Tanggal peminjaman tidak boleh di masa lalu', 'error');
-                    dateInput.focus();
-                    return;
-                }
+            const selectedDate = new Date(dateInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isNaN(selectedDate.getTime())) {
+                e.preventDefault();
+                showNotif('Format tanggal tidak valid', 'error');
+                dateInput.focus();
+                return;
+            }
+
+            if (selectedDate < today) {
+                e.preventDefault();
+                showNotif('Tanggal peminjaman tidak boleh di masa lalu', 'error');
+                dateInput.focus();
+                return;
             }
 
             // 4. Set loading state & cegah double submit
