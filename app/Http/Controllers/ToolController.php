@@ -78,7 +78,7 @@ class ToolController extends Controller
                 $tool->status_label = 'dipinjam';
             } elseif ($tool->isPending) {
                 $tool->status_label = 'pending';
-            } elseif ($condition == 'rusak') {
+            } elseif (in_array($condition, ['rusak', 'maintenance'])) {
                 $tool->status_label = 'tidak tersedia';
             } else {
                 $tool->status_label = 'tersedia';

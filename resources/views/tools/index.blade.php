@@ -176,7 +176,7 @@
                                             Dipinjam
                                         </span>
 
-                                    @elseif ($condition == 'rusak')
+                                    @elseif (in_array($condition, ['rusak', 'maintenance']))
                                         <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
                                             Tidak tersedia
                                         </span>
