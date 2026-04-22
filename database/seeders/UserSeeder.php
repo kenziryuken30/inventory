@@ -10,10 +10,10 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Operator Gudang',
-            'username' => 'operator',
-            'password' => Hash::make('artimu123'),
-        ]);
+        // User::create([
+        //     'name' => 'Operator Gudang',
+        //     'username' => 'operator',
+        //     'password' => Hash::make('artimu123'),
+        // ]);
     }
 }

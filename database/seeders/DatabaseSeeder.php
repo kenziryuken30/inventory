@@ -16,13 +16,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
 
-        $this->call([
-            CategorySeeder::class,
-            InvToolkitSeeder::class,
-            SerialNumberSeeder::class,
-            ConsumableSeeder::class,
-            userSeeder::class,
-        ]);
+        // $this->call([
+        //     CategorySeeder::class,
+        //     InvToolkitSeeder::class,
+        //     SerialNumberSeeder::class,
+        //     ConsumableSeeder::class,
+         //    userSeeder::class,
+        // ]);
 
         User::factory()->create([
             'name' => 'Test User',
