@@ -36,7 +36,11 @@ class DashboardController extends Controller
             ->get();
 
         // 🔥 CONSUMABLE TERBARU (maks 4)
-        $consumableTerbaru = InvConsumableTransactionItem::with('consumable')
+        $consumableTerbaru = InvConsumableTransactionItem::with(['consumable', 'transaction'])
+            ->whereHas('transaction', function ($q) {
+                $q->where('is_confirm', true);
+            })
+            ->whereNotNull('consumable_id')
             ->orderByDesc('created_at')
             ->limit(4)
             ->get();
