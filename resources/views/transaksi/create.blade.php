@@ -508,6 +508,7 @@
                 clients: [],
                 debounceTimer: null,
 
+                // Ambil data client dari API
                 fetchClients() {
                     clearTimeout(this.debounceTimer);
 
@@ -515,52 +516,23 @@
                         this.loading = true;
 
                         try {
-                            // URL sekarang ke Laravel, bukan langsung ke API eksternal
-                            const url = '{{ url("/api/proxy/client-list") }}';
+                            const response = await fetch('{{ url("/api/proxy/client-list") }}');
 
-                            const response = await fetch(url, {
-                                method: 'GET'
-                            });
-
-                            if (!response.ok) {
-                                throw new Error('Server Error: ' + response.status);
-                            }
+                            if (!response.ok) throw new Error('Failed to fetch client');
 
                             const data = await response.json();
 
-                            // Debug: lihat response-nya
-                            console.log('📦 RAW RESPONSE:', data);
-                            console.log('📦 Type:', typeof data);
-                            console.log('📦 Is Array?:', Array.isArray(data));
-                            if (!Array.isArray(data)) {
-                                console.log('📦 Keys:', Object.keys(data));
-                            }
+                            // Menyesuaikan berbagai format response API
+                            let parsed = [];
 
-                            // Parse berbagai kemungkinan format
-                            let parsedClients = [];
+                            if (Array.isArray(data?.data)) parsed = data.data;
+                            else if (Array.isArray(data?.result)) parsed = data.result;
+                            else if (Array.isArray(data)) parsed = data;
 
-                            if (data.data && Array.isArray(data.data)) {
-                                parsedClients = data.data;
-                            } else if (data.result && Array.isArray(data.result)) {
-                                parsedClients = data.result;
-                            } else if (Array.isArray(data)) {
-                                parsedClients = data;
-                            } else if (typeof data === 'object') {
-                                const values = Object.values(data);
-                                if (values.length > 0 && typeof values[0] === 'object') {
-                                    parsedClients = values;
-                                }
-                            }
-
-                            this.clients = parsedClients;
-                            console.log('✅ Total parsed:', this.clients.length);
-                            if (this.clients.length > 0) {
-                                console.log('📋 Sample:', this.clients[0]);
-                                console.log('📋 Keys:', Object.keys(this.clients[0]));
-                            }
+                            this.clients = parsed;
 
                         } catch (error) {
-                            console.error('❌ Gagal fetch:', error);
+                            console.error('Client error:', error);
                             this.clients = [];
                         } finally {
                             this.loading = false;
@@ -568,83 +540,52 @@
                     }, 300);
                 },
 
+                // Filter hasil pencarian
                 get filtered() {
                     if (!this.search || this.clients.length === 0) return [];
+
                     const q = this.search.toLowerCase();
-                    return this.clients.filter(client => {
-                        const allText = [
-                            (client.name || ''),
-                            (client.client_name || ''),
-                            (client.nama_client || ''),
-                            (client.nama || ''),
-                            (client.title || ''),
-                            (client.label || ''),
-                            (client.text || '')
-                        ].join(' ').toLowerCase();
-                        return allText.includes(q);
-                    });
-                },
 
-                getClientName(item) {
-                    return item.name || item.client_name || item.nama_client ||
-                        item.nama || item.title || item.label || item.text || JSON.stringify(item);
-                },
-
-                getClientId(item) {
-                    // Coba field yang umum
-                    if (item.id) return item.id;
-                    if (item.client_id) return item.client_id;
-                    if (item.code) return item.code;
-                    if (item.client_code) return item.code;
-                    if (item.value) return item.value;
-
-                    // Kalau ga ada yang cocok, cari field yang isinya format "CLT-xxx"
-                    const values = Object.entries(item);
-                    const idField = values.find(([key, val]) =>
-                        typeof val === 'string' && val.toUpperCase().startsWith('CLT')
+                    return this.clients.filter(client =>
+                        Object.values(client).join(' ').toLowerCase().includes(q)
                     );
-
-                    if (idField) {
-                        console.log('🔑 ID ditemukan di field:', idField[0], '=', idField[1]);
-                        return idField[1];
-                    }
-
-                    // Last fallback: log semua keys biar lo tau
-                    console.log('⚠️ GA KETEMU ID! Keys yang ada:', Object.keys(item));
-                    return '';
                 },
 
+                // Ambil nama client
+                getClientName(item) {
+                    return item.name || item.client_name || item.nama || '';
+                },
+
+                // Ambil ID client
+                getClientId(item) {
+                    return item.id || item.client_id || item.code || '';
+                },
+
+                // Saat client dipilih
                 selectClient(item) {
                     const name = this.getClientName(item);
                     const id = this.getClientId(item);
-
-                    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                    console.log('✅ CLIENT DIPILIH');
-                    console.log('📛 Nama:', name);
-                    console.log('🆔 ID:', id);
-                    console.log('📄 Full data:', item);
-                    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
                     this.selected = name;
                     this.selectedId = id;
                     this.search = name;
                     this.show = false;
 
-                    if (!id) {
-                        console.error('❌ ID KOSONG! Proyek ga akan ke-load.');
-                        return; // Jangan kirim event kalau ID kosong
+                    // Kirim event ke komponen lain (project)
+                    if (id) {
+                        window.dispatchEvent(new CustomEvent('client-selected', {
+                            detail: { clientId: id, clientName: name }
+                        }));
                     }
-
-                    window.dispatchEvent(new CustomEvent('client-selected', {
-                        detail: { clientId: id, clientName: name }
-                    }));
                 },
 
+                // Reset pilihan client
                 clearSelection() {
                     this.search = '';
                     this.selected = '';
                     this.selectedId = '';
                     this.clients = [];
+
                     window.dispatchEvent(new CustomEvent('client-selected', {
                         detail: { clientId: '', clientName: '' }
                     }));
@@ -657,23 +598,20 @@
             return {
                 projects: [],
                 hasClientId: false,
-                selectedProject: '',
-                selectedProjectId: '',
 
-                // Fungsi auto-detect nama proyek
+                // Ambil nama project
                 getProjectName(proj) {
-                    return proj.name || proj.project_name || proj.nama_proyek ||
-                        proj.nama || proj.title || proj.label ||
-                        Object.values(proj).find(v => typeof v === 'string' && v.length > 1 && v.length < 100) || '';
+                    return proj.name || proj.project_name || proj.nama || '';
                 },
 
                 init() {
+                    // Listen saat client dipilih
                     window.addEventListener('client-selected', async (event) => {
                         const clientId = event.detail.clientId;
-                        this.projects = [];
-                        this.selectedProject = '';
-                        this.selectedProjectId = '';
 
+                        this.projects = [];
+
+                        // Jika belum ada client, stop
                         if (!clientId) {
                             this.hasClientId = false;
                             return;
@@ -682,31 +620,22 @@
                         this.hasClientId = true;
 
                         try {
+                            // Ambil project berdasarkan client_id
                             const url = `{{ url("/api/proxy/client-projects") }}?client_id=${clientId}`;
-                            const response = await fetch(url, { method: 'GET' });
+                            const response = await fetch(url);
 
-                            if (!response.ok) throw new Error('Server Error: ' + response.status);
+                            if (!response.ok) throw new Error('Failed to fetch project');
 
                             const data = await response.json();
 
-                            if (data.data && Array.isArray(data.data)) {
-                                this.projects = data.data;
-                            } else if (Array.isArray(data)) {
-                                this.projects = data;
-                            } else {
-                                this.projects = data || [];
-                            }
-
-                            console.log('📦 Data Proyek:', this.projects);
-
-                            // DEBUG: Liat field proyeknya apa aja
-                            if (this.projects.length > 0) {
-                                console.log('🔑 KEYS PROYEK:', Object.keys(this.projects[0]));
-                                console.log('📄 SAMPLE PROYEK:', this.projects[0]);
-                            }
+                            this.projects = Array.isArray(data?.data)
+                                ? data.data
+                                : Array.isArray(data)
+                                    ? data
+                                    : [];
 
                         } catch (error) {
-                            console.error('❌ Gagal fetch proyek:', error);
+                            console.error('Project error:', error);
                             this.projects = [];
                         }
                     });
@@ -1075,20 +1004,20 @@
                     } else {
                         startNo++;
                         const html = `
-                                                                                <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
-                                                                                    <td class="py-3 px-4 text-center font-medium text-gray-600 w-12"><span class="no-col">${startNo}</span></td>
-                                                                                    <td class="py-3 px-4 text-center w-20"><img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto"></td>
-                                                                                    <td class="py-3 px-4"><span class="font-semibold text-gray-800 item-name">${name}</span></td>
-                                                                                    <td class="text-center py-3 px-4 w-24"><div class="font-medium text-blue-600 stock-display">${stock}</div><div class="text-xs text-gray-400 unit-display">${unit}</div></td>
-                                                                                    <td class="text-center py-3 px-4 w-32"><input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none"></td>
-                                                                                    <td class="text-center py-3 px-4 w-16">
-                                                                                        <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
-                                                                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                                                                                        </button>
-                                                                                        <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
-                                                                                        <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
-                                                                                    </td>
-                                                                                </tr>`;
+                        <tr data-id="${id}" data-stock="${stock}" class="hover:bg-gray-50 transition">
+                            <td class="py-3 px-4 text-center font-medium text-gray-600 w-12"><span class="no-col">${startNo}</span></td>
+                            <td class="py-3 px-4 text-center w-20"><img src="${image}" class="w-10 h-10 object-cover rounded-lg shadow-sm mx-auto"></td>
+                            <td class="py-3 px-4"><span class="font-semibold text-gray-800 item-name">${name}</span></td>
+                            <td class="text-center py-3 px-4 w-24"><div class="font-medium text-blue-600 stock-display">${stock}</div><div class="text-xs text-gray-400 unit-display">${unit}</div></td>
+                            <td class="text-center py-3 px-4 w-32"><input type="number" value="${qty}" min="1" max="${stock}" onchange="updateQty(this)" class="w-20 h-8 text-center border border-gray-300 rounded-lg qty-input-main shadow-sm focus:ring-1 focus:ring-[#5EA6FF] focus:border-[#5EA6FF] focus:outline-none"></td>
+                            <td class="text-center py-3 px-4 w-16">
+                                <button type="button" onclick="removeRow(this)" class="btn-delete-icon" title="Hapus item">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                </button>
+                                    <input type="hidden" name="items[${index}][consumable_id]" value="${id}">
+                                    <input type="hidden" name="items[${index}][qty]" value="${qty}" class="hidden-qty">
+                            </td>
+                         </tr>`;
                         document.querySelector('#tableConsumables tbody').insertAdjacentHTML('beforeend', html);
                         index++;
                         addedCount++;
