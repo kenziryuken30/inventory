@@ -164,7 +164,7 @@
 
                                     <td class="text-center py-2 px-4">
                                         @if($item->toolkit && $item->toolkit->image)
-                                            <img src="{{ asset('images/' . $item->toolkit->image) }}"
+                                            <img src="{{ asset('storage/' . $item->toolkit->image) }}"
                                                 class="w-12 h-12 object-contain mx-auto rounded-md shadow-sm border">
                                         @else
                                             <div
