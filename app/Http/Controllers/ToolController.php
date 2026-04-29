@@ -74,28 +74,31 @@ class ToolController extends Controller
         ]);
     }
 
+
     public function store(Request $request)
     {
 
         $request->validate([
             'toolkit_name'  => 'required|string|max:255',
-            'category_id' => 'required|exists:inv_categories,id',
+            'category_id' => 'required|exists:inv_category,id',
             'serial_number' => 'required|unique:inv_serial_number,serial_number',
             'image'         => 'nullable|image|max:2048',
         ], [
             'serial_number.unique' => 'Nomor seri sudah terdaftar!',
         ]);
 
-        $imagePath = null;
+        $imageName = null;
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('tools', 'public');
+            $imageName = time() . '.' . $request->file('image')->extension();
+            $request->file('image')->move(public_path('images'), $imageName);
         }
 
         $toolkit = InvToolkit::create([
             'id'           => 'TL-' . strtoupper(Str::random(6)),
             'toolkit_name' => $request->toolkit_name,
             'category_id'  => $request->category_id,
-            'image'        => $imagePath,
+            'image'        => $imageName,
         ]);
 
         $serial = InvSerialNumber::create([
@@ -149,19 +152,16 @@ class ToolController extends Controller
         // Update image jika ada
         if ($request->hasFile('image')) {
 
-            if (
-                $tool->toolkit->image &&
-                Storage::disk('public')->exists($tool->toolkit->image)
-            ) {
+            // hapus lama (kalau ada)
+            @unlink(public_path('images/' . $tool->toolkit->image));
 
-                Storage::disk('public')->delete($tool->toolkit->image);
-            }
+            // simpan baru
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
 
-            $path = $request->file('image')
-                ->store('tools', 'public');
-
+            // update
             $tool->toolkit->update([
-                'image' => $path
+                'image' => $imageName
             ]);
         }
 

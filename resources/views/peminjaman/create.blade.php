@@ -215,7 +215,9 @@
                                         {{ $serial->serial_number }}
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <img src="{{ optional($serial->toolkit)->image ? asset('storage/' . optional($serial->toolkit)->image) : asset('images/no-image.png') }}"
+                                        <img src="{{ optional($serial->toolkit)->image 
+                                            ? asset('images/' . optional($serial->toolkit)->image) 
+                                            : asset('images/no-image.png') }}"
                                             class="w-10 h-10 object-contain mx-auto rounded-lg shadow-sm preview-image cursor-pointer hover:scale-110 transition">
                                     </td>
                                 </tr>
