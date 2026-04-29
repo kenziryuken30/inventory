@@ -135,8 +135,8 @@
                                         $image = optional($tool->toolkit)->image;
                                     @endphp
 
-                                    <img src="{{ $image && file_exists(public_path('images/'.$image)) 
-                                        ? asset('images/'.$image) 
+                                    <img src="{{ $tool->toolkit && $tool->toolkit->image
+                                        ? asset('storage/' . $tool->toolkit->image)
                                         : asset('images/no-image.png') }}"
                                         class="tools-img previewImage w-10 h-10 object-contain bg-white rounded-lg shadow-sm border border-gray-100"
                                         onerror="this.src='{{ asset('images/error-image.png') }}'">

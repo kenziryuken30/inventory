@@ -87,18 +87,17 @@ class ToolController extends Controller
             'serial_number.unique' => 'Nomor seri sudah terdaftar!',
         ]);
 
-        $imageName = null;
+        $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->file('image')->extension();
-            $request->file('image')->move(public_path('images'), $imageName);
+            $imagePath = $request->file('image')->store('tools', 'public');
         }
 
         $toolkit = InvToolkit::create([
             'id'           => 'TL-' . strtoupper(Str::random(6)),
             'toolkit_name' => $request->toolkit_name,
             'category_id'  => $request->category_id,
-            'image'        => $imageName,
+            'image'        => $imagePath,
         ]);
 
         $serial = InvSerialNumber::create([
@@ -152,16 +151,17 @@ class ToolController extends Controller
         // Update image jika ada
         if ($request->hasFile('image')) {
 
-            // hapus lama (kalau ada)
-            @unlink(public_path('images/' . $tool->toolkit->image));
+            // hapus lama
+            if ($tool->toolkit->image) {
+                Storage::disk('public')->delete($tool->toolkit->image);
+            }
 
-            // simpan baru
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
+            // simpan baru ke storage
+            $path = $request->file('image')->store('tools', 'public');
 
-            // update
+            // update database
             $tool->toolkit->update([
-                'image' => $imageName
+                'image' => $path
             ]);
         }
 
