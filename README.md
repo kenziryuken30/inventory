@@ -29,8 +29,8 @@ Pastikan environment development kamu sudah terinstall:
     Buka file .env dan sesuaikan konfigurasi database (DB_DATABASE, DB_USERNAME, DB_PASSWORD, dll).
 
 4. Database Migration & Seeding
-    php artisan migrate --seed
-    ⚠️ Hapus --seed jika tidak ingin mengisi data dummy.
+    php artisan migrate fresh atau php artisan migrate
+    php artisan db:seed (jika ada dummy).
 
 5. Generate Storage Link (wajib jika ada fitur upload file)
     php artisan storage:link
