@@ -42,3 +42,21 @@ php artisan serve
 
 # Terminal 2: Frontend Assets (Vite)
 npm run dev
+
+# Akun Operator atau user
+
+akun ke 1
+name: Budi bisa di edit di database
+username: operator1
+password: OP1234
+
+akun ke 2 
+name: Andi
+username: operator2
+password:OP2345
+
+passwordnya di hash pakai php artisan tinker
+
+use Illuminate\Support\Facades\Hash;
+
+Hash::make('123456');
