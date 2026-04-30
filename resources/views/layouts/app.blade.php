@@ -249,7 +249,7 @@
                     <li>
                         <a href="{{ route('categories.index') }}" class="menu-item flex items-center gap-4 px-4 py-3 rounded-lg whitespace-nowrap">
                             <i class="ph ph-squares-four text-2xl flex-shrink-0"></i>
-                            <span x-show="sidebarOpen">Kategory</span>
+                            <span x-show="sidebarOpen">Kategori</span>
                         </a>
                     </li>
 
